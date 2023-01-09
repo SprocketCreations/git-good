@@ -1,0 +1,39 @@
+:root {
+
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.battlefield {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+.battlefield-view {
+	background-color: blue;
+	flex: 1 1;
+}
+
+.enemy-head,
+.user-head {
+	background-color: red;
+	height: 10vh;	
+}
+
+.battlelanes{
+	height: 100%;
+	width: 100%;
+}
+
+.battlelane {
+	background-color: orange;
+}
