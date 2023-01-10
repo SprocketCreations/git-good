@@ -24,7 +24,7 @@ body {
 }
 
 .enemy-head,
-.user-head {
+.player-head {
 	background-color: red;
 	height: 10vh;	
 }
@@ -32,8 +32,37 @@ body {
 .battlelanes{
 	height: 100%;
 	width: 100%;
+	display: flex;
+	gap: 1em;
+	justify-content: space-evenly;
 }
 
 .battlelane {
 	background-color: orange;
+	/* flex: 1 1; */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.enemy-cards,
+.player-cards {
+	background-color: burlywood;
+	padding: 1em;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+}
+
+.card-slot {
+	aspect-ratio: .66;
+	background-color: darkblue;
+	flex: 1 1 10%;
+	width: 80px;
+}
+
+@media screen and (max-width: 470px) {
+	.card-slot {
+		flex-basis: 40%;
+	}
 }
