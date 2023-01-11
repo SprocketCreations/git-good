@@ -10,6 +10,7 @@
 	// Initializing
 	// Playing
 	// Action
+	// Waiting
 	// Over
 
 /* *** Card Type *** */
@@ -18,16 +19,17 @@
 
 // Object Definitions
 /* ___ Player ___ */
+	// wins : number
 	// mana : number
 	// deck : deck
 	// hand : hand
 
 /* ___ Battletrack ___ */
-	// defeated : boolean
 	// enemy_health : number
 	// friendly_health : number
 	// friendly cards : array
 	// enemy cards : array
+	// getter for defense : number
 	// location
 	// dom node
 
@@ -57,7 +59,10 @@
 	// Define game state as global *Initializing
 	// Define the player as a global _player object
 	// Define the enemy as a global _player object
+	// Define battletracks as a global _battletrack array
 	// Determin turn order at random, 50 - 50 for each player
+	// Winner of the coin flip will go on odd numbered rounds
+	// Loser will go on even numbered rounds
 	// /Initialize the tracks
 	// /Initialize the decks
 
@@ -66,11 +71,12 @@
  */
 /* === Initialize the tracks === */
 	// Define an array of 18 locations
-	// Create 3 _battletracks
-	//START// For each track:
-		// Add a random location
-		// If that location is already used by one of the other tracks, try again
+	//START// For 3 battletracks:
+		// Create a _battletrack by
+		// Adding a random location
+		// If that location is already used by one of the other _battletracks, try again
 		// Link the _battletrack to its dom node
+		// Add this battletrack to the global array of battletracks
 	//END//
 
 /**
@@ -101,7 +107,7 @@
 	// Pop the top _card from the _deck and add it to the _hand
 	// /Build card dom node
 	// Link the DOM node to the _card
-	// Attach the _card dom node to the _hand dom node
+	// Append the _card dom node to the _hand dom node
 
 /**
  * Creates a dom node for a card
@@ -125,57 +131,31 @@
  * The first calls this function.
  */
 /* === Start first round === */
+	// Define current player as a reference to the enemy player
 	// Define current round as a global number starting at 1
-	// /Start next round
-
-/**
- * Called at the start of every round.
- * Initializes and resets the players
- */
-/* === Start next round === */
-	// Set mana for both _players to round number
-	//START// For each player, until they have 5 cards
-		// /Draw card
-	//END//
-	// Set current battletrack to -1
-	// /Advance battletrack
-
-/**
- * Called when the battletrack has been resolved, or a new round is starting
- */
-/* === Advance battletrack === */
-	// Set current battletrack to current battletrack + 1
-	// if current battletrack is greater than 2
-		// /Start next round
-	//START// else
-		//START// If current battletrack is defeated
-			// Recursion baby
-			// /Advance battletrack
-		//END//
-		//START// else
-			// Change focused battletrack to current battletrack
-			// Set current stage to *playing
-			// If the AI got turn priority
-			// /AI play card
-			// else
-			// Set player turn
-		//END//
-	//END//
+	// Set game stage to *Playing
+	// Set mana for both players to 1
+	// If the player won the coin flip, and the round number is odd
+	// Set current player to player
+	// else
+	// /AI play card
 
 /**
  * Called when a player tries to drag a card from their hand to a battletrack.
  */
-/* === Play card === */
+/* === Player play card === */
 	// If the stage is *playing
-	// If it is the player's turn
-	// If this is the active battletrack
-	// Removes a given _card from the _hand, and adds it to the _battletrack
-	//START// If the AI can make a move
-		// Ends the player's turn
-		// /AI play card
-	//END//
-	//START// else if the player cannot make a move
-		// /End play card stage
+	// If the player is the current player
+	//START// If player mana >= card cost
+		// Player mana minus card cost
+		// /Play card
+		//START// If the AI can make a move
+			// Set current player to the ai
+			// /AI play card
+		//END//
+		//START// else if the player cannot make a move
+			// /End play card stage
+		//END//
 	//END//
 
 /**
@@ -183,12 +163,20 @@
  */
 /* === End turn early === */
 	//START// If the AI can make a move
-		// Ends the player's turn
+		// Set current player to the enemy
 		// /AI play card
 	//END//
 	//START// else
 		// /End play card stage
 	//END//
+
+/**
+ * Function to play a card from a hand to a battleline
+ */
+/* === Play card === */
+	// Removes a given _card from the given _hand
+	// Adds the given _card to the given _battletrack
+	// Appends the given _card node to the given _battletrack node
 
 /**
  * Ideally all the AI logic will be stuck in some AI object that
@@ -197,9 +185,10 @@
  */
 /* === AI play card === */
 	// Pick a random _card from _hand that can be played
+	// Pick a random battletrack that is not conquored
 	// /Play card
 	//START// If the player can make a move
-		// Ends the ai's turn
+		// Set the current player to the human player
 	//END//
 	//START// else if the AI cannot make a move
 		// /End play card stage
@@ -211,7 +200,7 @@
 /* === End play card stage === */
 	// Set stage to *action
 	// Define cards to act as a global array
-	// Add all the _cards from the active _battletrack to cards to act
+	// Add all the _cards from all the unconquored _battletracks to cards to act
 	// Sort by speed
 	// /Let next card action
 
@@ -220,7 +209,7 @@
  */
 /* === Let next card action === */
 	// If there are no more cards to perform actions
-		// /Advance battletrack
+		// /End round
 	//START// else
 		// Pop the fastest card and set it to the active card
 		// If the card is owned by the AI
@@ -240,11 +229,10 @@
  */
 /* === Player card attack === */
 	// If the stage is *action
-	// If the battletrack is active
 	// If this card is the active card
+	// If the target card is in the same _battletrack as this card
 	// /Attack
 	// /Let next card action
-
 
 /**
  * Run whenever the player or ai decides to perform an attack action
@@ -252,22 +240,30 @@
 /* === Attack === */
 	// caluclate damage as offender's attack minus defender's defense
 	//START// if defender is a _card
-		// reduce defender's health by damage
+		// reduce defender's health by damage minus defenders defense to minumum of 1
 		//START// If defender dies
 			// Remove defender from battletrack
-			// Add _card back to owner's deck at a random position
-			// Play death animation
-			// Set timeout to destroy card DOM node after animation is done
+			// destroy card DOM node
 		//END//
 	//END//
 	//START// else if the defender is the battletrack
-		// reduce the battletrack's health by damage
+		// reduce the battletrack's health by damage minus battletrack defense
 		//START// If the battletrack dies
-			// If this is the second battletrack defeated
+			// If the player whom defeated this battletrack has already defeated a battletrack
 			// /End game
 			// else
-			// /Advance battletrack
+			// Destroy all cards on this battletrack
 		//END//
+	//END//
+
+/**
+ * Called at the end of every round.
+ * Initializes and resets the players
+ */
+/* === End round === */
+	// Set mana for both _players to round number
+	//START// For each player, until they have 5 cards
+		// /Draw card
 	//END//
 
 /**
@@ -275,4 +271,8 @@
  */
 /* === End game === */
 	// Set stage to *Over
+	// If player won
+	// Advance player win counter
+	// elseif ai won
+	// Advance enemy win counter
 	// Display victory or failure screen/animation
