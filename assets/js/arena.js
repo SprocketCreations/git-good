@@ -187,6 +187,7 @@
 	// Pick a random _card from _hand that can be played
 	// Pick a random battletrack that is not conquored
 	// /Play card
+	// Reduce AI mana by card cost
 	//START// If the player can make a move
 		// Set the current player to the human player
 	//END//
