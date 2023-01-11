@@ -23,6 +23,7 @@
 	// mana : number
 	// deck : deck
 	// hand : hand
+	// graveyard : array of cards
 
 /* ___ Battletrack ___ */
 	// enemy_health : number
@@ -104,6 +105,10 @@
  * Handles creating a card.
  */
 /* === Draw card === */
+	//START// If deck is empty
+		// Move all cards from graveyard to deck
+		// Shuffle deck
+	//END//
 	// Pop the top _card from the _deck and add it to the _hand
 	// /Build card dom node
 	// Link the DOM node to the _card
@@ -244,6 +249,7 @@
 		// reduce defender's health by damage minus defenders defense to minumum of 1
 		//START// If defender dies
 			// Remove defender from battletrack
+			// Add defender to owner's graveyard
 			// destroy card DOM node
 		//END//
 	//END//
@@ -252,8 +258,10 @@
 		//START// If the battletrack dies
 			// If the player whom defeated this battletrack has already defeated a battletrack
 			// /End game
-			// else
-			// Destroy all cards on this battletrack
+			//START// else
+				// Destroy all cards on this battletrack
+				// Add all cards on this battletrack to their owner's graveyards
+			//END//
 		//END//
 	//END//
 
