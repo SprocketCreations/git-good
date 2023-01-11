@@ -57,7 +57,6 @@
 	// Define game state as global *Initializing
 	// Define the player as a global _player object
 	// Define the enemy as a global _player object
-	// Define the game's stage as a global *game stage enum
 	// Determin turn order at random, 50 - 50 for each player
 	// /Initialize the tracks
 	// /Initialize the decks
@@ -81,8 +80,8 @@
 /* === Initialize the Decks === */
 	//START// Do the following for the player and the AI
 		// Define the API ids as an array
-		// Pick a random 40 to be in the _deck
-		// Fetch the data for those 40 and store it in a _card in the player's _deck
+		// Get the ids of the curated 45 cards
+		// Fetch the data for those 45 and store it in a _card in the player's _deck
 		// /Build the starter hand
 	//END//
 
@@ -131,14 +130,14 @@
 
 /**
  * Called at the start of every round.
- * Initializes and resets the palyers
+ * Initializes and resets the players
  */
 /* === Start next round === */
 	// Set mana for both _players to round number
 	//START// For each player, until they have 5 cards
 		// /Draw card
 	//END//
-	// Set current battltrack to 0
+	// Set current battletrack to -1
 	// /Advance battletrack
 
 /**
@@ -146,7 +145,7 @@
  */
 /* === Advance battletrack === */
 	// Set current battletrack to current battletrack + 1
-	// if current battletrack is greater than 3
+	// if current battletrack is greater than 2
 		// /Start next round
 	//START// else
 		//START// If current battletrack is defeated
