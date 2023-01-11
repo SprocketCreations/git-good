@@ -2,63 +2,86 @@
 
 }
 
-* {
+*, *::before, *::after{
+	margin: 0;
+	padding: 0;
 	box-sizing: border-box;
+	border: 1px solid red;
+}
+
+.row {
+	margin: 0;
 }
 
 body {
-	margin: 0;
-	padding: 0;
 }
 
-.battlefield {
-	width: 100vw;
+/*Getting rid of row::after from materialize*/
+.row::after {
+	display: none;
+}
+
+#battlefield {
 	height: 100vh;
-	display: flex;
-	flex-flow: column nowrap;
 }
 
-.battlefield-view {
-	background-color: blue;
-	flex: 1 1;
-}
-
-.enemy-head,
-.player-head {
-	background-color: red;
-	height: 10vh;	
+#enemy-head,
+#player-head {
+	height: 100px;
+	overflow: hidden;
 }
 
 .battlelanes{
-	height: 100%;
-	width: 100%;
+	height: calc(100vh - 200px);
 	display: flex;
-	gap: 1em;
 	justify-content: space-evenly;
+	align-items: center;
 }
 
 .battlelane {
-	background-color: orange;
-	/* flex: 1 1; */
+	height: 95%;
+	width: 25%;
+	min-width: 175px;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#battlelane-1 {
+	border: 1px solid blue;
+}
+
+#battlelane-2 {
+	border: 1px solid green;
+}
+
+#battlelane-3 {
+	border: 1px solid orange;
 }
 
 .enemy-cards,
 .player-cards {
-	background-color: burlywood;
-	padding: 1em;
+	height: fit-content;
+	width: 175px;
+}
+
+.custom-row-1,
+.custom-row-2 {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 1em;
+	margin: 0;
 }
 
 .card-slot {
-	aspect-ratio: .66;
-	background-color: darkblue;
-	flex: 1 1 10%;
+	height: 100px;
 	width: 80px;
+	margin: 3px;
+	background-color: darkblue;
+}
+
+.hoverable:hover {
+	transform: scale(1.5);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
 }
 
 @media screen and (max-width: 470px) {
