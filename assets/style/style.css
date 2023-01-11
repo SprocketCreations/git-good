@@ -14,6 +14,7 @@
 }
 
 body {
+	overflow: hidden;
 }
 
 /*Getting rid of row::after from materialize*/
@@ -31,14 +32,14 @@ body {
 	overflow: hidden;
 }
 
-.battlelanes{
+.battletracks{
 	height: calc(100vh - 200px);
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
 }
 
-.battlelane {
+.battletrack {
 	height: 95%;
 	width: 25%;
 	min-width: 175px;
@@ -48,15 +49,15 @@ body {
 	align-items: center;
 }
 
-#battlelane-1 {
+#battletrack-1 {
 	border: 1px solid blue;
 }
 
-#battlelane-2 {
+#battletrack-2 {
 	border: 1px solid green;
 }
 
-#battlelane-3 {
+#battletrack-3 {
 	border: 1px solid orange;
 }
 
