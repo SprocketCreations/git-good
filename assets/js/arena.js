@@ -58,11 +58,18 @@ class Battleline {
 	 * @param {Element} zoneNode The element that contains the cards in play.
 	 */
 	constructor(hitpoints, hitpointNode, zoneNode) {
+		// TODO: Add an event listener
+		zoneNode.addEventListener();
 		this.hitpoints = hitpoints;
 		this.healthNode = hitpointNode;
-		this.zoneNode = frontNode;
 		this.cards = [];
 	}
+
+	setHitpoints(hitpoints) {
+		this.hitpoints = hitpoints;
+		this.hitpointsNode.textContent = hitpoints;
+	}
+
 }
 
 /**
