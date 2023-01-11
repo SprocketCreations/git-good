@@ -200,19 +200,19 @@
  */
 /* === End play card stage === */
 	// Set stage to *action
-	// Define cards to act as a global array
-	// Add all the _cards from all the unconquored _battletracks to cards to act
-	// Sort by speed
+	// Define "cards to act" as a global array
+	// Add all the _cards from all the unconquored _battletracks to "cards to act"
+	// Sort "cards to act" by speed
 	// /Let next card action
 
 /**
  * Called after the active card has performed its action.
  */
 /* === Let next card action === */
-	// If there are no more cards to perform actions
+	// If "cards to act" is empty
 		// /End round
 	//START// else
-		// Pop the fastest card and set it to the active card
+		// Pop "cards to act" and set it to the active card
 		// If the card is owned by the AI
 		// /AI card action
 	//END//
