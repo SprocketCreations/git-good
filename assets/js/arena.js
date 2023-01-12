@@ -1,3 +1,4 @@
+//#region ENUM DEFINITIONS
 /**
  * Enum for the current state of play.
  * @Initializing The game is setting itself up.
@@ -15,7 +16,9 @@ const Stage = {
 	/** The game has ended. */
 	Over: 3,
 };
+//#endregion
 
+//#region CLASS DEFINITIONS
 /**
  * This class is used to represent a player.
  * I manages the mana, deck, and hand.
@@ -502,15 +505,9 @@ class Hand {
 		return this.cards.splice(this.cards.indexOf(card), 1)[0];
 	}
 }
+//#endregion
 
-/**
- * Comments are organized like code.
- * any text prefixed with * is an enum
- * any comment starting with one / represents calling pseudo-code elsewhere in this file
- * any text prefixed with _ is a custom type, defined below
- */
-
-// Function Definitions
+//#region GAMEPLAY FUNCTIONS
 /**
  * Run on page load.
  * Calls all the functions needed to set up the game board.
@@ -769,3 +766,4 @@ const endGame = () => {
 	// Advance enemy win counter
 	// Display victory or failure screen/animation
 };
+//#endregion
