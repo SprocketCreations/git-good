@@ -42,8 +42,8 @@ class Player {
 		this.deck = new Deck(cards, this);
 		/** @type {Hand} The player's hand. */
 		this.hand = new Hand(handNode);
-		/** @type {number} The number of battlelanes the player has conquored. */
-		this.conquored = 0;
+		/** @type {number} The number of battlelanes the player has conquered. */
+		this.conquered = 0;
 	}
 	/**
 	 * @returns {Deck} the player's deck.
@@ -58,16 +58,16 @@ class Player {
 		return this.hand;
 	}
 	/**
-	 * Increases the tracking of how many battlelanes this player has conquored.
+	 * Increases the tracking of how many battlelanes this player has conquered.
 	 */
-	conquor() {
-		++this.conquored;
+	conquer() {
+		++this.conquered;
 	}
 	/**
-	 * @returns {boolean} true if this player has conquored two battletracks.
+	 * @returns {boolean} true if this player has conquered two battletracks.
 	 */
 	isWinner() {
-		return this.conquored > 1;
+		return this.conquered > 1;
 	}
 	/**
 	 * Sets the amount of mana that the player has, and updates the
@@ -284,7 +284,7 @@ class Battleline {
 	/**
 	 * Kills all the cards present in this battleline, sending them back to their graveyards.
 	 */
-	conquor() {
+	conquer() {
 		this.cards.forEach(card => card.die());
 		this.cards = [];
 	}
@@ -391,15 +391,15 @@ class Battletrack {
 	/**
 	 * @returns {boolean} true if this battletrack has 0 hitpoints at one of its sides.
 	 */
-	isConquored() {
+	isConquered() {
 		return this.friendlyBattleline.getHitpoints() === 0 || this.enemyBattleline.getHitpoints() === 0;
 	}
 	/**
 	 * Destroys every card present, returning them to their graveyards.
 	 */
-	conquor() {
-		this.friendlyBattleline.conquor();
-		this.enemyBattleline.conquor();
+	conquer() {
+		this.friendlyBattleline.conquer();
+		this.enemyBattleline.conquer();
 	}
 }
 
