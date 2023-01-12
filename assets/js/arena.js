@@ -502,6 +502,7 @@ class Hand {
 		return this.cards.splice(this.cards.indexOf(card), 1)[0];
 	}
 }
+
 /**
  * Comments are organized like code.
  * any text prefixed with * is an enum
@@ -514,7 +515,7 @@ class Hand {
  * Run on page load.
  * Calls all the functions needed to set up the game board.
  */
-/* === On game start === */
+const gameStart = () => {
 	// Define game state as global *Initializing
 	// Define the player as a global _player object
 	// Define the enemy as a global _player object
@@ -524,11 +525,12 @@ class Hand {
 	// Loser will go on even numbered rounds
 	// /Initialize the tracks
 	// /Initialize the decks
+};
 
 /**
  * Configures the tracks.
  */
-/* === Initialize the tracks === */
+const initializeBattletracks = () => {
 	// Define an array of 18 locations
 	//START// For 3 battletracks:
 		// Create a _battletrack by
@@ -537,11 +539,13 @@ class Hand {
 		// Link the _battletrack to its dom node
 		// Add this battletrack to the global array of battletracks
 	//END//
+};
 
 /**
  * Constructs the decks at random.
  * Will later pull from localStorage to build decks.
  */
+const initializeDecks = () => {
 /* === Initialize the Decks === */
 	//START// Do the following for the player and the AI
 		// Define the API ids as an array
@@ -549,19 +553,23 @@ class Hand {
 		// Fetch the data for those 45 and store it in a _card in the player's _deck
 		// /Build the starter hand
 	//END//
+};
 
 /**
  * Containered code for handling the drawing of cards from the deck to be in the player's hand
  */
+const buildStarterHand = () =>{
 /* === Build the starter hand (do for both player and ai) === */
 	// Shuffle the _deck via some algorithm stolen from online
 	//START// Do the following 5 times
 		// /Draw card
 	//END//
+};
 
 /**
  * Handles creating a card.
  */
+const drawCard = () => {
 /* === Draw card === */
 	//START// If deck is empty
 		// Move all cards from graveyard to deck
@@ -571,28 +579,23 @@ class Hand {
 	// /Build card dom node
 	// Link the DOM node to the _card
 	// Append the _card dom node to the _hand dom node
-
-/**
- * Creates a dom node for a card
- */
-/* === Build card dom node === */
-	// Clone the card template
-	// Fill in the stats on the fragment
-	// Set the background art on the fragment
-	// Return the fragment
+};
 
 /**
  * After recieving their cards, the player will be presented with two buttons.
  * The second calls this function.
  */
+const rejectFirstHand = () => {
 /* === Reject first hand === */	
 	// Put the hand cards back into the deck and destroy their DOM reps
 	// /Build the starter hand
+};
 
 /**
  * After recieving their cards, the player will be presented with two buttons.
  * The first calls this function.
  */
+const startFirstRound = () => {
 /* === Start first round === */
 	// Define current player as a reference to the enemy player
 	// Define current round as a global number starting at 1
@@ -602,10 +605,12 @@ class Hand {
 	// Set current player to player
 	// else
 	// /AI play card
+};
 
 /**
  * Called when a player tries to drag a card from their hand to a battletrack.
  */
+const playerTryPlayCard = () => {
 /* === Player play card === */
 	// If the stage is *playing
 	// If the player is the current player
@@ -620,10 +625,12 @@ class Hand {
 			// /End play card stage
 		//END//
 	//END//
+};
 
 /**
  * Called when the player presses the end turn button.
  */
+const playerEndTurnEarly = () => {
 /* === End turn early === */
 	//START// If the AI can make a move
 		// Set current player to the enemy
@@ -632,20 +639,24 @@ class Hand {
 	//START// else
 		// /End play card stage
 	//END//
+};
 
 /**
  * Function to play a card from a hand to a battleline
  */
+const playCard = () => {
 /* === Play card === */
 	// Removes a given _card from the given _hand
 	// Adds the given _card to the given _battletrack
 	// Appends the given _card node to the given _battletrack node
+};
 
 /**
  * Ideally all the AI logic will be stuck in some AI object that
  * can use a behaviour tree and state machine to decide actions,
  * but this will work for now.
  */
+const AI_playcard = () => {
 /* === AI play card === */
 	// Pick a random _card from _hand that can be played
 	// Pick a random battletrack that is not conquored
@@ -657,20 +668,24 @@ class Hand {
 	//START// else if the AI cannot make a move
 		// /End play card stage
 	//END//
+};
 
 /**
  * Called after the player and the ai cannot play any more cards.
  */
+const endPlayCardStage = () => {
 /* === End play card stage === */
 	// Set stage to *action
 	// Define "cards to act" as a global array
 	// Add all the _cards from all the unconquored _battletracks to "cards to act"
 	// Sort "cards to act" by speed
 	// /Let next card action
+};
 
 /**
  * Called after the active card has performed its action.
  */
+const letNextCardDoAction = () => {
 /* === Let next card action === */
 	// If "cards to act" is empty
 		// /End round
@@ -679,28 +694,34 @@ class Hand {
 		// If the card is owned by the AI
 		// /AI card action
 	//END//
+};
 
 /**
  * Run whenever a card controlled by the AI gets to perform an action.
  */
+const AI_action = () => {
 /* === AI card action === */
 	// Pick a random enemy card
 	// Order active card to /Attack
 	// /Let next card action
+};
 
 /**
  * Called when the player orders a card to perform an attack.
  */
+const playerTryAttack = () => {
 /* === Player card attack === */
 	// If the stage is *action
 	// If this card is the active card
 	// If the target card is in the same _battletrack as this card
 	// /Attack
 	// /Let next card action
+};
 
 /**
  * Run whenever the player or ai decides to perform an attack action
  */
+const cardAttackAction = () => {
 /* === Attack === */
 	// caluclate damage as offender's attack minus defender's defense
 	//START// if defender is a _card
@@ -722,20 +743,24 @@ class Hand {
 			//END//
 		//END//
 	//END//
+};
 
 /**
  * Called at the end of every round.
  * Initializes and resets the players
  */
+const endRound = () => {
 /* === End round === */
 	// Set mana for both _players to round number
 	//START// For each player, until they have 5 cards
 		// /Draw card
 	//END//
+};
 
 /**
  * This is called once a player has defeated two battletracks.
  */
+const endGame = () => {
 /* === End game === */
 	// Set stage to *Over
 	// If player won
@@ -743,3 +768,4 @@ class Hand {
 	// elseif ai won
 	// Advance enemy win counter
 	// Display victory or failure screen/animation
+};
