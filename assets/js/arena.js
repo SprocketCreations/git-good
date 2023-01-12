@@ -265,6 +265,13 @@ class Battleline {
 		this.cards.forEach(card => card.die());
 		this.cards = [];
 	}
+	/**
+	 * Defense is a function of the number of cards played on this battleline.
+	 * @returns {number} the defense of this battleline.
+	 */
+	getDefense() {
+		return this.cards.length;
+	}
 }
 
 /**
@@ -326,6 +333,18 @@ class Battletrack {
 	 */
 	setEnemyHealth(hitpoints) {
 		this.enemyBattleline.setHitpoints(hitpoints);
+	}
+	/**
+	 * @returns {number} the defense that the friendly side of the track has.
+	 */
+	getFriendlyDefense() {
+		return this.friendlyBattleline.getDefense();
+	}
+	/**
+	 * @returns {number} the defense that the enemy side of the track has.
+	 */
+	getEnemyDefense() {
+		return this.enemyBattleline.getDefense();
 	}
 	/**
 	 * Gets the location data associated with this battlelane.
