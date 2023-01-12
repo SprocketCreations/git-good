@@ -141,13 +141,22 @@ class Card {
 		this.speed = speed;
 		/** @type {Element} The HTML element on the DOM that represents this card. */
 		this.node = null;
+		/** @type {Battleline} The battleline this card is currently played to. */
+		this.battleline = null;
 	}
 	/**
 	 * Kills this card, sending it back to the graveyard.
 	 */
 	die() {
+		this.battleline.removeCard(this);
 		this.deleteNode();
 		this.owner.getDeck().addToGraveyard(this);
+	}
+	/**
+	 * @param {Battleline} battleline The battline this card is now a part of.
+	 */
+	setBattleline(battleline) {
+		this.battleline = battleline;
 	}
 	/**
 	 * Returns a reference to the element in the DOM
@@ -246,6 +255,22 @@ class Battleline {
 		this.cards = [];
 	}
 	/**
+	 * Adds a card to this battleline.
+	 * @param {Card} card The card to play to this battleline.
+	 */
+	playCard(card) {
+		// TODO: Add code here for appending the card's node to the battleline.
+		this.cards.push(card);
+	}
+	/**
+	 * Removes a given card from this battleline.
+	 * @param {Card} card The card to remove.
+	 * @returns {Card} the card removed.
+	 */
+	removeCard(card) {
+		return this.cards.splice(this.cards.indexOf(card), 1)[0];
+	}
+	/**
 	 * @returns {number} the number of hitpoints this battleline has.
 	 */
 	getHitpoints() {
@@ -305,6 +330,18 @@ class Battletrack {
 		/** @type {Object} The location of this battletrack. */
 		this.location = location;
 		// TODO: Crawl the node to get the elements used to indicate location
+	}
+	/**
+	 * @param {Card} card The card to play to the friendly side of the battletrack.
+	 */
+	playFriendlyCard(card) {
+		this.friendlyBattleline.playCard(card);
+	}
+	/**
+	 * @param {Card} card The card to play to the enemy side of the battletrack.
+	 */
+	playEnemyCard(card) {
+		this.enemyBattleline.playCard(card);
 	}
 	/**
 	 * A getter for the hitpoints the friendly side of the battletrack.
