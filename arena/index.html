@@ -6,77 +6,91 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Arena</title>
-
-	<!-- <link type="text/css" rel="stylesheet" href="../assets/style/materialize.min.css" media="screen,projection" /> -->
-	<link type="text/css" rel="stylesheet" href="../assets/style/bulma.min.css" media="screen,projection" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link rel="stylesheet" href="../assets/style/style.css">
 </head>
 
 <body>
-	<main class="battlefield">
+	<main id="battlefield" class="row">
 		<!-- Head with enemy data -->
-		<div class="p-0 m-0 enemy-head"></div>
-		<!-- main with battlelanes -->
-		<div class="p-0 m-0 battlefield-view">
-			<div class="battlelanes">
-				<div id="battlelane-1" class="battlelane">
+		<div id="enemy-head" class="col s12"></div>
+		<!-- main with battletracks -->
+		<div class="col s12 battlefield-view">
+			<div class="battletracks">
+				<div id="battletrack-1" class="row battletrack">
 					<div class="enemy-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-					</div>
-					<div class="location">
-						<img src="" alt="">
+						<div class="custom-row-1">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="custom-row-2">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
 					</div>
 					<div class="player-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+						<div class="custom-row-1">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="custom-row-2">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
 					</div>
 				</div>
-				<div id="battlelane-2" class="battlelane">
+				<div id="battletrack-2" class="row battletrack">
 					<div class="enemy-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-					</div>
-					<div class="location">
-						<img src="" alt="">
+						<div class="custom-row-1">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="custom-row-2">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
 					</div>
 					<div class="player-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+						<div class="custom-row-1">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="custom-row-2">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
 					</div>
 				</div>
-				<div id="battlelane-3" class="battlelane">
+				<div id="battletrack-3" class="row battletrack">
 					<div class="enemy-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-					</div>
-					<div class="location">
-						<img src="" alt="">
+						<div class="custom-row-1">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="custom-row-2">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
 					</div>
 					<div class="player-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+						<div class="custom-row-1">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="custom-row-2">
+							<div class="card-slot hoverable"></div>
+							<div class="card-slot hoverable"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- foot with your data -->
-		<div class="p-0 m-0 player-head"></div>
+		<div id="player-head" class="col s12"></div>
 	</main>
 
-	<!-- <script type="text/javascript" src="../assets/js/materialize.min.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script src="../assets/js/arena.js"></script>
 </body>
 
 </html>
