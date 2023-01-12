@@ -6,6 +6,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Arena</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rozha+One&display=swap" rel="stylesheet"> 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link rel="stylesheet" href="../assets/style/style.css">
 </head>
@@ -13,11 +16,26 @@
 <body>
 	<main id="battlefield" class="row">
 		<!-- Head with enemy data -->
-		<div id="enemy-head" class="col s12"></div>
+		<div id="enemy-head" class="col s12">
+			<div id="enemy-mana"></div>
+			<div id="enemy-hand">
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<div id="enemy-deck"></div>
+		</div>
 		<!-- main with battletracks -->
 		<div class="col s12 battlefield-view">
-			<div class="battletracks">
+			<div id="battletracks">
 				<div id="battletrack-1" class="row battletrack">
+					<div class="progress bt-hp-container bt-hp-enemy">
+						<div id="bt1-enemy-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count">18</span>
+					</div>
+					<div class="bt-armor-enemy">
+						<span class="bt-armor-count">4</span>
+					</div>
 					<div class="enemy-cards">
 						<div class="custom-row-1">
 							<div class="card-slot hoverable"></div>
@@ -37,9 +55,23 @@
 							<div class="card-slot hoverable"></div>
 							<div class="card-slot hoverable"></div>
 						</div>
+					</div>
+					<div class="progress bt-hp-container bt-hp-player">
+						<div id="bt1-player-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count">20</span>
+					</div>
+					<div class="bt-armor-player">
+						<span class="bt-armor-count">1</span>
 					</div>
 				</div>
 				<div id="battletrack-2" class="row battletrack">
+					<div class="progress bt-hp-container bt-hp-enemy">
+						<div id="bt2-enemy-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count">20</span>
+					</div>
+					<div class="bt-armor-enemy">
+						<span class="bt-armor-count">0</span>
+					</div>
 					<div class="enemy-cards">
 						<div class="custom-row-1">
 							<div class="card-slot hoverable"></div>
@@ -59,9 +91,23 @@
 							<div class="card-slot hoverable"></div>
 							<div class="card-slot hoverable"></div>
 						</div>
+					</div>
+					<div class="progress bt-hp-container bt-hp-player">
+						<div id="bt2-player-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count">5</span>
+					</div>
+					<div class="bt-armor-player">
+						<span class="bt-armor-count">2</span>
 					</div>
 				</div>
 				<div id="battletrack-3" class="row battletrack">
+					<div class="progress bt-hp-container bt-hp-enemy">
+						<div id="bt3-enemy-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count">10</span>
+					</div>
+					<div class="bt-armor-enemy">
+						<span class="bt-armor-count">1</span>
+					</div>
 					<div class="enemy-cards">
 						<div class="custom-row-1">
 							<div class="card-slot hoverable"></div>
@@ -80,13 +126,30 @@
 						<div class="custom-row-2">
 							<div class="card-slot hoverable"></div>
 							<div class="card-slot hoverable"></div>
+						</div>
+						<div class="progress bt-hp-container bt-hp-player">
+							<div id="bt3-player-hp" class="determinate bt-hp-progress"></div>
+							<span class="bt-hp-count">X</span>
+						</div>
+						<div class="bt-armor-player">
+							<span class="bt-armor-count">2</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- foot with your data -->
-		<div id="player-head" class="col s12"></div>
+		<div id="player-head" class="col s12">
+			<div id="player-deck"></div>
+			<div id="player-hand">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<div id="player-mana"></div>
+		</div>
 	</main>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
