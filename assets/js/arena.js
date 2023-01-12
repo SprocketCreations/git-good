@@ -19,8 +19,6 @@ const Stage = {
 /**
  * This class is used to represent a player.
  * I manages the mana, deck, and hand.
- * 
- * @property
  */
 class Player {
 	/**
