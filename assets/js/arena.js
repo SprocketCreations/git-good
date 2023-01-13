@@ -1004,7 +1004,7 @@ const playerTryAttack = (card, defender) => {
 	/** @type {boolean} If the card is active. */
 	const isActive = cardIndex !== -1;
 	/** @type {boolean} If the defender is a card. */
-	const isDefenderACard = typeof (defender) === typeof (card);
+	const isDefenderACard = defender instanceof Card;
 	/** @type {boolean} If the battleline is in the same battletrack the card is in. */
 	const isInBattletrack = isDefenderACard ? false : defender.getBattletrack() === card.getBattleline().getBattletrack();
 	/** @type {boolean} If the card is in the same battletrack as the defender card. */
@@ -1041,7 +1041,7 @@ const cardAttackAction = (attacker, defender) => {
 	defender.damage(damage);
 
 	// If defender is a card
-	if (typeof (defender) === typeof (attacker)) {
+	if (defender instanceof Card) {
 		// If the defender dies
 		if (defender.getCurrentHitpoints() === 0) {
 			// Kill the card. This function takes care of all the disposal.
