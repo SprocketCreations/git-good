@@ -96,8 +96,7 @@ $( function() {
 })
 
 // API FETCH & DECK DATA COLLECTION:
-// initializing an empty deck that can be added to on fetch completion. Need to call `getDeck()` to populate.
-var deck = []
+// initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
 
@@ -232,13 +231,6 @@ function getCardStats(normalizedData) {
                 }
         }
         return cardStats
-}
-
-// Called when you want to populate the deck with the chosen characters
-function getDeck() {
-        normalize(heroStats,1)
-        normalize(pokeStats, 1.5)
-        return deck
 }
 
 //#region ENUM DEFINITIONS
@@ -882,7 +874,7 @@ const initializeBattletracks = () => {
  */
 const buildHumanPlayer = () => {
 	/** @type {Card[]} the array of cards this player will start with in their hand. */
-	const cards = getStarterDeck();
+	const cards = Deck();
 
 	/** @type {Element} The HTML that the player should write their mana amount to. */
 	const manaNode = null; // TODO: Get the player's mana node from the DOM.
@@ -919,13 +911,17 @@ const buildAIPlayer = () => {
 /**
  * Constructs a new collection of cards from the currated list.
  * Will later pull from localStorage to build decks.
- * @returns {Card[]} an array of cards to be the deck.
+ * @returns {Card[]} an array of cards to be the deck. Format: [{name:[], attack:[], defense:[], health:[], speed:[]}, ...].
  */
 const getStarterDeck = () => {
 	/** @type {Card[]} The array of cards to return. */
 	const cards = [];
 
-	//TODO: populate the array of cards.
+	//populate the array of cards:
+	// 
+	const heroCards = normalize(heroStats,1)
+        const pokeCards = normalize(pokeStats, 1.5)
+	cards.concat(heroCards.concat(pokeCards))
 
 	return cards;
 };
