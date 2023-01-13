@@ -874,7 +874,7 @@ const initializeBattletracks = () => {
  */
 const buildHumanPlayer = () => {
 	/** @type {Card[]} the array of cards this player will start with in their hand. */
-	const cards = Deck();
+	const cards = getStarterDeck();
 
 	/** @type {Element} The HTML that the player should write their mana amount to. */
 	const manaNode = null; // TODO: Get the player's mana node from the DOM.
