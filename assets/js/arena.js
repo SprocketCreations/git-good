@@ -694,8 +694,10 @@ const getStarterDeck = () => {
  * @param {Player} player The player to refill the hand for.
  */
 const refillHand = (player) => {
+	/** @type {number} Number of cards in the hand. */
+	const handCount = player.getHand().cards.length;
 	// Until the player has five cards:
-	for (let i = 0; i < cardRefreshCount; ++i) {
+	for (let i = 0; i < cardRefreshCount - handCount; ++i) {
 		/** @type {Card} The card popped off the top of the deck. */
 		const card = player.getDeck().drawCard();
 		// Add the card to the hand.
