@@ -540,9 +540,6 @@ class Battleline {
 	 * @param {HTMLElement} zoneNode The HTML element that contains the cards in play.
 	 */
 	constructor(battletrack, hitpoints, hitpointsNode, defenseNode, zoneNode) {
-		// TODO: Add an event listener
-		zoneNode.addEventListener();
-
 		/** @type {Battletrack} The battletrack this battleline is on. */
 		this.battletrack = battletrack;
 		/** @type {number} The number of hitpoints this side of the battletrack has. */
@@ -551,6 +548,8 @@ class Battleline {
 		this.hitpointsNode = hitpointsNode;
 		/** @type {HTMLElement} The HTML element to write the defense to. */
 		this.defenseNode = defenseNode;
+		/** @type {HTMLElement} The HTML that played cards are appended to. */
+		this.zoneNode = zoneNode;
 		/** @type {Card[]} The cards in play on this side of the battletrack. */
 		this.cards = [];
 	}
@@ -571,7 +570,9 @@ class Battleline {
 	 * @param {Card} card The card to play to this battleline.
 	 */
 	playCard(card) {
-		// TODO: Add code here for appending the card's node to the battleline.
+		// Append the card to the battleline.
+		this.zoneNode.appendChild(card.getNode());
+		// Add this card to the internal tracking.
 		this.cards.push(card);
 		// Update the defense visualization.
 		this.defenseNode.textContent = this.getDefense();
@@ -627,22 +628,21 @@ class Battletrack {
 	/**
 	 * Constructs a new battletrack object.
 	 * 
-	 * @param {HTMLElement} node The root node on the DOM that represents this battletrack.
+	 * @param {number} node The index of this battletrack.
 	 * @param {Location} location The location data.
 	 * @param {number} friendlyHitpoints The amount of hitpoints the friendly side of the battletrack should start with. Defaults to 40.
 	 * @param {number} enemyHitpoints The amount of hitpoints the enemy side of the battletrack should start with. Defaults to 40.
 	 */
 	constructor(node, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
-		// TODO: Crawl the node to get the hitpoints and selection area nodes
-		const friendlyHitpointsNode = null;
-		const friendlyDefenseNode = null;
-		const friendlyCardZoneNode = null;
-		const enemyHitpointsNode = null;
-		const enemyDefenseNode = null;
-		const enemyCardZoneNode = null;
+		const friendlyHitpointsNode = _btPlayerHp[index];
+		const friendlyDefenseNode = _btPlayerArmor[index];
+		const friendlyCardZoneNode = _playerTableCards[index];
+		const enemyHitpointsNode = _btEnemyHp[index];
+		const enemyDefenseNode = _btEnemyArmor[index];
+		const enemyCardZoneNode = _enemyTableCards[index];
 
 		/** @type {HTMLElement} A reference to the HTML on the DOM that is the root node for this battletrack. */
-		this.node = node;
+		this.node = _allBattletracks[i];
 		/** @type {Battleline} The battleline on the player's side. */
 		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyDefenseNode, friendlyCardZoneNode);
 		/** @type {Battleline} The battleline on the enemy's side. */
@@ -893,10 +893,8 @@ const initializeBattletracks = () => {
 	for (let i = 0; i < 3; ++i) {
 		/** @type {Location} the location to add to the battletrack. */
 		const location = locations.splice(Math.floor(Math.random() * locations.length), 1)[0];
-		/** @type {HTMLElement} the HTML node that is this battletrack. */
-		const node = null;// TODO: implement.
 		/** @type {Battletrack} the nth battletrack. */
-		const battletrack = new Battletrack(node, location);
+		const battletrack = new Battletrack(i, location);
 
 		battletracks.push(battletrack);
 	}
@@ -911,10 +909,10 @@ const buildHumanPlayer = () => {
 	const cards = getStarterDeck();
 
 	/** @type {HTMLElement} The HTML that the player should write their mana amount to. */
-	const manaNode = null; // TODO: Get the player's mana node from the DOM.
+	const manaNode = _playerManaCount;
 
 	/** @type {HTMLElement} The HTML that the player will append cards to in their hand. */
-	const handNode = null; // TODO: Get the player's hand node from the DOM.
+	const handNode = _playerHand;
 
 	/** @type {number} The number of times this player has won the game. */
 	const wins = 0; //TODO: Get player wins from local storage.
@@ -931,10 +929,10 @@ const buildAIPlayer = () => {
 	const cards = getStarterDeck();
 
 	/** @type {HTMLElement} The HTML that the player should write their mana amount to. */
-	const manaNode = null; // TODO: Get the enemy's mana node from the DOM.
+	const manaNode = _enemyManaCount;
 
 	/** @type {HTMLElement} The HTML that the player will append cards to in their hand. */
-	const handNode = null; // TODO: Get the enemy's hand node from the DOM.
+	const handNode = _enemyHand;
 
 	/** @type {number} The number of times this player has won the game. */
 	const wins = 0; //TODO: Get this AI's wins from local storage.
