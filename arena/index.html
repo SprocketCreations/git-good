@@ -11,6 +11,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rozha+One&display=swap" rel="stylesheet"> 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link rel="stylesheet" href="../assets/style/style.css">
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -23,7 +25,15 @@
 				<div></div>
 				<div></div>
 			</div>
-			<div id="enemy-deck"></div>
+			<div id="enemy-deck" class="z-depth-5">
+				<div class="z-depth-5">
+					<div class="z-depth-5">
+						<div class="z-depth-5">
+							<!-- deck layers -->
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<!-- main with battletracks -->
 		<div class="col s12 battlefield-view">
@@ -37,24 +47,12 @@
 						<span class="bt-armor-count">4</span>
 					</div>
 					<div class="enemy-cards">
-						<div class="custom-row-1">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="custom-row-2">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
+							<div class="enemy-card-slot hoverable" data-index="0">1</div>
+							<div class="enemy-card-slot hoverable" data-index="1">2</div>
+							<div class="enemy-card-slot hoverable" data-index="2">3</div> 
+							<div class="enemy-card-slot hoverable" data-index="3">4</div>
 					</div>
 					<div class="player-cards">
-						<div class="custom-row-1">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="custom-row-2">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
 					</div>
 					<div class="progress bt-hp-container bt-hp-player">
 						<div id="bt1-player-hp" class="determinate bt-hp-progress"></div>
@@ -73,24 +71,12 @@
 						<span class="bt-armor-count">0</span>
 					</div>
 					<div class="enemy-cards">
-						<div class="custom-row-1">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="custom-row-2">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-					</div>
+						<div class="enemy-card-slot hoverable" data-index="0">1</div>
+						<div class="enemy-card-slot hoverable" data-index="1">2</div>
+						<div class="enemy-card-slot hoverable" data-index="2">3</div> 
+						<div class="enemy-card-slot hoverable" data-index="3">4</div>
+				</div>
 					<div class="player-cards">
-						<div class="custom-row-1">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="custom-row-2">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
 					</div>
 					<div class="progress bt-hp-container bt-hp-player">
 						<div id="bt2-player-hp" class="determinate bt-hp-progress"></div>
@@ -109,44 +95,41 @@
 						<span class="bt-armor-count">1</span>
 					</div>
 					<div class="enemy-cards">
-						<div class="custom-row-1">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="custom-row-2">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
+						<div class="enemy-card-slot hoverable">1</div>
+						<div class="enemy-card-slot hoverable">2</div>
+						<div class="enemy-card-slot hoverable">3</div> 
+						<div class="enemy-card-slot hoverable">4</div>
 					</div>
 					<div class="player-cards">
-						<div class="custom-row-1">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="custom-row-2">
-							<div class="card-slot hoverable"></div>
-							<div class="card-slot hoverable"></div>
-						</div>
-						<div class="progress bt-hp-container bt-hp-player">
-							<div id="bt3-player-hp" class="determinate bt-hp-progress"></div>
-							<span class="bt-hp-count">X</span>
-						</div>
-						<div class="bt-armor-player">
-							<span class="bt-armor-count">2</span>
-						</div>
+
+					</div>
+					<div class="progress bt-hp-container bt-hp-player">
+						<div id="bt3-player-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count">X</span>
+					</div>
+					<div class="bt-armor-player">
+						<span class="bt-armor-count">2</span>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- foot with your data -->
 		<div id="player-head" class="col s12">
-			<div id="player-deck"></div>
-			<div id="player-hand">
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
+			<div id="player-deck">
+				<div class="z-depth-5">
+					<div class="z-depth-5">
+						<div class="z-depth-5">
+							<!-- deck layers -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="player-hand" class="selectable">
+				<div id="1" class="player-card" data-str="25" data-hp="50" data-speed="15"></div>
+				<div id="2" class="player-card" data-str="20" data-hp="45" data-speed="20"></div>
+				<div id="3" class="player-card" data-str="35" data-hp="60" data-speed="30"></div>
+				<div id="4" class="player-card" data-str="10" data-hp="100" data-speed="50"></div>
+				<div id="5" class="player-card" data-str="50" data-hp="35" data-speed="25"></div>
 			</div>
 			<div id="player-mana"></div>
 		</div>

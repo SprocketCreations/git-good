@@ -1,3 +1,75 @@
+window.lastMove = {
+	targetCard: 0,
+	targetCardId: 0,
+	targetCardClassname: 0,
+	targetCardStr: 0,
+	targetCardHP: 0,
+	targetCardSpeed: 0,
+	dropTarget: 0
+}
+
+$( function() {
+	
+	$( "#player-hand div" ).draggable({
+		revert: "invalid",
+		snap: true,
+		start: function(event) {
+			window.lastMove.targetCard = event.target;
+			window.lastMove.targetCardId = event.target.id;
+			window.lastMove.targetCardClassname = event.target.className;
+			window.lastMove.targetCardStr = event.target.dataset.str;
+			window.lastMove.targetCardHP = event.target.dataset.hp;
+			window.lastMove.targetCardSpeed = event.target.dataset.speed;
+			console.log(event.target);
+		},
+		drag: function(event) {
+		},
+		stop: function(event) {
+		}
+	});
+ 
+    $(".player-cards").droppable({
+      classes: {
+        "ui-droppable-active": "ui-state-active",
+        "ui-droppable-hover": "ui-state-hover"
+      },
+      drop: function(event) {
+		let battletrackID = $(event.target).parent()[0].id;
+		var id = $(event.target).attr('data-index');
+		console.log(battletrackID);
+		
+		if(this.children.length < 4){
+			$(this).append(`<div id='${window.lastMove.targetCardId}' class='${window.lastMove.targetCardClassname}' data-index='${this.children.length}'
+							data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
+							</div>`);
+			window.lastMove.targetCard.remove();
+			window.lastMove.mouseUpTarget = this;
+			console.log($(event.target).attr('data-index'));
+		}
+
+		if(this.children.length == 4){
+			$(this).droppable("disable");
+		} else {
+			$(this).droppable("enable");
+		}
+      }
+    });
+
+	$( "#player-hand div" ).click(
+		function() {
+		  $(this).toggle("scale",{percent: 200});
+		},
+		function() {
+			$(this).find( "#player-hand div" ).last().remove();
+		}
+	  );
+  } );
+
+document.getElementById("player-hand").addEventListener("click", (event) => {
+	window.lastMove.targetCardID = event.target.id;
+	console.log(window.lastMove.targetCardID);
+})
+
 /**
  * Enum for the current state of play.
  * @Initializing The game is setting itself up.

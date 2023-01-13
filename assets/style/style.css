@@ -1,26 +1,48 @@
 /* index of z-index indexes :)
 player-card div::after: -1;
-player-deck: 2;
-card-slot: 3;
-card-slot:hover: 4;
-player-cards div: 5 on click; */
+any:hover: 5;
+player-deck: 4;
+player-cards div: 3;
+card-slot: 2;
+*/
 
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rozha+One&display=swap');
 
 :root {
-
+	--card-back-a1: url('../images/textures/card-a1.png');
+	--card-back-b2: url('../images/textures/card-b2.png');
+	--stone-table: url('../images/backgrounds/stone-table.png');
+	--rustic-table: url('../images/backgrounds/rustic-table.png');
+	--pokemon-table-1: url('../images/backgrounds/pokemon-table-1.png');
+	--superhero-table-1: url('../images/backgrounds/superhero-table-1.png');
+	--deck-offset-x: 5px;
+	--deck-offset-y: -5px;
+	--armor-offset-x: 15px;
+	--armor-offset-y: -80px;
+	--armor-height: 75px;
+	--armor-width: 50px;
+	--enemy-hand-offset: -50px;
+	--player-hand-offset: -75px;
+	overflow: hidden;
+	resize: none;
 }
 
 *, *::before, *::after{
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	border: 1px solid red;
 }
 
 .row {
 	margin: 0;
+}
+
+html {
+	background-image: var(--stone-table);
+	background-size: cover;
+	background-position-x: center;
+	background-blend-mode: lighten;
 }
 
 body {
@@ -45,23 +67,51 @@ body {
 	position: relative;
 }
 
-#enemy-deck,
-#player-deck {
+#enemy-deck {
 	height: 200px;
 	width: 150px;
 	position: absolute;
 	z-index: 2;
-	background-color: blue;
+	right: 25px;
+	top: 10px;
+	transform: rotate(180deg);
+	border-radius: 5px;
+	background-image: var(--card-back-a1);
+	background-size: cover;
 }
 
-#enemy-deck {
-	right: 35px;
-	top: 35px;
+#enemy-deck * {
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	margin-left: var(--deck-offset-x);
+	margin-top: var(--deck-offset-y);
+	border-radius: 5px;
+	background-image: inherit;
+	background-size: cover;
 }
 
 #player-deck {
-	left: 35px;
-	bottom: 35px;
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	z-index: 4;
+	left: 25px;
+	bottom: 10px;
+	border-radius: 5px;
+	background-image: var(--card-back-b2);
+	background-size: cover;
+}
+
+#player-deck * {
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	margin-left: calc(var(--deck-offset-x) * 1);
+	margin-top: var(--deck-offset-y);
+	border-radius: 5px;
+	background-image: inherit;
+	background-size: cover;
 }
 
 #enemy-mana {
@@ -69,11 +119,12 @@ body {
 	height: 80px;
 	position: absolute;
 	left: 75px;
-	top: 100px;
+	top: 25px;
 	background-image: url("https://media.discordapp.net/attachments/1012758410393034939/1063141015856361602/Dienasty_a_mana_crystal_icon_for_a_video_game_24bceff7-2b61-48a5-ba48-ff71ab41428d.png?width=584&height=584");
 	background-size: contain;
 	border-radius: 50%;
 	box-shadow: 0px 0px 5px 5px lightseagreen;
+	transform: rotate(180deg);
 }
 
 #player-mana {
@@ -81,61 +132,59 @@ body {
 	height: 80px;
 	position: absolute;
 	right: 75px;
-	bottom: 100px;
+	bottom: 25px;
 	background-image: url("https://media.discordapp.net/attachments/1012758410393034939/1063141015856361602/Dienasty_a_mana_crystal_icon_for_a_video_game_24bceff7-2b61-48a5-ba48-ff71ab41428d.png?width=584&height=584");
 	background-size: contain;
 	border-radius: 50%;
 	box-shadow: 0px 0px 5px 5px lightseagreen;
 }
 
-#player-hand,
+#player-hand {
+	height: 100px;
+	width: fit-content;
+	max-width: 85%;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+#player-hand div {
+	margin-left: var(--player-hand-offset);
+}
+
 #enemy-hand {
 	height: 100px;
 	width: fit-content;
 	max-width: 85%;
 	display: flex;
 	justify-content: center;
-}
-
-#player-hand {
 	align-items: flex-start;
-}
-
-#enemy-hand {
-	align-items: flex-end;
-}
-
-#enemy-hand div,
-#player-hand div {
-	height: 200px;
-	width: 150px;
-	border-radius: 5px;
+	transform: rotate(180deg);
 }
 
 #enemy-hand div {
-	background-color: green;
-	border: 1px solid black;
+	height: 200px;
+	width: 150px;
+	border-radius: 5px;
+	background-image: var(--card-back-a1);
+	background-size: contain;
+	margin-left: var(--enemy-hand-offset);
 }
 
-#player-hand div {
+.player-card {
+	height: 200px;
+	width: 150px;
+	border-radius: 5px;
 	transition: transform .5s cubic-bezier(.23, 1, .32, 1);
 	background-color: orange;
 	border: 1px solid black;
-}
-
-#player-hand div:hover {
-	transform: translateY(-100px);
+	z-index: 3;
 }
 
 /* change to onclick js event handler */
 /* reset all other divs to scale/position
 if scale is 1.5, reset scale/position
 else set scale/position */
-#player-hand div:active {
-	transform: scale(1.5) translateY(-125px);
-	position: relative;
-	z-index: 5;
-}
 
 #player-hand div::after {
 	content: '';
@@ -166,6 +215,7 @@ else set scale/position */
 	height: 65%;
 	width: 25%;
 	min-width: 175px;
+	padding: 25px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -185,10 +235,37 @@ else set scale/position */
 	border: 1px solid orange;
 }
 
-.enemy-cards,
-.player-cards {
+.enemy-cards {
 	height: fit-content;
-	width: fit-content;
+	width: 180px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	transform: rotate(180deg);
+}
+
+.player-cards {
+	height: 200px;
+	width: 180px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	background-color: rgba(255, 255, 255, .2);
+}
+
+.player-cards > div {
+	height: 100px;
+	width: 80px;
+	margin: 3px;
+	color: white;
+	z-index: 2;
+}
+
+.player-cards > div:hover {
+	transform: scale(1.5);
+	z-index: 3;
 }
 
 .bt-hp-container {
@@ -201,7 +278,7 @@ else set scale/position */
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border: 5px solid black;
+	border: 5px solid gray;
 }
 
 .bt-hp-enemy {
@@ -217,23 +294,25 @@ else set scale/position */
 }
 
 .bt-armor-enemy {
-	height: 45px;
-	width: 30px;
-	border: 1px solid blue;
+	height: var(--armor-height);
+	width: var(--armor-width);
 	position: absolute;
-	left: 25px;
-	top: -60px;
-	background-color: lightblue;
+	left: var(--armor-offset-x);
+	top: var(--armor-offset-y);
+	background-image: url("../images/icons/shield.png");
+	background-size: cover;
+	z-index: 0;
 }
 
 .bt-armor-player {
-	height: 45px;
-	width: 30px;
-	border: 1px solid blue;
+	height: var(--armor-height);
+	width: var(--armor-width);
 	position: absolute;
-	right: 25px;
-	bottom: -60px;
-	background-color: lightblue;
+	right: var(--armor-offset-x);
+	bottom: var(--armor-offset-y);
+	background-image: url("../images/icons/shield.png");
+	background-size: cover;
+	z-index: 0;
 }
 
 .bt-hp-progress {
@@ -249,17 +328,30 @@ else set scale/position */
 	font-family: 'Luckiest Guy', cursive;
 	font-size: 38px;
 	letter-spacing: 3px;
+	position: relative;
 }
 
 .bt-armor-count {
-	height: inherit;
-	width: inherit;
-	margin-left: -1px;
+	height: var(--armor-height);
+	width: var(--armor-width);
 	font-size: 38px;
 	font-family: 'Rozha One', serif;
+	color: black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.bt-armor-count::before {
+	height: calc(var(--armor-height) / 2);
+	width: calc(var(--armor-width) / 2);
+	content: '';
+	position: absolute;
+	inset: 25%;
+	border-radius: 50%;
+	background-color: white;
+	filter: blur(5px);
+	z-index: -1;
 }
 
 /* can't apply background-color to another class, have to do it through ids? */
@@ -302,19 +394,28 @@ else set scale/position */
 	margin: 0;
 }
 
-.card-slot {
+.enemy-card-slot {
 	height: 100px;
 	width: 80px;
 	margin: 3px;
-	background-color: darkblue;
-	z-index: 3;
-	border: 1px solid green;
+	background-color: rgba(255, 255, 255, .2);
+	color: white;
+	z-index: 2;
+}
+
+.player-card-slot {
+	height: 100px;
+	width: 80px;
+	margin: 3px;
+	background-color: rgba(255, 255, 255, .2);
+	color: white;
+	z-index: 2;
 }
 
 .hoverable:hover {
 	transform: scale(1.5);
 	transition: transform .3s cubic-bezier(0,.98,.61,.99);
-	z-index: 4;
+	z-index: 5;
 }
 
 @media screen and (max-width: 470px) {
