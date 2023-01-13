@@ -23,7 +23,7 @@ card-slot: 2;
 	--armor-height: 75px;
 	--armor-width: 50px;
 	--enemy-hand-offset: -50px;
-	--player-hand-offset: -75px;
+	--player-hand-offset: 0px;
 	overflow: hidden;
 	resize: none;
 }
@@ -146,6 +146,21 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
+	position: relative;
+	transition: all .5s linear;
+}
+
+#undo-button {
+	width: 50px;
+	height: 50px;
+	background-color: green;
+	position: absolute;
+	right: -55px;
+	background-image: url('../images/icons/reverse.png');
+	background-size: cover;
+	border: 1px solid black;
+	border-radius: 5px;
+	box-shadow: 0px 0px 3px 5px white;
 }
 
 #player-hand div {
@@ -179,29 +194,6 @@ body {
 	background-color: orange;
 	border: 1px solid black;
 	z-index: 3;
-}
-
-/* change to onclick js event handler */
-/* reset all other divs to scale/position
-if scale is 1.5, reset scale/position
-else set scale/position */
-
-#player-hand div::after {
-	content: '';
-    position: absolute;
-	opacity: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: inherit;
-	box-shadow: inset 0px 0px 5px 5px white,
-					  0px 0px 5px 5px white;
-	z-index: -1;
-}
-
-#player-hand div:active::after {
-	opacity: 1;
 }
 
 #battletracks{
@@ -246,7 +238,7 @@ else set scale/position */
 }
 
 .player-cards {
-	height: 200px;
+	height: 220px;
 	width: 180px;
 	display: flex;
 	justify-content: center;
