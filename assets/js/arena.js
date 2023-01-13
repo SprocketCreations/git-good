@@ -6,9 +6,6 @@ $( function() {
 		targetCard: 0,
 		targetCardId: 0,
 		targetCardClassname: 0,
-		targetCardStr: 0,
-		targetCardHP: 0,
-		targetCardSpeed: 0,
 		droppedBattletrackID: 0,
 		droppedIndex: 0,
 		successfullyPlaced: false
@@ -21,9 +18,6 @@ $( function() {
 			window.lastMove.targetCard = event.target;
 			window.lastMove.targetCardId = event.target.id;
 			window.lastMove.targetCardClassname = event.target.className;
-			window.lastMove.targetCardStr = event.target.dataset.str;
-			window.lastMove.targetCardHP = event.target.dataset.hp;
-			window.lastMove.targetCardSpeed = event.target.dataset.speed;
 			window.lastMove.successfullyPlaced = false;
 	}
 
@@ -1332,6 +1326,58 @@ const endGame = () => {
 //#endregion
 
 //#region GLOBAL VARIABLES
+	
+	//#region HTML NODES
+// BATTLETRACK VARS
+/** @type {HTMLElement[]} Array of all battletracks  */
+const _allBattletracks = document.querySelectorAll(".battletrack");	
+
+/** @type {HTMLElement[]} Array of battletrack enemy HP counts */
+const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp > span");				
+
+/** @type {HTMLElement[]} Array of battletrack player HP counts */
+const _btPlayerHp = document.querySelectorAll(".bt-player-hp > span");
+
+/** @type {HTMLElement[]} Array of battletrack enemy Armor counts */
+const _btEnemyArmor = document.querySelectorAll(".bt-enemy-armor > span");		
+
+/** @type {HTMLElement[]} Array of battletrack player Armor counts */
+const _btPlayerArmor = document.querySelectorAll(".bt-player-armor > span");
+
+// ENEMY VARS
+/** @type {HTMLElement} Container for enemy deck, hand, and mana */
+const _enemyHead = document.querySelector("#enemy-head");
+
+/** @type {HTMLElement} Top card of the enemy deck */
+const _enemyDeck = document.querySelector("#enemy-top-card");	
+
+/** @type {HTMLElement} Div that holds enemy cards */
+const _enemyHand = document.querySelector("#enemy-hand");
+
+/** @type {HTMLElement} Span containing enemy mana count "X" */
+const _enemyManaCount = document.querySelector("#enemy-mana-count");	
+
+/** @type {HTMLElement[]} Array of all 3 enemy table card divs */
+const _enemyTableCards = document.querySelectorAll(".enemy-cards");
+
+// PLAYER VARS
+/** @type {HTMLElement} Container for player deck, hand, and mana */
+const _playerHead = document.querySelector("#player-head");
+
+/** @type {HTMLElement} Top card of the player deck */
+const _playerDeck = document.querySelector("#player-top-card");		
+
+/** @type {HTMLElement} Div that holds player cards */
+const _playerHand = document.querySelector("#player-hand");
+
+/** @type {HTMLElement} Span containing player mana count "X" */
+const _playerManaCount = document.querySelector("#player-mana-count");
+
+/** @type {HTMLElement[]} Array of all 3 player table card divs */
+const _playerTableCards = document.querySelectorAll(".player-cards");
+
+	// #endregion
+
 /** @type {Object[]} array of game locations */
 const curatedLocations = []; // TODO: create a definition of locations.
 
