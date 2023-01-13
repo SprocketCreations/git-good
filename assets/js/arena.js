@@ -1331,7 +1331,6 @@ const endGame = () => {
 // BATTLETRACK VARS
 /** @type {Array[HTMLElements]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");	
-console.log(_allBattletracks);
 
 /** @type {Array[HTMLElements]} Array of battletrack enemy HP counts */
 const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp > span");				
