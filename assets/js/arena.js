@@ -1,3 +1,5 @@
+
+
 //#region ENUM DEFINITIONS
 /**
  * Enum for the current state of play.
