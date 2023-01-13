@@ -90,8 +90,7 @@ $( function() {
 })
 
 // API FETCH & DECK DATA COLLECTION:
-// initializing an empty deck that can be added to on fetch completion. Need to call `getDeck()` to populate.
-var deck = []
+// initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
 
@@ -226,13 +225,6 @@ function getCardStats(normalizedData) {
                 }
         }
         return cardStats
-}
-
-// Called when you want to populate the deck with the chosen characters
-function getDeck() {
-        normalize(heroStats,1)
-        normalize(pokeStats, 1.5)
-        return deck
 }
 
 //#region ENUM DEFINITIONS
@@ -919,7 +911,25 @@ const getStarterDeck = () => {
 	/** @type {Card[]} The array of cards to return. */
 	const cards = [];
 
-	//TODO: populate the array of cards.
+	//populate the array of cards:
+	const heroCards = normalize(heroStats,1)
+        const pokeCards = normalize(pokeStats, 1.5)
+	let deckData = heroCards.concat(pokeCards)
+
+	for (i= 0; i < deckData.length; i ++){
+		const name = deckData[i]["name"][0];
+		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
+		const art = {};
+		// TODO need to decide on power curves for each stat & make mana value algorithm
+		const cost = 0;
+		const attack = deckData[i]["attack"][0];
+		const defense = deckData[i]["defense"][0]; 
+		const health = deckData[i]["health"][0];
+		const speed = deckData[i]["speed"][0];
+
+		let newCard = new Card(name, art, cost, attack, defense, health, speed);
+		cards.push(newCard)
+	}
 
 	return cards;
 };
