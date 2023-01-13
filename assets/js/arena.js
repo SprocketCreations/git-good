@@ -1,3 +1,100 @@
+$( function() {
+
+	// create global lastMove object to track across different jQuery event listeners
+	window.lastMove = {
+		pickupIndex: 0,
+		targetCard: 0,
+		targetCardId: 0,
+		targetCardClassname: 0,
+		targetCardStr: 0,
+		targetCardHP: 0,
+		targetCardSpeed: 0,
+		droppedBattletrackID: 0,
+		droppedIndex: 0,
+		successfullyPlaced: false
+	}
+
+	// function to track last move when a player card is clicked
+	// Tracks: Player card, card ID, card class names, 3 dataset attrs: str, hp, speed, and a successfullyPlaced bool
+	// successfullyPlaced updates on successful droppable drop
+	const trackLastMove = (event) => {
+			window.lastMove.targetCard = event.target;
+			window.lastMove.targetCardId = event.target.id;
+			window.lastMove.targetCardClassname = event.target.className;
+			window.lastMove.targetCardStr = event.target.dataset.str;
+			window.lastMove.targetCardHP = event.target.dataset.hp;
+			window.lastMove.targetCardSpeed = event.target.dataset.speed;
+			window.lastMove.successfullyPlaced = false;
+	}
+
+	// makes player-hand divs (cards) draggable, revert to their initial space if not dropped in a droppable, and snap to their
+	// target droppable
+	$( "#player-hand div" ).draggable({
+		revert: "invalid",
+		snap: true,
+		start: function(event) {
+			trackLastMove(event);					// calls track last move
+		},
+		drag: function(event) {
+		},
+		stop: function(event) {
+		}
+	});
+ 
+	// makes all player-card boxes droppable to accept draggables
+    $(".player-cards").droppable({
+      classes: {
+        "ui-droppable-active": "ui-state-active",
+        "ui-droppable-hover": "ui-state-hover"
+      },
+	  // on drop, check if player-card box is full, if not, updated lastMove.successfullyPlaced global var, capture
+	  // which battletrack it was dropped on, and the index that the card is in the player-card box
+	  // then append a new div with the same attributes to the player-card box
+	  // remove the lastMove.targetCard from the DOM
+      drop: function(event, ui) { 
+		
+		if(this.children.length < 4){	  
+			window.lastMove.successfullyPlaced = true;
+			window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
+			window.lastMove.droppedIndex = this.children.length;
+			$(this).append(`<div id='${window.lastMove.targetCardId}' class='${window.lastMove.targetCardClassname}' data-index='${this.children.length}'
+							data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
+							</div>`);
+			window.lastMove.targetCard.remove();
+		}
+
+		//
+		if(this.children.length == 4){
+			$(this).droppable("disable");
+		} else {
+			$(this).droppable("enable");
+		}
+		
+      }
+    });
+
+	document.getElementById("undo-button").addEventListener("click", (event) => {
+		event.preventDefault();
+		if(window.lastMove.successfullyPlaced == true){
+			$(`#${window.lastMove.targetCardId}`).remove();
+			$("#player-hand").append(`<div id='${window.lastMove.targetCardId}' class='player-card ui-draggable ui-draggable-handle' data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
+									</div>`);
+			$("#player-hand div").last().draggable({
+				revert: "invalid",
+				snap: true,
+				start: function(event) {
+					trackLastMove(event);
+				},
+				drag: function(event) {
+				},
+				stop: function(event) {
+					console.log(window.lastMove);
+				}
+			});
+		}
+	})
+})
+	
 
 
 //#region ENUM DEFINITIONS
