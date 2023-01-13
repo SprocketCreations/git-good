@@ -708,6 +708,7 @@ const refillHand = (player) => {
 /**
  * After recieving their cards, the player will be presented with two buttons.
  * The second calls this function.
+ * TODO: Add a way for the player to choose which cards they want to reject.
  */
 const rejectFirstHand = () => {
 	/** @type {Hand} The player's hand. */
