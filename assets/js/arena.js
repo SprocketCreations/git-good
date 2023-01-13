@@ -628,12 +628,12 @@ class Battletrack {
 	/**
 	 * Constructs a new battletrack object.
 	 * 
-	 * @param {number} node The index of this battletrack.
+	 * @param {number} index The index of this battletrack.
 	 * @param {Location} location The location data.
 	 * @param {number} friendlyHitpoints The amount of hitpoints the friendly side of the battletrack should start with. Defaults to 40.
 	 * @param {number} enemyHitpoints The amount of hitpoints the enemy side of the battletrack should start with. Defaults to 40.
 	 */
-	constructor(node, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
+	constructor(index, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
 		const friendlyHitpointsNode = _btPlayerHp[index];
 		const friendlyDefenseNode = _btPlayerArmor[index];
 		const friendlyCardZoneNode = _playerTableCards[index];
