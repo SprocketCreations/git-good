@@ -1104,11 +1104,7 @@ const enemy = buildAIPlayer();
 let currentPlayer = null;
 
 /** @type {Battletrack[]} The three battletracks on the board. */
-const battletracks = [
-	new Battletrack(),
-	new Battletrack(),
-	new Battletrack(),
-];
+const battletracks = [];
 
 /** @type {boolean} True if the player should go first on odd numbered rounds. */
 const humanGoesFirst = Math.random() > 0.5;
