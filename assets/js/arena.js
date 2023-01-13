@@ -259,14 +259,14 @@ class Player {
 	 * The player contains all information relavent to a specific player.
 	 * 
 	 * @param {Card[]} cards The cards that start in this player's deck.
-	 * @param {Element} manaNode The HTML element on the DOM that the player's mana amount should be displayed in.
-	 * @param {Element} handNode The HTML element on the DOM that is the player's hand. Cards will be appended to this element.
+	 * @param {HTMLElement} manaNode The HTML element on the DOM that the player's mana amount should be displayed in.
+	 * @param {HTMLElement} handNode The HTML element on the DOM that is the player's hand. Cards will be appended to this element.
 	 * @param {number} wins the number of times this player has won. Defaults to 0.
 	 */
 	constructor(cards, manaNode, handNode, wins = 0) {
 		/** @type {number} The amount of mana this player has. */
 		this.mana = 0;
-		/** @type {Element} The HTML element to display the amount of mana this player has. */
+		/** @type {HTMLElement} The HTML element to display the amount of mana this player has. */
 		this.manaNode = manaNode;
 		/** @type {number} The number of times this player has won the game. */
 		this.wins = wins;
@@ -350,6 +350,35 @@ class Player {
 }
 
 /**
+ * Stores metadata about a location.
+ */
+class Location {
+	/**
+	 * Creates a new location.
+	 * @param {string} displayName The display name of this location.
+	 * @param {string} imageURL The path to the image used for the battletrack. 
+	 */
+	constructor(displayName, imageURL) {
+		/** @type {string} The display name of this location. */
+		this.displayName = displayName;
+		/** @type {string} The path to the image used for the battletrack. */
+		this.imageURL = imageURL;
+	}
+	/**
+	 * @returns {string} the path to the image used for the battletrack.
+	 */
+	getImageURL() {
+		return this.imageURL;
+	}
+	/**
+	 * @returns {string} the display name of this location.
+	 */
+	getDisplayName() {
+		return this.displayName;
+	}
+}
+
+/**
  * A card is the central piece of the game.
  * 
  * This contains all the stats and information about a card,
@@ -361,7 +390,7 @@ class Card {
 	 * Creates a new card.
 	 * 
 	 * @param {string} name The name of the character on the card.
-	 * @param {object} art The art of the character on the card.
+	 * @param {string} art The URL to the art of the character on the card.
 	 * @param {number} cost The mana cost of the card.
 	 * @param {number} attack The attack power of the card.
 	 * @param {number} defense The defense power of the card.
@@ -371,7 +400,7 @@ class Card {
 	constructor(name, art, cost, attack, defense, hitpoints, speed) {
 		/** @type {string} The name of the character on this card. */
 		this.name = name;
-		/** @type {Object} The artwork on this card. */
+		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
 		this.cost = cost;
@@ -385,7 +414,7 @@ class Card {
 		this.currentHitpoints = hitpoints;
 		/** @type {number} The speed of this card. */
 		this.speed = speed;
-		/** @type {Element} The HTML element on the DOM that represents this card. */
+		/** @type {HTMLElement} The HTML element on the DOM that represents this card. */
 		this.node = null;
 		/** @type {Battleline} The battleline this card is currently played to. */
 		this.battleline = null;
@@ -415,7 +444,7 @@ class Card {
 	 * for this card. If one does not exist, it will
 	 * create one.
 	 * 
-	 * @returns {Element} a reference to the html element for this card.
+	 * @returns {HTMLElement} a reference to the html element for this card.
 	 */
 	getNode() {
 		// TODO: Add code to clone the card template that does not yet exist
@@ -506,10 +535,11 @@ class Battleline {
 	 * Constructs a new Battleline object.
 	 * @param {Battletrack} battletrack The battletrack this battleline is on.
 	 * @param {number} hitpoints The number of hitpoints this battleline should start with.
-	 * @param {Element} hitpointsNode The HTML element to write the number of hitpoints to.
-	 * @param {Element} zoneNode The HTML element that contains the cards in play.
+	 * @param {HTMLElement} hitpointsNode The HTML element to write the number of hitpoints to.
+	 * @param {HTMLElement} DefenseNode The HTML element to write the defense to.
+	 * @param {HTMLElement} zoneNode The HTML element that contains the cards in play.
 	 */
-	constructor(battletrack, hitpoints, hitpointsNode, zoneNode) {
+	constructor(battletrack, hitpoints, hitpointsNode, defenseNode, zoneNode) {
 		// TODO: Add an event listener
 		zoneNode.addEventListener();
 
@@ -517,8 +547,10 @@ class Battleline {
 		this.battletrack = battletrack;
 		/** @type {number} The number of hitpoints this side of the battletrack has. */
 		this.hitpoints = hitpoints;
-		/** @type {Element} The HTML element that the hitpoints will be written to. */
+		/** @type {HTMLElement} The HTML element that the hitpoints will be written to. */
 		this.hitpointsNode = hitpointsNode;
+		/** @type {HTMLElement} The HTML element to write the defense to. */
+		this.defenseNode = defenseNode;
 		/** @type {Card[]} The cards in play on this side of the battletrack. */
 		this.cards = [];
 	}
@@ -541,6 +573,8 @@ class Battleline {
 	playCard(card) {
 		// TODO: Add code here for appending the card's node to the battleline.
 		this.cards.push(card);
+		// Update the defense visualization.
+		this.defenseNode.textContent = this.getDefense();
 	}
 	/**
 	 * Removes a given card from this battleline.
@@ -548,7 +582,11 @@ class Battleline {
 	 * @returns {Card} the card removed.
 	 */
 	removeCard(card) {
-		return this.cards.splice(this.cards.indexOf(card), 1)[0];
+		const removedCard = this.cards.splice(this.cards.indexOf(card), 1)[0];
+		// Update the defense visualization.
+		this.defenseNode.textContent = this.getDefense();
+
+		return removedCard;
 	}
 	/**
 	 * @returns {number} the number of hitpoints this battleline has.
@@ -589,7 +627,7 @@ class Battletrack {
 	/**
 	 * Constructs a new battletrack object.
 	 * 
-	 * @param {Element} node The root node on the DOM that represents this battletrack.
+	 * @param {HTMLElement} node The root node on the DOM that represents this battletrack.
 	 * @param {Location} location The location data.
 	 * @param {number} friendlyHitpoints The amount of hitpoints the friendly side of the battletrack should start with. Defaults to 40.
 	 * @param {number} enemyHitpoints The amount of hitpoints the enemy side of the battletrack should start with. Defaults to 40.
@@ -597,17 +635,19 @@ class Battletrack {
 	constructor(node, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
 		// TODO: Crawl the node to get the hitpoints and selection area nodes
 		const friendlyHitpointsNode = null;
+		const friendlyDefenseNode = null;
 		const friendlyCardZoneNode = null;
 		const enemyHitpointsNode = null;
+		const enemyDefenseNode = null;
 		const enemyCardZoneNode = null;
 
-		/** @type {Element} A reference to the HTML on the DOM that is the root node for this battletrack. */
+		/** @type {HTMLElement} A reference to the HTML on the DOM that is the root node for this battletrack. */
 		this.node = node;
 		/** @type {Battleline} The battleline on the player's side. */
-		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyCardZoneNode);
+		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyDefenseNode, friendlyCardZoneNode);
 		/** @type {Battleline} The battleline on the enemy's side. */
-		this.enemyBattleline = new Battleline(this, enemyHitpoints, enemyHitpointsNode, enemyCardZoneNode);
-		/** @type {Object} The location of this battletrack. */
+		this.enemyBattleline = new Battleline(this, enemyHitpoints, enemyHitpointsNode, enemyDefenseNode, enemyCardZoneNode);
+		/** @type {Location} The location of this battletrack. */
 		this.location = location;
 		// TODO: Crawl the node to get the elements used to indicate location
 	}
@@ -689,7 +729,7 @@ class Battletrack {
 	}
 	/**
 	 * Gets the location data associated with this battlelane.
-	 * @returns {Object} the location.
+	 * @returns {Location} the location.
 	 */
 	getLocation() {
 		return this.location;
@@ -785,10 +825,10 @@ class Deck {
  */
 class Hand {
 	/**
-	 * @param {Element} node The div that will contain the cards in the player's hand.
+	 * @param {HTMLElement} node The div that will contain the cards in the player's hand.
 	 */
 	constructor(node) {
-		/** @type {Element} A reference to the HTML on the DOM that cards should be appended to. */
+		/** @type {HTMLElement} A reference to the HTML on the DOM that cards should be appended to. */
 		this.node = node;
 		/** @type {Card[]} The cards that are in this hand. */
 		this.cards = [];
@@ -848,12 +888,12 @@ const gameStart = () => {
  * Configures the tracks.
  */
 const initializeBattletracks = () => {
-	/** @type {Object[]} Cloned array of the game's locations. */
+	/** @type {Location[]} Cloned array of the game's locations. */
 	const locations = [...curatedLocations];
 	for (let i = 0; i < 3; ++i) {
-		/** @type {Object} the location to add to the battletrack. */
+		/** @type {Location} the location to add to the battletrack. */
 		const location = locations.splice(Math.floor(Math.random() * locations.length), 1)[0];
-		/** @type {Element} the HTML node that is this battletrack. */
+		/** @type {HTMLElement} the HTML node that is this battletrack. */
 		const node = null;// TODO: implement.
 		/** @type {Battletrack} the nth battletrack. */
 		const battletrack = new Battletrack(node, location);
@@ -870,10 +910,10 @@ const buildHumanPlayer = () => {
 	/** @type {Card[]} the array of cards this player will start with in their hand. */
 	const cards = getStarterDeck();
 
-	/** @type {Element} The HTML that the player should write their mana amount to. */
+	/** @type {HTMLElement} The HTML that the player should write their mana amount to. */
 	const manaNode = null; // TODO: Get the player's mana node from the DOM.
 
-	/** @type {Element} The HTML that the player will append cards to in their hand. */
+	/** @type {HTMLElement} The HTML that the player will append cards to in their hand. */
 	const handNode = null; // TODO: Get the player's hand node from the DOM.
 
 	/** @type {number} The number of times this player has won the game. */
@@ -890,10 +930,10 @@ const buildAIPlayer = () => {
 	/** @type {Card[]} the array of cards this player will start with in their hand. */
 	const cards = getStarterDeck();
 
-	/** @type {Element} The HTML that the player should write their mana amount to. */
+	/** @type {HTMLElement} The HTML that the player should write their mana amount to. */
 	const manaNode = null; // TODO: Get the enemy's mana node from the DOM.
 
-	/** @type {Element} The HTML that the player will append cards to in their hand. */
+	/** @type {HTMLElement} The HTML that the player will append cards to in their hand. */
 	const handNode = null; // TODO: Get the enemy's hand node from the DOM.
 
 	/** @type {number} The number of times this player has won the game. */
@@ -1209,7 +1249,7 @@ const playerTryAttack = (card, defender) => {
 	/** @type {boolean} If the card is active. */
 	const isActive = cardIndex !== -1;
 	/** @type {boolean} If the defender is a card. */
-	const isDefenderACard = typeof (defender) === typeof (card);
+	const isDefenderACard = defender instanceof Card;
 	/** @type {boolean} If the battleline is in the same battletrack the card is in. */
 	const isInBattletrack = isDefenderACard ? false : defender.getBattletrack() === card.getBattleline().getBattletrack();
 	/** @type {boolean} If the card is in the same battletrack as the defender card. */
@@ -1246,7 +1286,7 @@ const cardAttackAction = (attacker, defender) => {
 	defender.damage(damage);
 
 	// If defender is a card
-	if (typeof (defender) === typeof (attacker)) {
+	if (defender instanceof Card) {
 		// If the defender dies
 		if (defender.getCurrentHitpoints() === 0) {
 			// Kill the card. This function takes care of all the disposal.
@@ -1388,8 +1428,11 @@ const _playerTableCards = document.querySelectorAll(".player-cards");
 
 	// #endregion
 
-/** @type {Object[]} array of game locations */
-const curatedLocations = []; // TODO: create a definition of locations.
+/** @type {Location[]} array of game locations */
+const curatedLocations = [
+	//Example:
+	new Location("Wakanda", "./assets/img/wakanda-bg.png"),
+]; // TODO: create a definition of locations.
 
 /** @type {Stage} The current state of the game. */
 let currentGameStage = Stage.Initializing;
