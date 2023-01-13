@@ -1329,19 +1329,19 @@ const endGame = () => {
 	
 	//#region HTML NODES
 // BATTLETRACK VARS
-/** @type {Array[HTMLElements]} Array of all battletracks  */
+/** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");	
 
-/** @type {Array[HTMLElements]} Array of battletrack enemy HP counts */
+/** @type {HTMLElement[]} Array of battletrack enemy HP counts */
 const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp > span");				
 
-/** @type {Array[HTMLElements]} Array of battletrack player HP counts */
+/** @type {HTMLElement[]} Array of battletrack player HP counts */
 const _btPlayerHp = document.querySelectorAll(".bt-player-hp > span");
 
-/** @type {Array[HTMLElements]} Array of battletrack enemy Armor counts */
+/** @type {HTMLElement[]} Array of battletrack enemy Armor counts */
 const _btEnemyArmor = document.querySelectorAll(".bt-enemy-armor > span");		
 
-/** @type {Array[HTMLElements]} Array of battletrack player Armor counts */
+/** @type {HTMLElement[]} Array of battletrack player Armor counts */
 const _btPlayerArmor = document.querySelectorAll(".bt-player-armor > span");
 
 // ENEMY VARS
@@ -1357,7 +1357,7 @@ const _enemyHand = document.querySelector("#enemy-hand");
 /** @type {HTMLElement} Span containing enemy mana count "X" */
 const _enemyManaCount = document.querySelector("#enemy-mana-count");	
 
-/** @type {HTMLElement Array} Array of all 3 enemy table card divs */
+/** @type {HTMLElement[]} Array of all 3 enemy table card divs */
 const _enemyTableCards = document.querySelectorAll(".enemy-cards");
 
 // PLAYER VARS
@@ -1373,7 +1373,7 @@ const _playerHand = document.querySelector("#player-hand");
 /** @type {HTMLElement} Span containing player mana count "X" */
 const _playerManaCount = document.querySelector("#player-mana-count");
 
-/** @type {Array[HTMLElements]} Array of all 3 player table card divs */
+/** @type {HTMLElement[]} Array of all 3 player table card divs */
 const _playerTableCards = document.querySelectorAll(".player-cards");
 
 	// #endregion
