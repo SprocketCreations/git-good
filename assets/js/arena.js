@@ -123,6 +123,35 @@ class Player {
 }
 
 /**
+ * Stores metadata about a location.
+ */
+class Location {
+	/**
+	 * Creates a new location.
+	 * @param {string} displayName The display name of this location.
+	 * @param {string} imageURL The path to the image used for the battletrack. 
+	 */
+	constructor(displayName, imageURL) {
+		/** @type {string} The display name of this location. */
+		this.displayName = displayName;
+		/** @type {string} The path to the image used for the battletrack. */
+		this.imageURL = imageURL;
+	}
+	/**
+	 * @returns {string} the path to the image used for the battletrack.
+	 */
+	getImageURL() {
+		return this.imageURL;
+	}
+	/**
+	 * @returns {string} the display name of this location.
+	 */
+	getDisplayName() {
+		return this.displayName;
+	}
+}
+
+/**
  * A card is the central piece of the game.
  * 
  * This contains all the stats and information about a card,
@@ -134,7 +163,7 @@ class Card {
 	 * Creates a new card.
 	 * 
 	 * @param {string} name The name of the character on the card.
-	 * @param {object} art The art of the character on the card.
+	 * @param {string} art The URL to the art of the character on the card.
 	 * @param {number} cost The mana cost of the card.
 	 * @param {number} attack The attack power of the card.
 	 * @param {number} defense The defense power of the card.
@@ -144,7 +173,7 @@ class Card {
 	constructor(name, art, cost, attack, defense, hitpoints, speed) {
 		/** @type {string} The name of the character on this card. */
 		this.name = name;
-		/** @type {Object} The artwork on this card. */
+		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
 		this.cost = cost;
@@ -280,9 +309,10 @@ class Battleline {
 	 * @param {Battletrack} battletrack The battletrack this battleline is on.
 	 * @param {number} hitpoints The number of hitpoints this battleline should start with.
 	 * @param {Element} hitpointsNode The HTML element to write the number of hitpoints to.
+	 * @param {Element} DefenseNode The HTML element to write the defense to.
 	 * @param {Element} zoneNode The HTML element that contains the cards in play.
 	 */
-	constructor(battletrack, hitpoints, hitpointsNode, zoneNode) {
+	constructor(battletrack, hitpoints, hitpointsNode, defenseNode, zoneNode) {
 		// TODO: Add an event listener
 		zoneNode.addEventListener();
 
@@ -292,6 +322,8 @@ class Battleline {
 		this.hitpoints = hitpoints;
 		/** @type {Element} The HTML element that the hitpoints will be written to. */
 		this.hitpointsNode = hitpointsNode;
+		/** @type {Element} The HTML element to write the defense to. */
+		this.defenseNode = defenseNode;
 		/** @type {Card[]} The cards in play on this side of the battletrack. */
 		this.cards = [];
 	}
@@ -314,6 +346,8 @@ class Battleline {
 	playCard(card) {
 		// TODO: Add code here for appending the card's node to the battleline.
 		this.cards.push(card);
+		// Update the defense visualization.
+		this.defenseNode.textContent = this.getDefense();
 	}
 	/**
 	 * Removes a given card from this battleline.
@@ -321,7 +355,11 @@ class Battleline {
 	 * @returns {Card} the card removed.
 	 */
 	removeCard(card) {
-		return this.cards.splice(this.cards.indexOf(card), 1)[0];
+		const removedCard = this.cards.splice(this.cards.indexOf(card), 1)[0];
+		// Update the defense visualization.
+		this.defenseNode.textContent = this.getDefense();
+
+		return removedCard;
 	}
 	/**
 	 * @returns {number} the number of hitpoints this battleline has.
@@ -370,17 +408,19 @@ class Battletrack {
 	constructor(node, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
 		// TODO: Crawl the node to get the hitpoints and selection area nodes
 		const friendlyHitpointsNode = null;
+		const friendlyDefenseNode = null;
 		const friendlyCardZoneNode = null;
 		const enemyHitpointsNode = null;
+		const enemyDefenseNode = null;
 		const enemyCardZoneNode = null;
 
 		/** @type {Element} A reference to the HTML on the DOM that is the root node for this battletrack. */
 		this.node = node;
 		/** @type {Battleline} The battleline on the player's side. */
-		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyCardZoneNode);
+		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyDefenseNode, friendlyCardZoneNode);
 		/** @type {Battleline} The battleline on the enemy's side. */
-		this.enemyBattleline = new Battleline(this, enemyHitpoints, enemyHitpointsNode, enemyCardZoneNode);
-		/** @type {Object} The location of this battletrack. */
+		this.enemyBattleline = new Battleline(this, enemyHitpoints, enemyHitpointsNode, enemyDefenseNode, enemyCardZoneNode);
+		/** @type {Location} The location of this battletrack. */
 		this.location = location;
 		// TODO: Crawl the node to get the elements used to indicate location
 	}
@@ -462,7 +502,7 @@ class Battletrack {
 	}
 	/**
 	 * Gets the location data associated with this battlelane.
-	 * @returns {Object} the location.
+	 * @returns {Location} the location.
 	 */
 	getLocation() {
 		return this.location;
@@ -621,10 +661,10 @@ const gameStart = () => {
  * Configures the tracks.
  */
 const initializeBattletracks = () => {
-	/** @type {Object[]} Cloned array of the game's locations. */
+	/** @type {Location[]} Cloned array of the game's locations. */
 	const locations = [...curatedLocations];
 	for (let i = 0; i < 3; ++i) {
-		/** @type {Object} the location to add to the battletrack. */
+		/** @type {Location} the location to add to the battletrack. */
 		const location = locations.splice(Math.floor(Math.random() * locations.length), 1)[0];
 		/** @type {Element} the HTML node that is this battletrack. */
 		const node = null;// TODO: implement.
@@ -1091,8 +1131,11 @@ const endGame = () => {
 //#endregion
 
 //#region GLOBAL VARIABLES
-/** @type {Object[]} array of game locations */
-const curatedLocations = []; // TODO: create a definition of locations.
+/** @type {Location[]} array of game locations */
+const curatedLocations = [
+	//Example:
+	new Location("Wakanda", "./assets/img/wakanda-bg.png"),
+]; // TODO: create a definition of locations.
 
 /** @type {Stage} The current state of the game. */
 let currentGameStage = Stage.Initializing;
