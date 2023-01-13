@@ -911,17 +911,31 @@ const buildAIPlayer = () => {
 /**
  * Constructs a new collection of cards from the currated list.
  * Will later pull from localStorage to build decks.
- * @returns {Card[]} an array of cards to be the deck. Format: [{name:[], attack:[], defense:[], health:[], speed:[]}, ...].
+ * @returns {Card[]} an array of cards to be the deck.
  */
 const getStarterDeck = () => {
 	/** @type {Card[]} The array of cards to return. */
 	const cards = [];
 
 	//populate the array of cards:
-	// 
 	const heroCards = normalize(heroStats,1)
         const pokeCards = normalize(pokeStats, 1.5)
-	cards.concat(heroCards.concat(pokeCards))
+	let deckData = heroCards.concat(pokeCards)
+
+	for (i= 0; i < deckData.length; i ++){
+		const name = deckData[i]["name"][0];
+		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
+		const art = {};
+		// TODO need to decide on power curves for each stat & make mana value algorithm
+		const cost = 0;
+		const attack = deckData[i]["attack"][0];
+		const defense = deckData[i]["defense"][0]; 
+		const health = deckData[i]["health"][0];
+		const speed = deckData[i]["speed"][0];
+
+		let newCard = new Card(name, art, cost, attack, defense, health, speed);
+		cards.push(newCard)
+	}
 
 	return cards;
 };
