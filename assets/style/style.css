@@ -16,6 +16,8 @@ card-slot: 2;
 	--rustic-table: url('../images/backgrounds/rustic-table.png');
 	--pokemon-table-1: url('../images/backgrounds/pokemon-table-1.png');
 	--superhero-table-1: url('../images/backgrounds/superhero-table-1.png');
+	--bt-card-container-height: 220px;
+	--bt-card-container-width: 180px;
 	--deck-offset-x: 5px;
 	--deck-offset-y: -5px;
 	--armor-offset-x: 15px;
@@ -124,7 +126,9 @@ body {
 	background-size: contain;
 	border-radius: 50%;
 	box-shadow: 0px 0px 5px 5px lightseagreen;
-	transform: rotate(180deg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #player-mana {
@@ -137,6 +141,15 @@ body {
 	background-size: contain;
 	border-radius: 50%;
 	box-shadow: 0px 0px 5px 5px lightseagreen;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#enemy-mana-count,
+#player-mana-count {
+	color: white;
+	font-size: 38px;
 }
 
 #player-hand {
@@ -170,7 +183,6 @@ body {
 #enemy-hand {
 	height: 100px;
 	width: fit-content;
-	max-width: 85%;
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
@@ -183,7 +195,7 @@ body {
 	border-radius: 5px;
 	background-image: var(--card-back-a1);
 	background-size: contain;
-	margin-left: var(--enemy-hand-offset);
+	/* margin-left: var(--enemy-hand-offset); Causing weird shrinking issue with #enemy-hand*/
 }
 
 .player-card {
@@ -228,18 +240,19 @@ body {
 }
 
 .enemy-cards {
-	height: fit-content;
-	width: 180px;
+	height: var(--bt-card-container-height);
+	width: var(--bt-card-container-width);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
+	background-color: rgba(255, 255, 255, .2);
 	transform: rotate(180deg);
 }
 
 .player-cards {
-	height: 220px;
-	width: 180px;
+	height: var(--bt-card-container-height);
+	width: var(--bt-card-container-width);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -260,6 +273,15 @@ body {
 	z-index: 3;
 }
 
+.enemy-card-slot {
+	height: 100px;
+	width: 80px;
+	margin: 3px;
+	background-color: rgba(255, 255, 255, .2);
+	color: white;
+	z-index: 2;
+}
+
 .bt-hp-container {
 	width: 80px;
 	height: 80px;
@@ -273,19 +295,19 @@ body {
 	border: 5px solid gray;
 }
 
-.bt-hp-enemy {
+.bt-enemy-hp {
 	position: absolute;
 	top: -40px;
 	left: -40px;
 }
 
-.bt-hp-player {
+.bt-player-hp {
 	position: absolute;
 	bottom: -40px;
 	right: -40px;
 }
 
-.bt-armor-enemy {
+.bt-enemy-armor {
 	height: var(--armor-height);
 	width: var(--armor-width);
 	position: absolute;
@@ -296,7 +318,7 @@ body {
 	z-index: 0;
 }
 
-.bt-armor-player {
+.bt-player-armor {
 	height: var(--armor-height);
 	width: var(--armor-width);
 	position: absolute;
@@ -384,24 +406,6 @@ body {
 .custom-row-2 {
 	display: flex;
 	margin: 0;
-}
-
-.enemy-card-slot {
-	height: 100px;
-	width: 80px;
-	margin: 3px;
-	background-color: rgba(255, 255, 255, .2);
-	color: white;
-	z-index: 2;
-}
-
-.player-card-slot {
-	height: 100px;
-	width: 80px;
-	margin: 3px;
-	background-color: rgba(255, 255, 255, .2);
-	color: white;
-	z-index: 2;
 }
 
 .hoverable:hover {
