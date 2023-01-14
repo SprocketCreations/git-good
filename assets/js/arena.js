@@ -911,12 +911,12 @@ class Hand {
  */
 const gameStart = () => {
 	initializeBattletracks();
+	
+	makePlayers();
 
 	refillHand(human);
 	refillHand(enemy);
-
-	makePlayers();
-
+	
 	/**TODO: Present the player with two buttons:
 	 * Button one is labled Start game.
 	 * 	This calls startFirstRound()
