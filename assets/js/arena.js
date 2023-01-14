@@ -1,93 +1,27 @@
-$(function () {
 
-	// create global lastMove object to track across different jQuery event listeners
-	window.lastMove = {
-		pickupIndex: 0,
-		targetCard: 0,
-		targetCardId: 0,
-		targetCardClassname: 0,
-		droppedBattletrackID: 0,
-		droppedIndex: 0,
-		successfullyPlaced: false
-	}
 
-	// function to track last move when a player card is clicked
-	// Tracks: Player card, card ID, card class names, 3 dataset attrs: str, hp, speed, and a successfullyPlaced bool
-	// successfullyPlaced updates on successful droppable drop
-	const trackLastMove = (event) => {
-		window.lastMove.targetCard = event.target;
-		window.lastMove.targetCardId = event.target.id;
-		window.lastMove.targetCardClassname = event.target.className;
-		window.lastMove.successfullyPlaced = false;
-	}
 
-	// makes player-hand divs (cards) draggable, revert to their initial space if not dropped in a droppable, and snap to their
-	// target droppable
-	$("#player-hand div").draggable({
-		revert: "invalid",
-		snap: true,
-		start: function (event) {
-			trackLastMove(event);					// calls track last move
-		},
-		drag: function (event) {
-		},
-		stop: function (event) {
-		}
-	});
-
-	// makes all player-card boxes droppable to accept draggables
-	$(".player-cards").droppable({
-		classes: {
-			"ui-droppable-active": "ui-state-active",
-			"ui-droppable-hover": "ui-state-hover"
-		},
-		// on drop, check if player-card box is full, if not, updated lastMove.successfullyPlaced global var, capture
-		// which battletrack it was dropped on, and the index that the card is in the player-card box
-		// then append a new div with the same attributes to the player-card box
-		// remove the lastMove.targetCard from the DOM
-		drop: function (event, ui) {
-
-			if (this.children.length < 4) {
-				window.lastMove.successfullyPlaced = true;
-				window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
-				window.lastMove.droppedIndex = this.children.length;
-				$(this).append(`<div id='${window.lastMove.targetCardId}' class='${window.lastMove.targetCardClassname}' data-index='${this.children.length}'
-							data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
-							</div>`);
-				window.lastMove.targetCard.remove();
-			}
-
-			//
-			if (this.children.length == 4) {
-				$(this).droppable("disable");
-			} else {
-				$(this).droppable("enable");
-			}
-
-		}
-	});
-
-	document.getElementById("undo-button").addEventListener("click", (event) => {
-		event.preventDefault();
-		if (window.lastMove.successfullyPlaced == true) {
-			$(`#${window.lastMove.targetCardId}`).remove();
-			$("#player-hand").append(`<div id='${window.lastMove.targetCardId}' class='player-card ui-draggable ui-draggable-handle' data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
+document.getElementById("undo-button").addEventListener("click", (event) => {
+	event.preventDefault();
+	if (window.lastMove.successfullyPlaced == true) {
+		$(`#${window.lastMove.targetCardId}`).remove();
+		$("#player-hand").append(`<div id='${window.lastMove.targetCardId}' class='player-card ui-draggable ui-draggable-handle' data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
 									</div>`);
-			$("#player-hand div").last().draggable({
-				revert: "invalid",
-				snap: true,
-				start: function (event) {
-					trackLastMove(event);
-				},
-				drag: function (event) {
-				},
-				stop: function (event) {
-					console.log(window.lastMove);
-				}
-			});
-		}
-	})
+		$("#player-hand div").last().draggable({
+			revert: "invalid",
+			snap: true,
+			start: function (event) {
+				trackLastMove(event);
+			},
+			drag: function (event) {
+			},
+			stop: function (event) {
+				console.log(window.lastMove);
+			}
+		});
+	}
 })
+
 
 // API FETCH & DECK DATA COLLECTION:
 // initializing an empty deck that can be added to on fetch completion.
@@ -349,7 +283,7 @@ class Player {
 	 * one card in their hand that they can play.
 	 */
 	canPlayCard() {
-		const numberOfCards = this.hand.cards;
+		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
 			const cost = this.hand.cards[i].getCost();
 			if (cost <= this.mana) {
@@ -678,6 +612,47 @@ class Battletrack {
 		const enemyHitpointsNode = _btEnemyHp[index];
 		const enemyDefenseNode = _btEnemyArmor[index];
 		const enemyCardZoneNode = _enemyTableCards[index];
+		/** @type {Battletrack} a this. */
+		const thisBattletrack = this;
+		// Makes the zone accept draggables
+		$(friendlyCardZoneNode).droppable({
+			classes: {
+				"ui-droppable-active": "ui-state-active",
+				"ui-droppable-hover": "ui-state-hover"
+			},
+			tolerance: "pointer",
+			// on drop, check if player-card box is full, if not, updated lastMove.successfullyPlaced global var, capture
+			// which battletrack it was dropped on, and the index that the card is in the player-card box
+			// then append a new div with the same attributes to the player-card box
+			// remove the lastMove.targetCard from the DOM
+			drop: function (event, ui) {
+				/** @type {Card} */
+				const card = window.lastMove.draggedCard;
+
+				playerTryPlayCard(card, thisBattletrack);
+
+
+				// console.log("test")
+				// if (this.children.length < 4) {
+				// 	// window.lastMove.successfullyPlaced = true;
+				// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
+				// 	// window.lastMove.droppedIndex = this.children.length;
+				// 	// card.getOwner().getHand().remove();
+				// 	// /** @type {HTMLElement} The card's node. */
+				// 	// const cardNode = card.getNode();
+				// 	// //Append it to the box
+				// 	// $(this).append($(cardNode));
+				// }
+
+				// //
+				// if (this.children.length == 4) {
+				// 	$(this).droppable("disable");
+				// } else {
+				// 	$(this).droppable("enable");
+				// }
+
+			}
+		});
 
 		/** @type {HTMLElement} A reference to the HTML on the DOM that is the root node for this battletrack. */
 		this.node = _allBattletracks[i];
@@ -877,7 +852,28 @@ class Hand {
 	 */
 	add(card) {
 		this.cards.push(card);
-		this.node.appendChild(card.getNode());
+		const cardNode = card.getNode();
+		this.node.appendChild(cardNode);
+
+		// makes player-hand divs (cards) draggable, revert
+		// to their initial space if not dropped in a droppable,
+		// and snap to their target droppable
+		$(cardNode).draggable({
+			revert: "invalid",
+			snap: true,
+			start: function (event) {
+				// Make a note of what card is being dragged.
+				lastMove.draggedCard = card;
+				// calls track last move
+				//trackLastMove(event);
+			},
+			drag: function (event) {
+			},
+			stop: function (event) {
+				// Stop dragging this card.
+				lastMove.draggedCard = null;
+			}
+		});
 	}
 	/**
 	 * Removes a given card from the hand and returns it.
@@ -886,6 +882,7 @@ class Hand {
 	 * @returns {Card} the card that was removed.
 	 */
 	remove(card) {
+		$(card.getNode()).draggable("disable");
 		return this.cards.splice(this.cards.indexOf(card), 1)[0];
 	}
 	/**
@@ -896,7 +893,7 @@ class Hand {
 	random(maxMana) {
 		let card = null;
 		do {
-			card = this.cards[Math.random() * this.cards.length];
+			card = this.cards[Math.floor(Math.random() * this.cards.length)];
 		} while (card.getCost() > maxMana);
 		return this.remove(card);
 	}
@@ -910,12 +907,12 @@ class Hand {
  */
 const gameStart = () => {
 	initializeBattletracks();
-	
+
 	makePlayers();
 
 	refillHand(human);
 	refillHand(enemy);
-	
+
 	/**TODO: Present the player with two buttons:
 	 * Button one is labled Start game.
 	 * 	This calls startFirstRound()
@@ -1153,7 +1150,7 @@ const AI_playcard = () => {
 	/** @type {Battletrack} A random unconquered battletrack. */
 	let battletrack = null;
 	// Pick a random battletrack that is not conquored
-	do { battletrack = battletracks[Math.random]; } while (battletrack.isConquered());
+	do { battletrack = battletracks[Math.floor(Math.random() * battletracks.length)]; } while (battletrack.isConquered());
 
 	// Play the random card to the random battletrack.
 	battletrack.playEnemyCard(cardToPlay);
@@ -1422,9 +1419,34 @@ const endGame = () => {
 	// Display victory or failure screen/animation
 	// TODO: add an endgame screen or page to show.
 };
+
+/**
+ * Function to track last move when a player card is clicked.
+ * Tracks: Player card, card ID, card class names, 3 dataset attrs: str, hp, speed, and a successfullyPlaced bool
+ * successfullyPlaced updates on successful droppable drop
+ */
+const trackLastMove = (event) => {
+	window.lastMove.targetCard = event.target;
+	window.lastMove.targetCardId = event.target.id;
+	window.lastMove.targetCardClassname = event.target.className;
+	window.lastMove.successfullyPlaced = false;
+}
+
 //#endregion
 
 //#region GLOBAL VARIABLES
+
+// create global lastMove object to track across different jQuery event listeners
+window.lastMove = {
+	pickupIndex: 0,
+	targetCard: 0,
+	targetCardId: 0,
+	targetCardClassname: 0,
+	droppedBattletrackID: 0,
+	droppedIndex: 0,
+	successfullyPlaced: false,
+	draggedCard: null,
+};
 
 //#region HTML NODES
 // BATTLETRACK VARS
