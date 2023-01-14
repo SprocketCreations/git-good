@@ -96,36 +96,28 @@ var heroStats = []
 var fetchesComplete = 0
 
 // Fetch request for POKE API data
-// This function gets all pokemon names for getPokeStats()
-const pokeUrl = "https://pokeapi.co/api/v2/pokemon?limit=1279"
-fetch(pokeUrl)
-.then(function(response) {
-        console.log(response);
-        response.json().then(function (data) {
-                for (i = 0; i < data.count; i ++) {
-                        getPokeStats(data.results[i].name)
-                };
-		fetchesComplete ++
-        });
-})
-
+pokeNames = ["charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
+getPokeStats()
 // Given a pokemons name, get its stats from pokeAPI & clean data to match normalize input format
-function getPokeStats(pokeName) {
-        var pokeNameUrl = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
-        fetch(pokeNameUrl)
-        .then(function(response) {
-                response.json().then(function(data) {
-                        // API data output: [{base_stat:x, stat:{name:hp}}, {base_stat:x, stat:{name:attack}}, {base_stat:x, stat:{name:defense}}, {base_stat:x, stat:{name:special-attack}}, {base_stat:x, stat:{name:special-defense}}, {base_stat:x, stat:{name:speed}}].
-                        // Convert API data to: {name:x, health:x, attack:x, defense:x, speed:x}
-                        let obj = {}
-                        obj["name"] = pokeName
-                        obj["health"] = data.stats[0].base_stat
-                        obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
-                        obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
-                        obj["speed"] = data.stats[5].base_stat
-                        pokeStats.push(obj)
-                        })
-                })
+function getPokeStats(data) {
+	for (i = 0; i < pokeNames.length; i ++) {
+		let pokeName = pokeNames[i]
+		var pokeNameUrl = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
+		fetch(pokeNameUrl)
+		.then(function(response) {
+			response.json().then(function(data) {
+				// API data output: [{base_stat:x, stat:{name:hp}}, {base_stat:x, stat:{name:attack}}, {base_stat:x, stat:{name:defense}}, {base_stat:x, stat:{name:special-attack}}, {base_stat:x, stat:{name:special-defense}}, {base_stat:x, stat:{name:speed}}].
+				// Convert API data to: {name:x, health:x, attack:x, defense:x, speed:x}
+				let obj = {}
+				obj["name"] = pokeName
+				obj["health"] = data.stats[0].base_stat
+				obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
+				obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
+				obj["speed"] = data.stats[5].base_stat
+				pokeStats.push(obj)
+				})
+			})
+	}
 } 
 
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
@@ -980,7 +972,7 @@ const getStarterDeck = () => {
 
 	//populate the array of cards:
 	const heroCards = normalize(heroStats,1)
-        const pokeCards = normalize(pokeStats, 1.5)
+        const pokeCards = normalize(pokeStats, 1)
 	let deckData = heroCards.concat(pokeCards)
 
 	for (i= 0; i < deckData.length; i ++){
