@@ -93,6 +93,7 @@ $( function() {
 // initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
+var fetchesComplete = 0
 
 // Fetch request for POKE API data
 // This function gets all pokemon names for getPokeStats()
@@ -104,6 +105,7 @@ fetch(pokeUrl)
                 for (i = 0; i < data.count; i ++) {
                         getPokeStats(data.results[i].name)
                 };
+		fetchesComplete ++
         });
 })
 
@@ -142,6 +144,7 @@ fetch(heroUrl)
                         obj["speed"] = data[i].powerstats.speed
                         heroStats.push(obj)
                 }
+		fetchesComplete ++
         });
 })
 
