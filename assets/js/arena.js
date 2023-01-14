@@ -447,7 +447,31 @@ class Card {
 	 * @returns {HTMLElement} a reference to the html element for this card.
 	 */
 	getNode() {
-		// TODO: Add code to clone the card template that does not yet exist
+		const cardId = this.name.toLowerCase().replace(" ", "-")
+		if (!document.querySelector(`#${cardId}`)) {
+			// Fetch and clone the empty template
+			const template = document.querySelector("#card-template");
+			const newTemplate = template.textContent.cloneNode(true);
+
+			// populate the new template with an id and stats
+			newTemplate.setAttribute("id", cardId);
+			let templateContainer = newTemplate.children[0];
+			let templateTableBody = templateContainer.children[2].children[1];
+			let templateFooter = templateContainer.children[3];
+			templateContainer.children[0].setAttribute("src", this.art);
+			templateContainer.children[1].textContent = this.cost;
+			templateTableBody.children[0].textContent = this.attack;
+			templateTableBody.children[1].textContent = this.defense;
+			templateTableBody.children[2].textContent = this.speed;
+			templateFooter.children[0].textContent = this.name;
+			templateFooter.children[1].textContent = this.health;
+
+			// append newTemplate to index.html
+			document.body.appendChild(newTemplate);
+		}
+
+		// TODO add dragable code here
+		// TODO return this.node?
 		const fragment = null;
 		const root = fragment.children[0];
 		this.node = root;
@@ -521,7 +545,8 @@ class Card {
 	setCurrentHitpoints(hitpoints) {
 		this.currentHitpoints = Math.max(0, Math.min(this.totalHitpoints, hitpoints));
 		//TODO: Walk the tree to update the card's health appearance.
-		this.node;
+		let hitpointsEl = this.node.children[0].children[2].children[1].children[3].children[1];
+		hitpointsEl = this.currentHitpoints
 	}
 }
 
