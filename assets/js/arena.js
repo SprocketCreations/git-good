@@ -118,6 +118,10 @@ function getPokeStats() {
 				})
 			})
 	}
+	-- fetchesLeft;
+	if (fetchesLeft === 0) {
+		gameStart();
+	}
 } 
 
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
