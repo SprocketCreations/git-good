@@ -93,7 +93,7 @@ $(function () {
 // initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
-var fetchesComplete = 0
+var fetchesLeft = 2;
 
 // Fetch request for POKE API data
 // This function gets all pokemon names for getPokeStats()
@@ -102,10 +102,14 @@ fetch(pokeUrl)
 	.then(function (response) {
 		console.log(response);
 		response.json().then(function (data) {
+			fetchesLeft += data.count;
 			for (i = 0; i < data.count; i++) {
-				getPokeStats(data.results[i].name)
+				getPokeStats(data.results[i].name);
 			};
-		fetchesComplete ++
+			--fetchesLeft;
+			if (fetchesLeft == 0) {
+				gameStart();
+			}
 		});
 	})
 
@@ -124,6 +128,11 @@ function getPokeStats(pokeName) {
 				obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
 				obj["speed"] = data.stats[5].base_stat
 				pokeStats.push(obj)
+
+				--fetchesLeft;
+				if (fetchesLeft == 0) {
+					gameStart();
+				}
 			})
 		})
 }
@@ -144,7 +153,10 @@ fetch(heroUrl)
 				obj["speed"] = data[i].powerstats.speed
 				heroStats.push(obj)
 			}
-		fetchesComplete ++
+			--fetchesLeft;
+			if (fetchesLeft == 0) {
+				gameStart();
+			}
 		});
 	})
 
@@ -159,57 +171,57 @@ fetch(heroUrl)
 
 // pass in your data set (array of objects). returns your data as min-max distribution w/ max=1 min=0. Optional multiplier for continued balancing between API's
 function normalize(data, balanceMultiplier) {
-        // initialize empty arrays to store all stats for min/max finding.
-        let statObj = {
-                name: [],
-                health: [],
-                attack: [],
-                defense: [],
-                speed: [],
-        }
+	// initialize empty arrays to store all stats for min/max finding.
+	let statObj = {
+		name: [],
+		health: [],
+		attack: [],
+		defense: [],
+		speed: [],
+	}
 
-        // Store stats by type in statObj:
-        let statNames = ["name", "health", "attack", "defense", "speed"]
-        for (i = 0; i < data.length; i++) {
-                for (x = 0; x < statNames.length; x++) {
-                        statObj[statNames[x]].push(data[i][statNames[x]])
-                }
-        }
-        // minmax normalize the data with a function
-        let normalizedData = minMaxNormalization(statObj, multiplier)
-        // take min max normalized data and select ONLY the cards we need for the game
-        let cardStats = getCardStats(normalizedData)
-        return cardStats
+	// Store stats by type in statObj:
+	let statNames = ["name", "health", "attack", "defense", "speed"]
+	for (i = 0; i < data.length; i++) {
+		for (x = 0; x < statNames.length; x++) {
+			statObj[statNames[x]].push(data[i][statNames[x]])
+		}
+	}
+	// minmax normalize the data with a function
+	let normalizedData = minMaxNormalization(statObj, multiplier)
+	// take min max normalized data and select ONLY the cards we need for the game
+	let cardStats = getCardStats(normalizedData)
+	return cardStats
 }
 
 // min max normalization of stat data (for a given data set...i.e. only pokemon, or only superapi). Optional multiplier for continued balancing between API's
 function minMaxNormalization(data, balanceMultiplier) {
-        let statsNormalized = {
-                name: [],
-                health: [],
-                attack: [],
-                defense: [],
-                speed: [],
-        }
-        
-        statsNormalized.name = data.name
-        
-        for (const[key, value] of Object.entries(data)) {
-                if (key != "name") {
-                        let min = Math.min(...data[key])
-                        let max = Math.max(...data[key])
-                        for (i = 0; i < data[key].length; i++) {
-                                let x = data[key][i]
-				if (key === "health"){
-					statsNormalized[key].push(math.round((x-min)/(max-min)*balanceMultiplier*20))
+	let statsNormalized = {
+		name: [],
+		health: [],
+		attack: [],
+		defense: [],
+		speed: [],
+	}
+
+	statsNormalized.name = data.name
+
+	for (const [key, value] of Object.entries(data)) {
+		if (key != "name") {
+			let min = Math.min(...data[key])
+			let max = Math.max(...data[key])
+			for (i = 0; i < data[key].length; i++) {
+				let x = data[key][i]
+				if (key === "health") {
+					statsNormalized[key].push(math.round((x - min) / (max - min) * balanceMultiplier * 20))
 				} else {
-					statsNormalized[key].push(math.round((x-min)/(max-min)*balanceMultiplier*5))
+					statsNormalized[key].push(math.round((x - min) / (max - min) * balanceMultiplier * 5))
 				}
-                        }
-                }
-        }
-        
-        return statsNormalized
+			}
+		}
+	}
+
+	return statsNormalized
 }
 
 // gets the normalized card stats for use in game
@@ -903,12 +915,25 @@ const gameStart = () => {
 	refillHand(human);
 	refillHand(enemy);
 
+	makePlayers();
+
 	/**TODO: Present the player with two buttons:
 	 * Button one is labled Start game.
 	 * 	This calls startFirstRound()
 	 * Button two is labled Reject hand.
 	 * 	This calls rejectFirstHand()
 	 */
+};
+
+/**
+ * Builds the two players as global variables.
+ */
+const makePlayers = () => {
+	/** @type {Player} The human player. */
+	window.human = buildHumanPlayer();
+
+	/** @type {Player} The AI player */
+	window.enemy = buildAIPlayer();
 };
 
 /**
@@ -1462,12 +1487,6 @@ const curatedLocations = [
 /** @type {Stage} The current state of the game. */
 let currentGameStage = Stage.Initializing;
 
-/** @type {Player} The human player. */
-const human = buildHumanPlayer();
-
-/** @type {Player} The AI player */
-const enemy = buildAIPlayer();
-
 /** @type {Player} The current player allowed to perform card plays. */
 let currentPlayer = null;
 
@@ -1492,6 +1511,7 @@ const activeCards = [];
 //#endregion
 
 // Start the game.
-gameStart();
+//gameStart();
+// Dont start the game on page load. We need to wait until the fetches are done.
 
 
