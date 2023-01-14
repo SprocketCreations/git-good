@@ -213,9 +213,9 @@ function minMaxNormalization(data, balanceMultiplier) {
 			for (i = 0; i < data[key].length; i++) {
 				let x = data[key][i]
 				if (key === "health") {
-					statsNormalized[key].push(math.round((x - min) / (max - min) * balanceMultiplier * 20))
+					statsNormalized[key].push(Math.round((x - min) / (max - min) * balanceMultiplier * 20))
 				} else {
-					statsNormalized[key].push(math.round((x - min) / (max - min) * balanceMultiplier * 5))
+					statsNormalized[key].push(Math.round((x - min) / (max - min) * balanceMultiplier * 5))
 				}
 			}
 		}
@@ -239,8 +239,7 @@ function getCardStats(normalizedData) {
 			for (x = 0; x < statNames.length; x++) {
 				obj[statNames[x]] = [normalizedData[statNames[x]][index]]
 			}
-			cardStats.push(obj)
-			deck.push(obj)
+			cardStats.push(obj);
 		}
 	}
 	return cardStats
@@ -469,7 +468,7 @@ class Card {
 		if (this.node === null) {
 			// Fetch and clone the empty template
 			const template = document.querySelector("#card-template");
-			const fragment = template.textContent.cloneNode(true);
+			const fragment = template.content.cloneNode(true);
 
 			// populate the new template with an id and stats
 			let templateContainer = fragment.children[0];
