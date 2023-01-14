@@ -115,6 +115,7 @@ function getPokeStats() {
 					obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
 					obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
 					obj["speed"] = data.stats[5].base_stat
+					obj["imgUrl"] = data.sprites.other["official-artwork"].front_default
 					pokeStats.push(obj)
 					--fetchesLeft;
 					if (fetchesLeft === 0) {
@@ -139,6 +140,7 @@ fetch(heroUrl)
 				obj["attack"] = data[i].powerstats.strength + data[i].powerstats.combat
 				obj["defense"] = data[i].powerstats.durability
 				obj["speed"] = data[i].powerstats.speed
+				obj["imgUrl"] = data[i].images.sm
 				heroStats.push(obj)
 			}
 			--fetchesLeft;
@@ -166,10 +168,11 @@ function normalize(data, balanceMultiplier) {
 		attack: [],
 		defense: [],
 		speed: [],
+		imgUrl: [],
 	}
 
 	// Store stats by type in statObj:
-	let statNames = ["name", "health", "attack", "defense", "speed"]
+	let statNames = ["name", "health", "attack", "defense", "speed", "imgUrl"]
 	for (i = 0; i < data.length; i++) {
 		for (x = 0; x < statNames.length; x++) {
 			statObj[statNames[x]].push(data[i][statNames[x]])
@@ -190,12 +193,15 @@ function minMaxNormalization(data, balanceMultiplier) {
 		attack: [],
 		defense: [],
 		speed: [],
+		imgUrl: [],
 	}
 
 	statsNormalized.name = data.name
+	statsNormalized.imgUrl = data.imgUrl
+	keysArr = ["health", "attack", "defense", "speed"]
 
 	for (const [key, value] of Object.entries(data)) {
-		if (key != "name") {
+		if (keysArr.includes(key)) {
 			let min = Math.min(...data[key])
 			let max = Math.max(...data[key])
 			for (i = 0; i < data[key].length; i++) {
@@ -223,9 +229,9 @@ function getCardStats(normalizedData) {
 			let index = normalizedData["name"].indexOf(cardNames[i])
 			let obj = {}
 
-			let statNames = ["name", "health", "attack", "defense", "speed"]
+			let statNames = ["name", "health", "attack", "defense", "speed", "imgUrl"]
 			for (x = 0; x < statNames.length; x++) {
-				obj[statNames[x]] = [normalizedData[statNames[x]][index]]
+				obj[statNames[x]] = normalizedData[statNames[x]][index]
 			}
 			cardStats.push(obj);
 		}
@@ -898,7 +904,7 @@ class Hand {
  */
 const gameStart = () => {
 	initializeBattletracks();
-	
+
 	makePlayers();
 
 	refillHand(human);
@@ -994,15 +1000,15 @@ const getStarterDeck = () => {
 	let deckData = heroCards.concat(pokeCards)
 
 	for (i = 0; i < deckData.length; i++) {
-		const name = deckData[i]["name"][0];
+		const name = deckData[i]["name"];
 		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
-		const art = "../assets/images/textures/card-b2.png";
+		const art = deckData[i]["imgUrl"];
 		// TODO need to decide on power curves for each stat & make mana value algorithm
 		const cost = 0;
-		const attack = deckData[i]["attack"][0];
-		const defense = deckData[i]["defense"][0];
-		const health = deckData[i]["health"][0];
-		const speed = deckData[i]["speed"][0];
+		const attack = deckData[i]["attack"];
+		const defense = deckData[i]["defense"];
+		const health = deckData[i]["health"];
+		const speed = deckData[i]["speed"];
 
 		let newCard = new Card(name, art, cost, attack, defense, health, speed);
 		cards.push(newCard)
