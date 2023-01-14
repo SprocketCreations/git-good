@@ -1008,7 +1008,7 @@ const getStarterDeck = () => {
 	for (i = 0; i < deckData.length; i++) {
 		const name = deckData[i]["name"][0];
 		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
-		const art = "/assets/images/textures/card-b2.png";
+		const art = "../assets/images/textures/card-b2.png";
 		// TODO need to decide on power curves for each stat & make mana value algorithm
 		const cost = 0;
 		const attack = deckData[i]["attack"][0];
