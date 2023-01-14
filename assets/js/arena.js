@@ -155,7 +155,7 @@ fetch(heroUrl)
 // }]
 
 // pass in your data set (array of objects). returns your data as min-max distribution w/ max=1 min=0. Optional multiplier for continued balancing between API's
-function normalize(data, multiplier) {
+function normalize(data, balanceMultiplier) {
         // initialize empty arrays to store all stats for min/max finding.
         let statObj = {
                 name: [],
@@ -173,14 +173,14 @@ function normalize(data, multiplier) {
                 }
         }
         // minmax normalize the data with a function
-        let normalizedData = minMaxNormalization(statObj, multiplier)
+        let normalizedData = minMaxNormalization(statObj, balanceMultiplier)
         // take min max normalized data and select ONLY the cards we need for the game
         let cardStats = getCardStats(normalizedData)
         return cardStats
 }
 
 // min max normalization of stat data (for a given data set...i.e. only pokemon, or only superapi). Optional multiplier for continued balancing between API's
-function minMaxNormalization(data, multiplier) {
+function minMaxNormalization(data, balanceMultiplier) {
         let statsNormalized = {
                 name: [],
                 health: [],
@@ -197,7 +197,11 @@ function minMaxNormalization(data, multiplier) {
                         let max = Math.max(...data[key])
                         for (i = 0; i < data[key].length; i++) {
                                 let x = data[key][i]
-                                statsNormalized[key].push((x-min)/(max-min)*multiplier)
+				if (key === "health"){
+					statsNormalized[key].push(math.round((x-min)/(max-min)*balanceMultiplier*20))
+				} else {
+					statsNormalized[key].push(math.round((x-min)/(max-min)*balanceMultiplier*5))
+				}
                         }
                 }
         }
