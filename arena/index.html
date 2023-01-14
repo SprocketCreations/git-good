@@ -8,7 +8,7 @@
 	<title>Arena</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rozha+One&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,700&family=Luckiest+Guy&family=Rozha+One&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link rel="stylesheet" href="../assets/style/style.css">
 	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
@@ -17,6 +17,18 @@
 
 <body>
 	<main id="battlefield" class="row">
+		  <!-- Dropdown Trigger -->
+		  <a class='dropdown-trigger btn' id="menu-btn" href='#' data-target='dropdown'>Menu</a>
+
+		  <!-- Dropdown Structure -->
+		  <ul id='dropdown' class='dropdown-content'>
+			<li><a href="#!">Main Menu</a></li>
+			<li><a href="#!">Restart Game</a></li>
+			<li><a id="concede-button" href="#!">Concede</a></li>
+			<li class="divider" tabindex="-1"></li>
+			<li><a href="#!"><i class="sub-text">Help</i>Tutorial</a></li>
+			<li><a href="#!"><i class="sub-text">Help</i>About git-good</a></li>
+		  </ul>
 		<!-- Head with enemy data -->
 		<div id="enemy-head" class="col s12">
 			<div id="enemy-mana">
@@ -35,19 +47,22 @@
 			</div>
 		</div>
 		<!-- main with battletracks -->
-		<div class="col s12 battlefield-view">
+		<div class="col s12 battlefield-view">		
 			<div id="battletracks">
 				<div id="battletrack-1" class="row battletrack">
+					
 					<div class="progress bt-hp-container bt-enemy-hp">
 						<div id="bt1-enemy-hp" class="determinate bt-hp-progress"></div>
 						<span class="bt-hp-count">18</span>
 					</div>
+
 					<div class="bt-enemy-armor">
 						<span class="bt-armor-count">4</span>
 					</div>
 					<div class="enemy-cards"></div>
 					<!-- Middle of table -->
-					<div class="player-cards"></div>
+					<div class="location-text">Asgard</div>
+					<div id="player-cards-1" class="player-cards"></div>
 					<div class="progress bt-hp-container bt-player-hp">
 						<div id="bt1-player-hp" class="determinate bt-hp-progress"></div>
 						<span class="bt-hp-count">20</span>
@@ -65,7 +80,7 @@
 						<span class="bt-armor-count">0</span>
 					</div>
 					<div class="enemy-cards"></div>
-					<!-- Middle of table -->
+					<div class="location-text">Wakanda</div>
 					<div class="player-cards"></div>
 					<div class="progress bt-hp-container bt-player-hp">
 						<div id="bt2-player-hp" class="determinate bt-hp-progress"></div>
@@ -85,10 +100,11 @@
 					</div>
 					<div class="enemy-cards"></div>
 					<!-- Middle of table -->
+					<div class="location-text">S.H.I.E.L.D. 2.0</div>
 					<div class="player-cards"></div>
 					<div class="progress bt-hp-container bt-player-hp">
 						<div id="bt3-player-hp" class="determinate bt-hp-progress"></div>
-						<span class="bt-hp-count">X</span>
+						<span class="bt-hp-count"></span>
 					</div>
 					<div class="bt-player-armor">
 						<span class="bt-armor-count">2</span>

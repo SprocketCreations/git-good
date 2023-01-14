@@ -1,5 +1,6 @@
 
 
+$('.dropdown-trigger').dropdown();
 
 document.getElementById("undo-button").addEventListener("click", (event) => {
 	event.preventDefault();
@@ -21,7 +22,6 @@ document.getElementById("undo-button").addEventListener("click", (event) => {
 		});
 	}
 })
-
 
 // API FETCH & DECK DATA COLLECTION:
 // initializing an empty deck that can be added to on fetch completion.
@@ -49,6 +49,7 @@ function getPokeStats() {
 					obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
 					obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
 					obj["speed"] = data.stats[5].base_stat
+					obj["imgUrl"] = data.sprites.other["official-artwork"].front_default
 					pokeStats.push(obj)
 					--fetchesLeft;
 					if (fetchesLeft === 0) {
@@ -73,6 +74,7 @@ fetch(heroUrl)
 				obj["attack"] = data[i].powerstats.strength + data[i].powerstats.combat
 				obj["defense"] = data[i].powerstats.durability
 				obj["speed"] = data[i].powerstats.speed
+				obj["imgUrl"] = data[i].images.sm
 				heroStats.push(obj)
 			}
 			--fetchesLeft;
@@ -100,10 +102,11 @@ function normalize(data, balanceMultiplier) {
 		attack: [],
 		defense: [],
 		speed: [],
+		imgUrl: [],
 	}
 
 	// Store stats by type in statObj:
-	let statNames = ["name", "health", "attack", "defense", "speed"]
+	let statNames = ["name", "health", "attack", "defense", "speed", "imgUrl"]
 	for (i = 0; i < data.length; i++) {
 		for (x = 0; x < statNames.length; x++) {
 			statObj[statNames[x]].push(data[i][statNames[x]])
@@ -124,12 +127,15 @@ function minMaxNormalization(data, balanceMultiplier) {
 		attack: [],
 		defense: [],
 		speed: [],
+		imgUrl: [],
 	}
 
 	statsNormalized.name = data.name
+	statsNormalized.imgUrl = data.imgUrl
+	keysArr = ["health", "attack", "defense", "speed"]
 
 	for (const [key, value] of Object.entries(data)) {
-		if (key != "name") {
+		if (keysArr.includes(key)) {
 			let min = Math.min(...data[key])
 			let max = Math.max(...data[key])
 			for (i = 0; i < data[key].length; i++) {
@@ -157,9 +163,9 @@ function getCardStats(normalizedData) {
 			let index = normalizedData["name"].indexOf(cardNames[i])
 			let obj = {}
 
-			let statNames = ["name", "health", "attack", "defense", "speed"]
+			let statNames = ["name", "health", "attack", "defense", "speed", "imgUrl"]
 			for (x = 0; x < statNames.length; x++) {
-				obj[statNames[x]] = [normalizedData[statNames[x]][index]]
+				obj[statNames[x]] = normalizedData[statNames[x]][index]
 			}
 			cardStats.push(obj);
 		}
@@ -616,11 +622,7 @@ class Battletrack {
 			drop: function (event, ui) {
 				/** @type {Card} */
 				const card = window.lastMove.draggedCard;
-
 				playerTryPlayCard(card, thisBattletrack);
-
-
-				// console.log("test")
 				// if (this.children.length < 4) {
 				// 	// window.lastMove.successfullyPlaced = true;
 				// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
@@ -639,6 +641,17 @@ class Battletrack {
 				// 	$(this).droppable("enable");
 				// }
 
+				$(this).css('background-color', 'rgba(255, 255, 255, .2');
+			},
+			over: function (event) {
+				console.log(event.target.children.length);
+				if ($(event.target).children.length < 4) {
+					$(event.target).droppable("enable");
+					$(this).css('background-color', 'rgba(255, 255, 255, .5');
+				}
+			},
+			out: function () {
+				$(this).css('background-color', 'rgba(255, 255, 255, .2')
 			}
 		});
 
@@ -850,16 +863,18 @@ class Hand {
 			revert: "invalid",
 			snap: true,
 			start: function (event) {
+				//Give the card some cool styling
+				$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
 				// Make a note of what card is being dragged.
 				lastMove.draggedCard = card;
-				// calls track last move
-				//trackLastMove(event);
 			},
 			drag: function (event) {
 			},
 			stop: function (event) {
 				// Stop dragging this card.
 				lastMove.draggedCard = null;
+				//Reset the styling:
+				$(event.target).css('transform', 'scale(1)');
 			}
 		});
 	}
@@ -991,15 +1006,15 @@ const getStarterDeck = () => {
 	let deckData = heroCards.concat(pokeCards)
 
 	for (i = 0; i < deckData.length; i++) {
-		const name = deckData[i]["name"][0];
+		const name = deckData[i]["name"];
 		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
-		const art = "../assets/images/textures/card-b2.png";
+		const art = deckData[i]["imgUrl"];
 		// TODO need to decide on power curves for each stat & make mana value algorithm
 		const cost = 0;
-		const attack = deckData[i]["attack"][0];
-		const defense = deckData[i]["defense"][0];
-		const health = deckData[i]["health"][0];
-		const speed = deckData[i]["speed"][0];
+		const attack = deckData[i]["attack"];
+		const defense = deckData[i]["defense"];
+		const health = deckData[i]["health"];
+		const speed = deckData[i]["speed"];
 
 		let newCard = new Card(name, art, cost, attack, defense, health, speed);
 		cards.push(newCard)
@@ -1423,7 +1438,7 @@ const trackLastMove = (event) => {
 //#endregion
 
 //#region GLOBAL VARIABLES
-
+	
 // create global lastMove object to track across different jQuery event listeners
 window.lastMove = {
 	pickupIndex: 0,
@@ -1436,16 +1451,20 @@ window.lastMove = {
 	draggedCard: null,
 };
 
-//#region HTML NODES
-// BATTLETRACK VARS
+	//#region HTML NODES
+	// GAME LEVEL
+/** @type {HTMLElement} The concede button.  */
+const _concedeButton = document.querySelector("#concede-button");	
+
+	// BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
 
-/** @type {HTMLElement[]} Array of battletrack enemy HP counts */
-const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp > span");
+/** @type {HTMLElement[]} Array of battletrack enemy HP containers -> div = progress bar, span = count */
+const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp");
 
-/** @type {HTMLElement[]} Array of battletrack player HP counts */
-const _btPlayerHp = document.querySelectorAll(".bt-player-hp > span");
+/** @type {HTMLElement[]} Array of battletrack player HP containers -> div = progress bar, span = count */
+const _btPlayerHp = document.querySelectorAll(".bt-player-hp");
 
 /** @type {HTMLElement[]} Array of battletrack enemy Armor counts */
 const _btEnemyArmor = document.querySelectorAll(".bt-enemy-armor > span");
