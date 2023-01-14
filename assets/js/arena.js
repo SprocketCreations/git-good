@@ -93,36 +93,37 @@ $(function () {
 // initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
-var fetchesLeft = 2;
+var fetchesLeft = 1;
 
 // Fetch request for POKE API data
 pokeNames = ["charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
+fetchesLeft += pokeNames.length
 getPokeStats()
 // Given a pokemons name, get its stats from pokeAPI & clean data to match normalize input format
 function getPokeStats() {
-	for (i = 0; i < pokeNames.length; i ++) {
+	for (i = 0; i < pokeNames.length; i++) {
 		let pokeName = pokeNames[i]
 		var pokeNameUrl = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
 		fetch(pokeNameUrl)
-		.then(function(response) {
-			response.json().then(function(data) {
-				// API data output: [{base_stat:x, stat:{name:hp}}, {base_stat:x, stat:{name:attack}}, {base_stat:x, stat:{name:defense}}, {base_stat:x, stat:{name:special-attack}}, {base_stat:x, stat:{name:special-defense}}, {base_stat:x, stat:{name:speed}}].
-				// Convert API data to: {name:x, health:x, attack:x, defense:x, speed:x}
-				let obj = {}
-				obj["name"] = pokeName
-				obj["health"] = data.stats[0].base_stat
-				obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
-				obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
-				obj["speed"] = data.stats[5].base_stat
-				pokeStats.push(obj)
+			.then(function (response) {
+				response.json().then(function (data) {
+					// API data output: [{base_stat:x, stat:{name:hp}}, {base_stat:x, stat:{name:attack}}, {base_stat:x, stat:{name:defense}}, {base_stat:x, stat:{name:special-attack}}, {base_stat:x, stat:{name:special-defense}}, {base_stat:x, stat:{name:speed}}].
+					// Convert API data to: {name:x, health:x, attack:x, defense:x, speed:x}
+					let obj = {}
+					obj["name"] = pokeName
+					obj["health"] = data.stats[0].base_stat
+					obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
+					obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
+					obj["speed"] = data.stats[5].base_stat
+					pokeStats.push(obj)
+					--fetchesLeft;
+					if (fetchesLeft === 0) {
+						gameStart();
+					}
 				})
 			})
 	}
-	-- fetchesLeft;
-	if (fetchesLeft === 0) {
-		gameStart();
-	}
-} 
+}
 
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
@@ -902,7 +903,7 @@ const gameStart = () => {
 
 	refillHand(human);
 	refillHand(enemy);
-	
+
 	/**TODO: Present the player with two buttons:
 	 * Button one is labled Start game.
 	 * 	This calls startFirstRound()
