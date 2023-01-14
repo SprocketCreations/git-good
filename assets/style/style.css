@@ -12,22 +12,32 @@ card-slot: 2;
 :root {
 	--card-back-a1: url('../images/textures/card-a1.png');
 	--card-back-b2: url('../images/textures/card-b2.png');
+	
 	--stone-table: url('../images/backgrounds/stone-table.png');
 	--rustic-table: url('../images/backgrounds/rustic-table.png');
 	--pokemon-table-1: url('../images/backgrounds/pokemon-table-1.png');
 	--superhero-table-1: url('../images/backgrounds/superhero-table-1.png');
+	
+	--location-new-york: url('../images/backgrounds/location-new-york.png');
+	--location-wakanda: url('../images/backgrounds/location-wakanda.png');
+	--location-shield-20: url('../images/backgrounds/location-shield-2_0.png');
+	--location-asgard: url('../images/backgrounds/location-asgard.png');
+
+	--shield-icon: url('../images/icons/shield-small.png');
+
 	--bt-card-container-height: 220px;
 	--bt-card-container-width: 180px;
 	--deck-offset-x: 5px;
 	--deck-offset-y: -5px;
 	--armor-offset-x: 15px;
-	--armor-offset-y: -80px;
+	--armor-offset-y: -70px;
 	--armor-height: 75px;
 	--armor-width: 50px;
 	--enemy-hand-offset: -50px;
 	--player-hand-offset: 0px;
 	overflow: hidden;
 	resize: none;
+	
 }
 
 *, *::before, *::after{
@@ -44,7 +54,6 @@ html {
 	background-image: var(--stone-table);
 	background-size: cover;
 	background-position-x: center;
-	background-blend-mode: lighten;
 }
 
 body {
@@ -58,6 +67,148 @@ body {
 
 #battlefield {
 	height: 100vh;
+}
+
+#menu-btn {
+	height: 50px;
+	position: absolute;
+	left: 0px;
+	bottom: 300px;
+	transition: transform .5s ease-out;
+	background-image: url("../images/textures/leather-menu-button.png");
+	background-size: contain;
+	font-size: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 0 25px 25px 0;
+	box-shadow: 3px 3px 3px black;
+	border-top: 1px solid white;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
+}
+
+#menu-btn:hover::after {
+	width: inherit;
+	content: '';
+	position: absolute;
+	top: -5px;
+	left: 0;
+	right: -5px;
+	bottom: -5px;
+	background-color: red;
+	border-radius: inherit;
+	z-index: -1;
+	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
+	filter: blur(5px);
+}
+
+#dropdown {
+	width: 225px !important;
+	background-image: url('../images/textures/tattered-menu-page-small.png');
+	background-size: cover;
+	border-radius: 0px 25px 25px 0;
+	overflow: hidden;
+	white-space: nowrap;
+	font-weight: bold;
+	border-top: 3px solid white;
+	border-right: 3px solid white;
+	border-bottom: 3px solid white;
+	box-shadow: 5px 5px 10px black;
+}
+
+.dropdown-content li > a {
+	color: black;
+}
+
+.dropdown-content li {
+	background-color: rgba(255, 255, 255, .6);
+}
+
+#dropdown li:first-child {
+	border-top-right-radius: inherit;
+}
+
+#dropdown li:nth-child(3) > a {
+	color: rgb(181, 0, 0);
+}
+
+#dropdown li:last-child {
+	border-bottom-right-radius: inherit;
+}
+
+#dropdown li:hover {
+	background-color: rgba(255, 255, 255, 0);
+	box-shadow: inset 2px 2px 4px blue,
+				inset -2px -2px 4px blue;
+	font-weight: bold;
+	z-index: 3;
+}
+
+#dropdown li:nth-child(3):hover {
+	box-shadow: inset 2px 2px 4px red,
+				inset -2px -2px 4px red;
+}
+
+.dropdown-content li.divider {
+	height: 5px;
+	background-color: black;
+}
+
+.sub-text {
+	font-size: .75rem;
+}
+
+.battlefield-view {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#battletracks{
+	height: calc(100vh - 300px);
+	width: 80%;
+	margin: 50px;
+	padding: 10px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-radius: 25px 25px 25px 25px;
+}
+
+.battletrack {
+	height: 75%;
+	width: 25%;
+	min-width: 175px;
+	padding: 25px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	box-shadow: 5px 5px 10px 5px black,
+				inset 0px 0px 10px 1px white;
+	border: 3px solid white;
+	border-radius: 33%;
+}
+
+#battletrack-1 {
+	background-image: var(--location-asgard);
+	background-size: cover;
+	background-position: center;
+}
+
+#battletrack-2 {
+	background-image: var(--location-wakanda);
+	background-size: cover;
+	background-position: center;
+}
+
+#battletrack-3 {
+	background-image: var(--location-shield-20);
+	background-size: cover;
+	background-position: center;
 }
 
 #enemy-head,
@@ -198,47 +349,6 @@ body {
 	/* margin-left: var(--enemy-hand-offset); Causing weird shrinking issue with #enemy-hand*/
 }
 
-.player-card {
-	height: 200px;
-	width: 150px;
-	border-radius: 5px;
-	transition: transform .5s cubic-bezier(.23, 1, .32, 1);
-	background-color: orange;
-	border: 1px solid black;
-	z-index: 3;
-}
-
-#battletracks{
-	height: calc(100vh - 200px);
-	display: flex;
-	justify-content: space-evenly;
-	align-items: center;
-}
-
-.battletrack {
-	height: 65%;
-	width: 25%;
-	min-width: 175px;
-	padding: 25px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	position: relative;
-}
-
-#battletrack-1 {
-	border: 1px solid blue;
-}
-
-#battletrack-2 {
-	border: 1px solid green;
-}
-
-#battletrack-3 {
-	border: 1px solid orange;
-}
-
 .enemy-cards {
 	height: var(--bt-card-container-height);
 	width: var(--bt-card-container-width);
@@ -246,8 +356,17 @@ body {
 	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
-	background-color: rgba(255, 255, 255, .2);
+	background-color: transparent;
 	transform: rotate(180deg);
+}
+
+.location-text {
+	color: rgb(86, 213, 255);
+	font-size: 32px;
+	font-weight: bold;
+	text-shadow: 2px 2px black;
+	font-family: 'Josefin Sans', sans-serif;
+	white-space: nowrap;
 }
 
 .player-cards {
@@ -258,26 +377,38 @@ body {
 	align-items: center;
 	flex-wrap: wrap;
 	background-color: rgba(255, 255, 255, .2);
+	border-radius: 10px;
 }
 
 .player-cards > div {
 	height: 100px;
 	width: 80px;
 	margin: 3px;
-	color: white;
+	color: black;
 	z-index: 2;
+	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-.player-cards > div:hover {
-	transform: scale(1.5);
+#player-hand > div:hover {
+	transform: scale(1.8);
+	z-index: 4;
+}
+
+.player-card {
+	height: 200px;
+	width: 150px;
+	border-radius: 5px;
+	transition: transform .5s cubic-bezier(.23, 1, .32, 1);
+	background-color: orange;
+	border: 1px solid black;
 	z-index: 3;
 }
 
-.enemy-card-slot {
+.enemy-cards > div {
 	height: 100px;
 	width: 80px;
 	margin: 3px;
-	background-color: rgba(255, 255, 255, .2);
+	background-color: blue;
 	color: white;
 	z-index: 2;
 }
@@ -287,24 +418,26 @@ body {
 	height: 80px;
 	margin: 0px;
 	border-radius: 50%;
-	background-color: black;
 	transform: rotate(-90deg);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	border: 5px solid gray;
+	border: 2px solid black;
+	background-image: url('../images/icons/crumbled-tower.png');
+	background-size: contain;
+	background-position: center;
 }
 
 .bt-enemy-hp {
 	position: absolute;
-	top: -40px;
-	left: -40px;
+	top: -20px;
+	left: -30px;
 }
 
 .bt-player-hp {
 	position: absolute;
-	bottom: -40px;
-	right: -40px;
+	bottom: -20px;
+	right: -30px;
 }
 
 .bt-enemy-armor {
@@ -313,7 +446,7 @@ body {
 	position: absolute;
 	left: var(--armor-offset-x);
 	top: var(--armor-offset-y);
-	background-image: url("../images/icons/shield.png");
+	background-image: var(--shield-icon);
 	background-size: cover;
 	z-index: 0;
 }
@@ -324,7 +457,7 @@ body {
 	position: absolute;
 	right: var(--armor-offset-x);
 	bottom: var(--armor-offset-y);
-	background-image: url("../images/icons/shield.png");
+	background-image: var(--shield-icon);
 	background-size: cover;
 	z-index: 0;
 }

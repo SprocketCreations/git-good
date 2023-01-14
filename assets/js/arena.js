@@ -12,7 +12,7 @@ $( function() {
 	}
 
 	// function to track last move when a player card is clicked
-	// Tracks: Player card, card ID, card class names, 3 dataset attrs: str, hp, speed, and a successfullyPlaced bool
+	// Tracks: Player card, card ID, card class names and a successfullyPlaced bool
 	// successfullyPlaced updates on successful droppable drop
 	const trackLastMove = (event) => {
 			window.lastMove.targetCard = event.target;
@@ -28,16 +28,19 @@ $( function() {
 		snap: true,
 		start: function(event) {
 			trackLastMove(event);					// calls track last move
+			$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
 		},
-		drag: function(event) {
+		drag: function() {
 		},
 		stop: function(event) {
+			$(event.target).css('transform', 'scale(1)');
 		}
 	});
  
 	// makes all player-card boxes droppable to accept draggables
     $(".player-cards").droppable({
-      classes: {
+		tolerance: "pointer",
+		classes: {
         "ui-droppable-active": "ui-state-active",
         "ui-droppable-hover": "ui-state-hover"
       },
@@ -45,7 +48,7 @@ $( function() {
 	  // which battletrack it was dropped on, and the index that the card is in the player-card box
 	  // then append a new div with the same attributes to the player-card box
 	  // remove the lastMove.targetCard from the DOM
-      drop: function(event, ui) { 
+      drop: function(event) { 
 		
 		if(this.children.length < 4){	  
 			window.lastMove.successfullyPlaced = true;
@@ -57,15 +60,25 @@ $( function() {
 			window.lastMove.targetCard.remove();
 		}
 
-		//
 		if(this.children.length == 4){
 			$(this).droppable("disable");
-		} else {
-			$(this).droppable("enable");
 		}
-		
-      }
+
+		$(this).css('background-color', 'rgba(255, 255, 255, .2');
+      },
+	  over: function(event) {
+		console.log(event.target.children.length);
+		if($(event.target).children.length < 4){
+			$(event.target).droppable("enable");
+			$(this).css('background-color', 'rgba(255, 255, 255, .5');
+		}
+	  },
+	  out: function() {
+		$(this).css('background-color', 'rgba(255, 255, 255, .2')
+	  }
     });
+
+	$('.dropdown-trigger').dropdown();
 
 	document.getElementById("undo-button").addEventListener("click", (event) => {
 		event.preventDefault();
@@ -78,11 +91,12 @@ $( function() {
 				snap: true,
 				start: function(event) {
 					trackLastMove(event);
+					$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
 				},
 				drag: function(event) {
 				},
 				stop: function(event) {
-					console.log(window.lastMove);
+					$(event.target).css('transform', 'scale(1)');
 				}
 			});
 		}
@@ -1378,15 +1392,19 @@ const endGame = () => {
 //#region GLOBAL VARIABLES
 	
 	//#region HTML NODES
-// BATTLETRACK VARS
+	// GAME LEVEL
+/** @type {HTMLElement[]} Array of all battletracks  */
+const _concedeButton = document.querySelector("#concede-button");	
+
+	// BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");	
 
-/** @type {HTMLElement[]} Array of battletrack enemy HP counts */
-const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp > span");				
+/** @type {HTMLElement[]} Array of battletrack enemy HP containers -> div = progress bar, span = count */
+const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp");				
 
-/** @type {HTMLElement[]} Array of battletrack player HP counts */
-const _btPlayerHp = document.querySelectorAll(".bt-player-hp > span");
+/** @type {HTMLElement[]} Array of battletrack player HP containers -> div = progress bar, span = count */
+const _btPlayerHp = document.querySelectorAll(".bt-player-hp");
 
 /** @type {HTMLElement[]} Array of battletrack enemy Armor counts */
 const _btEnemyArmor = document.querySelectorAll(".bt-enemy-armor > span");		
