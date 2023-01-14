@@ -93,6 +93,7 @@ $( function() {
 // initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
+var fetchesComplete = 0
 
 // Fetch request for POKE API data
 // This function gets all pokemon names for getPokeStats()
@@ -104,6 +105,7 @@ fetch(pokeUrl)
                 for (i = 0; i < data.count; i ++) {
                         getPokeStats(data.results[i].name)
                 };
+		fetchesComplete ++
         });
 })
 
@@ -142,6 +144,7 @@ fetch(heroUrl)
                         obj["speed"] = data[i].powerstats.speed
                         heroStats.push(obj)
                 }
+		fetchesComplete ++
         });
 })
 
@@ -155,7 +158,7 @@ fetch(heroUrl)
 // }]
 
 // pass in your data set (array of objects). returns your data as min-max distribution w/ max=1 min=0. Optional multiplier for continued balancing between API's
-function normalize(data, multiplier) {
+function normalize(data, balanceMultiplier) {
         // initialize empty arrays to store all stats for min/max finding.
         let statObj = {
                 name: [],
@@ -173,14 +176,14 @@ function normalize(data, multiplier) {
                 }
         }
         // minmax normalize the data with a function
-        let normalizedData = minMaxNormalization(statObj, multiplier)
+        let normalizedData = minMaxNormalization(statObj, balanceMultiplier)
         // take min max normalized data and select ONLY the cards we need for the game
         let cardStats = getCardStats(normalizedData)
         return cardStats
 }
 
 // min max normalization of stat data (for a given data set...i.e. only pokemon, or only superapi). Optional multiplier for continued balancing between API's
-function minMaxNormalization(data, multiplier) {
+function minMaxNormalization(data, balanceMultiplier) {
         let statsNormalized = {
                 name: [],
                 health: [],
@@ -197,7 +200,11 @@ function minMaxNormalization(data, multiplier) {
                         let max = Math.max(...data[key])
                         for (i = 0; i < data[key].length; i++) {
                                 let x = data[key][i]
-                                statsNormalized[key].push((x-min)/(max-min)*multiplier)
+				if (key === "health"){
+					statsNormalized[key].push(math.round((x-min)/(max-min)*balanceMultiplier*20))
+				} else {
+					statsNormalized[key].push(math.round((x-min)/(max-min)*balanceMultiplier*5))
+				}
                         }
                 }
         }
@@ -447,10 +454,29 @@ class Card {
 	 * @returns {HTMLElement} a reference to the html element for this card.
 	 */
 	getNode() {
-		// TODO: Add code to clone the card template that does not yet exist
-		const fragment = null;
-		const root = fragment.children[0];
-		this.node = root;
+		if (this.node === null) {
+			// Fetch and clone the empty template
+			const template = document.querySelector("#card-template");
+			const fragment = template.textContent.cloneNode(true);
+
+			// populate the new template with an id and stats
+			let templateContainer = fragment.children[0];
+			let templateTableBody = templateContainer.children[2].children[1];
+			let templateFooter = templateContainer.children[3];
+			templateContainer.children[0].setAttribute("src", this.art);
+			templateContainer.children[1].textContent = this.cost;
+			templateTableBody.children[0].textContent = this.attack;
+			templateTableBody.children[1].textContent = this.defense;
+			templateTableBody.children[2].textContent = this.speed;
+			templateFooter.children[0].textContent = this.name;
+			templateFooter.children[1].textContent = this.health;
+
+			// append newTemplate to index.html
+			this.node = templateContainer;
+		}
+
+		// TODO add dragable code here
+		return this.node
 	}
 	/**
 	 * Destroys this card's HTML on the DOM.
@@ -521,7 +547,8 @@ class Card {
 	setCurrentHitpoints(hitpoints) {
 		this.currentHitpoints = Math.max(0, Math.min(this.totalHitpoints, hitpoints));
 		//TODO: Walk the tree to update the card's health appearance.
-		this.node;
+		let hitpointsEl = this.node.children[0].children[2].children[1].children[3].children[1];
+		hitpointsEl = this.currentHitpoints;
 	}
 }
 
