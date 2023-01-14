@@ -188,7 +188,7 @@ function normalize(data, balanceMultiplier) {
 		}
 	}
 	// minmax normalize the data with a function
-	let normalizedData = minMaxNormalization(statObj, multiplier)
+	let normalizedData = minMaxNormalization(statObj, balanceMultiplier)
 	// take min max normalized data and select ONLY the cards we need for the game
 	let cardStats = getCardStats(normalizedData)
 	return cardStats
