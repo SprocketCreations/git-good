@@ -35,9 +35,6 @@
 				<span id="enemy-mana-count">3</span>
 			</div>
 			<div id="enemy-hand">
-				<div></div>
-				<div></div>
-				<div></div>
 			</div>
 			<div id="enemy-deck" class="z-depth-5">
 				<div class="z-depth-5">
@@ -127,18 +124,36 @@
 				</div>
 			</div>
 			<div id="player-hand" class="selectable">
-				<div id="1" class="player-card"></div>
-				<div id="2" class="player-card"></div>
-				<div id="3" class="player-card"></div>
-				<div id="4" class="player-card"></div>
-				<div id="5" class="player-card"></div>
-				<div id="6" class="player-card"></div>
 				<button id="undo-button"></button>
 			</div>
 			<div id="player-mana">
 				<span id="player-mana-count"></span>
 			</div>
 		</div>
+
+		<!-- Card Template -->
+		<template id="card-template">
+			<div class="card-container">
+				<img class="card-art" src="" alt="">
+				<p class="mana-initiative"></p>
+				<table class="card-stats">
+					<thead>
+						<th>Attack</th>
+						<th>Defense</th>
+						<th>Speed</th>
+					</thead>
+					<tbody>
+						<tr class="card-attack"></tr>
+						<tr class="card-defense"></tr>
+						<tr class="card-speed"></tr>
+					</tbody>
+				</table>
+				<section class="card-footer">
+					<h2 id="card-name"></h2>
+					<p class="card-health"></p>
+				</section>
+			</div>
+		</template>
 	</main>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

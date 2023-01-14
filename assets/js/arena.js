@@ -1,4 +1,4 @@
-$( function() {
+$(function () {
 
 	// create global lastMove object to track across different jQuery event listeners
 	window.lastMove = {
@@ -15,18 +15,18 @@ $( function() {
 	// Tracks: Player card, card ID, card class names and a successfullyPlaced bool
 	// successfullyPlaced updates on successful droppable drop
 	const trackLastMove = (event) => {
-			window.lastMove.targetCard = event.target;
-			window.lastMove.targetCardId = event.target.id;
-			window.lastMove.targetCardClassname = event.target.className;
-			window.lastMove.successfullyPlaced = false;
+		window.lastMove.targetCard = event.target;
+		window.lastMove.targetCardId = event.target.id;
+		window.lastMove.targetCardClassname = event.target.className;
+		window.lastMove.successfullyPlaced = false;
 	}
 
 	// makes player-hand divs (cards) draggable, revert to their initial space if not dropped in a droppable, and snap to their
 	// target droppable
-	$( "#player-hand div" ).draggable({
+	$("#player-hand div").draggable({
 		revert: "invalid",
 		snap: true,
-		start: function(event) {
+		start: function (event) {
 			trackLastMove(event);					// calls track last move
 			$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
 		},
@@ -36,7 +36,7 @@ $( function() {
 			$(event.target).css('transform', 'scale(1)');
 		}
 	});
- 
+
 	// makes all player-card boxes droppable to accept draggables
     $(".player-cards").droppable({
 		tolerance: "pointer",
@@ -57,8 +57,8 @@ $( function() {
 			$(this).append(`<div id='${window.lastMove.targetCardId}' class='${window.lastMove.targetCardClassname}' data-index='${this.children.length}'
 							data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
 							</div>`);
-			window.lastMove.targetCard.remove();
-		}
+				window.lastMove.targetCard.remove();
+			}
 
 		if(this.children.length == 4){
 			$(this).droppable("disable");
@@ -82,18 +82,18 @@ $( function() {
 
 	document.getElementById("undo-button").addEventListener("click", (event) => {
 		event.preventDefault();
-		if(window.lastMove.successfullyPlaced == true){
+		if (window.lastMove.successfullyPlaced == true) {
 			$(`#${window.lastMove.targetCardId}`).remove();
 			$("#player-hand").append(`<div id='${window.lastMove.targetCardId}' class='player-card ui-draggable ui-draggable-handle' data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
 									</div>`);
 			$("#player-hand div").last().draggable({
 				revert: "invalid",
 				snap: true,
-				start: function(event) {
+				start: function (event) {
 					trackLastMove(event);
 					$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
 				},
-				drag: function(event) {
+				drag: function (event) {
 				},
 				stop: function(event) {
 					$(event.target).css('transform', 'scale(1)');
@@ -107,57 +107,60 @@ $( function() {
 // initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
 var heroStats = []
+var fetchesLeft = 1;
 
 // Fetch request for POKE API data
-// This function gets all pokemon names for getPokeStats()
-const pokeUrl = "https://pokeapi.co/api/v2/pokemon?limit=1279"
-fetch(pokeUrl)
-.then(function(response) {
-        console.log(response);
-        response.json().then(function (data) {
-                for (i = 0; i < data.count; i ++) {
-                        getPokeStats(data.results[i].name)
-                };
-        });
-})
-
+pokeNames = ["charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
+fetchesLeft += pokeNames.length
+getPokeStats()
 // Given a pokemons name, get its stats from pokeAPI & clean data to match normalize input format
-function getPokeStats(pokeName) {
-        var pokeNameUrl = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
-        fetch(pokeNameUrl)
-        .then(function(response) {
-                response.json().then(function(data) {
-                        // API data output: [{base_stat:x, stat:{name:hp}}, {base_stat:x, stat:{name:attack}}, {base_stat:x, stat:{name:defense}}, {base_stat:x, stat:{name:special-attack}}, {base_stat:x, stat:{name:special-defense}}, {base_stat:x, stat:{name:speed}}].
-                        // Convert API data to: {name:x, health:x, attack:x, defense:x, speed:x}
-                        let obj = {}
-                        obj["name"] = pokeName
-                        obj["health"] = data.stats[0].base_stat
-                        obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
-                        obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
-                        obj["speed"] = data.stats[5].base_stat
-                        pokeStats.push(obj)
-                        })
-                })
-} 
+function getPokeStats() {
+	for (i = 0; i < pokeNames.length; i++) {
+		let pokeName = pokeNames[i]
+		var pokeNameUrl = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
+		fetch(pokeNameUrl)
+			.then(function (response) {
+				response.json().then(function (data) {
+					// API data output: [{base_stat:x, stat:{name:hp}}, {base_stat:x, stat:{name:attack}}, {base_stat:x, stat:{name:defense}}, {base_stat:x, stat:{name:special-attack}}, {base_stat:x, stat:{name:special-defense}}, {base_stat:x, stat:{name:speed}}].
+					// Convert API data to: {name:x, health:x, attack:x, defense:x, speed:x}
+					let obj = {}
+					obj["name"] = pokeName
+					obj["health"] = data.stats[0].base_stat
+					obj["attack"] = data.stats[1].base_stat + data.stats[3].base_stat
+					obj["defense"] = data.stats[2].base_stat + data.stats[4].base_stat
+					obj["speed"] = data.stats[5].base_stat
+					pokeStats.push(obj)
+					--fetchesLeft;
+					if (fetchesLeft === 0) {
+						gameStart();
+					}
+				})
+			})
+	}
+}
 
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
 fetch(heroUrl)
-.then(function(response) {
-        console.log(response);
-        response.json().then(function (data) {
-                for (i = 0; i < data.length; i++){
-                        // Appends stat object to array. Each index as follows: {name:x, attack:x, defense:x, health:x, speed:x}
-                        let obj = {}
-                        obj["name"] = data[i].name
-                        obj["health"] = data[i].powerstats.power
-                        obj["attack"] = data[i].powerstats.strength + data[i].powerstats.combat
-                        obj["defense"] = data[i].powerstats.durability
-                        obj["speed"] = data[i].powerstats.speed
-                        heroStats.push(obj)
-                }
-        });
-})
+	.then(function (response) {
+		console.log(response);
+		response.json().then(function (data) {
+			for (i = 0; i < data.length; i++) {
+				// Appends stat object to array. Each index as follows: {name:x, attack:x, defense:x, health:x, speed:x}
+				let obj = {}
+				obj["name"] = data[i].name
+				obj["health"] = data[i].powerstats.power
+				obj["attack"] = data[i].powerstats.strength + data[i].powerstats.combat
+				obj["defense"] = data[i].powerstats.durability
+				obj["speed"] = data[i].powerstats.speed
+				heroStats.push(obj)
+			}
+			--fetchesLeft;
+			if (fetchesLeft == 0) {
+				gameStart();
+			}
+		});
+	})
 
 // nomarlize() takes a data array that contains objects in the following format:
 // [obj{
@@ -169,76 +172,79 @@ fetch(heroUrl)
 // }]
 
 // pass in your data set (array of objects). returns your data as min-max distribution w/ max=1 min=0. Optional multiplier for continued balancing between API's
-function normalize(data, multiplier) {
-        // initialize empty arrays to store all stats for min/max finding.
-        let statObj = {
-                name: [],
-                health: [],
-                attack: [],
-                defense: [],
-                speed: [],
-        }
+function normalize(data, balanceMultiplier) {
+	// initialize empty arrays to store all stats for min/max finding.
+	let statObj = {
+		name: [],
+		health: [],
+		attack: [],
+		defense: [],
+		speed: [],
+	}
 
-        // Store stats by type in statObj:
-        let statNames = ["name", "health", "attack", "defense", "speed"]
-        for (i = 0; i < data.length; i++) {
-                for (x = 0; x < statNames.length; x++) {
-                        statObj[statNames[x]].push(data[i][statNames[x]])
-                }
-        }
-        // minmax normalize the data with a function
-        let normalizedData = minMaxNormalization(statObj, multiplier)
-        // take min max normalized data and select ONLY the cards we need for the game
-        let cardStats = getCardStats(normalizedData)
-        return cardStats
+	// Store stats by type in statObj:
+	let statNames = ["name", "health", "attack", "defense", "speed"]
+	for (i = 0; i < data.length; i++) {
+		for (x = 0; x < statNames.length; x++) {
+			statObj[statNames[x]].push(data[i][statNames[x]])
+		}
+	}
+	// minmax normalize the data with a function
+	let normalizedData = minMaxNormalization(statObj, balanceMultiplier)
+	// take min max normalized data and select ONLY the cards we need for the game
+	let cardStats = getCardStats(normalizedData)
+	return cardStats
 }
 
 // min max normalization of stat data (for a given data set...i.e. only pokemon, or only superapi). Optional multiplier for continued balancing between API's
-function minMaxNormalization(data, multiplier) {
-        let statsNormalized = {
-                name: [],
-                health: [],
-                attack: [],
-                defense: [],
-                speed: [],
-        }
-        
-        statsNormalized.name = data.name
-        
-        for (const[key, value] of Object.entries(data)) {
-                if (key != "name") {
-                        let min = Math.min(...data[key])
-                        let max = Math.max(...data[key])
-                        for (i = 0; i < data[key].length; i++) {
-                                let x = data[key][i]
-                                statsNormalized[key].push((x-min)/(max-min)*multiplier)
-                        }
-                }
-        }
-        
-        return statsNormalized
+function minMaxNormalization(data, balanceMultiplier) {
+	let statsNormalized = {
+		name: [],
+		health: [],
+		attack: [],
+		defense: [],
+		speed: [],
+	}
+
+	statsNormalized.name = data.name
+
+	for (const [key, value] of Object.entries(data)) {
+		if (key != "name") {
+			let min = Math.min(...data[key])
+			let max = Math.max(...data[key])
+			for (i = 0; i < data[key].length; i++) {
+				let x = data[key][i]
+				if (key === "health") {
+					statsNormalized[key].push(Math.round((x - min) / (max - min) * balanceMultiplier * 20))
+				} else {
+					statsNormalized[key].push(Math.round((x - min) / (max - min) * balanceMultiplier * 5))
+				}
+			}
+		}
+	}
+
+	return statsNormalized
 }
 
 // gets the normalized card stats for use in game
 function getCardStats(normalizedData) {
-        let cardNames = ["Bullseye", "Thor", "Spider-Man", "Green Goblin", "Black Widow", "Scarlet Witch", "Loki", "Groot", "Black Panther", "Venom", "Thanos", "Hulk", "Kingpin", "Magneto", "Luke Cage", "Amanda Waller", "Black Flash", "Flash", "Batman", "Superman", "Wonder Woman", "Lex Luthor", "Black Adam", "Darkseid", "Beast Boy", "Batgirl", "Aquaman", "Harley Quinn", "Joker", "Sinestro", "Martian Manhunter", "charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
+	let cardNames = ["Bullseye", "Thor", "Spider-Man", "Green Goblin", "Black Widow", "Scarlet Witch", "Loki", "Groot", "Black Panther", "Venom", "Thanos", "Hulk", "Kingpin", "Magneto", "Luke Cage", "Amanda Waller", "Black Flash", "Flash", "Batman", "Superman", "Wonder Woman", "Lex Luthor", "Black Adam", "Darkseid", "Beast Boy", "Batgirl", "Aquaman", "Harley Quinn", "Joker", "Sinestro", "Martian Manhunter", "charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
 
-        let cardStats = []
+	let cardStats = []
 
-        for (i = 0; i < cardNames.length; i ++) {
-                if (normalizedData["name"].indexOf(cardNames[i]) >= 0) {
-                        let index = normalizedData["name"].indexOf(cardNames[i])
-                        let obj = {}
+	for (i = 0; i < cardNames.length; i++) {
+		if (normalizedData["name"].indexOf(cardNames[i]) >= 0) {
+			let index = normalizedData["name"].indexOf(cardNames[i])
+			let obj = {}
 
-                        let statNames = ["name", "health", "attack", "defense", "speed"]
-                        for (x = 0; x < statNames.length; x++) {
-                                obj[statNames[x]] = [normalizedData[statNames[x]][index]]
-                        }
-                        cardStats.push(obj)
-                        deck.push(obj)
-                }
-        }
-        return cardStats
+			let statNames = ["name", "health", "attack", "defense", "speed"]
+			for (x = 0; x < statNames.length; x++) {
+				obj[statNames[x]] = [normalizedData[statNames[x]][index]]
+			}
+			cardStats.push(obj);
+		}
+	}
+	return cardStats
 }
 
 //#region ENUM DEFINITIONS
@@ -461,10 +467,29 @@ class Card {
 	 * @returns {HTMLElement} a reference to the html element for this card.
 	 */
 	getNode() {
-		// TODO: Add code to clone the card template that does not yet exist
-		const fragment = null;
-		const root = fragment.children[0];
-		this.node = root;
+		if (this.node === null) {
+			// Fetch and clone the empty template
+			const template = document.querySelector("#card-template");
+			const fragment = template.content.cloneNode(true);
+
+			// populate the new template with an id and stats
+			let templateContainer = fragment.children[0];
+			let templateTableBody = templateContainer.children[2].children[1];
+			let templateFooter = templateContainer.children[3];
+			templateContainer.children[0].setAttribute("src", this.art);
+			templateContainer.children[1].textContent = this.cost;
+			templateTableBody.children[0].textContent = this.attack;
+			templateTableBody.children[1].textContent = this.defense;
+			templateTableBody.children[2].textContent = this.speed;
+			templateFooter.children[0].textContent = this.name;
+			templateFooter.children[1].textContent = this.health;
+
+			// append newTemplate to index.html
+			this.node = templateContainer;
+		}
+
+		// TODO add dragable code here
+		return this.node
 	}
 	/**
 	 * Destroys this card's HTML on the DOM.
@@ -535,7 +560,8 @@ class Card {
 	setCurrentHitpoints(hitpoints) {
 		this.currentHitpoints = Math.max(0, Math.min(this.totalHitpoints, hitpoints));
 		//TODO: Walk the tree to update the card's health appearance.
-		this.node;
+		let hitpointsEl = this.node.children[0].children[2].children[1].children[3].children[1];
+		hitpointsEl = this.currentHitpoints;
 	}
 }
 
@@ -554,9 +580,6 @@ class Battleline {
 	 * @param {HTMLElement} zoneNode The HTML element that contains the cards in play.
 	 */
 	constructor(battletrack, hitpoints, hitpointsNode, defenseNode, zoneNode) {
-		// TODO: Add an event listener
-		zoneNode.addEventListener();
-
 		/** @type {Battletrack} The battletrack this battleline is on. */
 		this.battletrack = battletrack;
 		/** @type {number} The number of hitpoints this side of the battletrack has. */
@@ -565,6 +588,8 @@ class Battleline {
 		this.hitpointsNode = hitpointsNode;
 		/** @type {HTMLElement} The HTML element to write the defense to. */
 		this.defenseNode = defenseNode;
+		/** @type {HTMLElement} The HTML that played cards are appended to. */
+		this.zoneNode = zoneNode;
 		/** @type {Card[]} The cards in play on this side of the battletrack. */
 		this.cards = [];
 	}
@@ -585,7 +610,9 @@ class Battleline {
 	 * @param {Card} card The card to play to this battleline.
 	 */
 	playCard(card) {
-		// TODO: Add code here for appending the card's node to the battleline.
+		// Append the card to the battleline.
+		this.zoneNode.appendChild(card.getNode());
+		// Add this card to the internal tracking.
 		this.cards.push(card);
 		// Update the defense visualization.
 		this.defenseNode.textContent = this.getDefense();
@@ -641,22 +668,21 @@ class Battletrack {
 	/**
 	 * Constructs a new battletrack object.
 	 * 
-	 * @param {HTMLElement} node The root node on the DOM that represents this battletrack.
+	 * @param {number} index The index of this battletrack.
 	 * @param {Location} location The location data.
 	 * @param {number} friendlyHitpoints The amount of hitpoints the friendly side of the battletrack should start with. Defaults to 40.
 	 * @param {number} enemyHitpoints The amount of hitpoints the enemy side of the battletrack should start with. Defaults to 40.
 	 */
-	constructor(node, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
-		// TODO: Crawl the node to get the hitpoints and selection area nodes
-		const friendlyHitpointsNode = null;
-		const friendlyDefenseNode = null;
-		const friendlyCardZoneNode = null;
-		const enemyHitpointsNode = null;
-		const enemyDefenseNode = null;
-		const enemyCardZoneNode = null;
+	constructor(index, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
+		const friendlyHitpointsNode = _btPlayerHp[index];
+		const friendlyDefenseNode = _btPlayerArmor[index];
+		const friendlyCardZoneNode = _playerTableCards[index];
+		const enemyHitpointsNode = _btEnemyHp[index];
+		const enemyDefenseNode = _btEnemyArmor[index];
+		const enemyCardZoneNode = _enemyTableCards[index];
 
 		/** @type {HTMLElement} A reference to the HTML on the DOM that is the root node for this battletrack. */
-		this.node = node;
+		this.node = _allBattletracks[i];
 		/** @type {Battleline} The battleline on the player's side. */
 		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyDefenseNode, friendlyCardZoneNode);
 		/** @type {Battleline} The battleline on the enemy's side. */
@@ -886,6 +912,8 @@ class Hand {
  */
 const gameStart = () => {
 	initializeBattletracks();
+	
+	makePlayers();
 
 	refillHand(human);
 	refillHand(enemy);
@@ -899,6 +927,17 @@ const gameStart = () => {
 };
 
 /**
+ * Builds the two players as global variables.
+ */
+const makePlayers = () => {
+	/** @type {Player} The human player. */
+	window.human = buildHumanPlayer();
+
+	/** @type {Player} The AI player */
+	window.enemy = buildAIPlayer();
+};
+
+/**
  * Configures the tracks.
  */
 const initializeBattletracks = () => {
@@ -907,10 +946,8 @@ const initializeBattletracks = () => {
 	for (let i = 0; i < 3; ++i) {
 		/** @type {Location} the location to add to the battletrack. */
 		const location = locations.splice(Math.floor(Math.random() * locations.length), 1)[0];
-		/** @type {HTMLElement} the HTML node that is this battletrack. */
-		const node = null;// TODO: implement.
 		/** @type {Battletrack} the nth battletrack. */
-		const battletrack = new Battletrack(node, location);
+		const battletrack = new Battletrack(i, location);
 
 		battletracks.push(battletrack);
 	}
@@ -925,10 +962,10 @@ const buildHumanPlayer = () => {
 	const cards = getStarterDeck();
 
 	/** @type {HTMLElement} The HTML that the player should write their mana amount to. */
-	const manaNode = null; // TODO: Get the player's mana node from the DOM.
+	const manaNode = _playerManaCount;
 
 	/** @type {HTMLElement} The HTML that the player will append cards to in their hand. */
-	const handNode = null; // TODO: Get the player's hand node from the DOM.
+	const handNode = _playerHand;
 
 	/** @type {number} The number of times this player has won the game. */
 	const wins = 0; //TODO: Get player wins from local storage.
@@ -945,10 +982,10 @@ const buildAIPlayer = () => {
 	const cards = getStarterDeck();
 
 	/** @type {HTMLElement} The HTML that the player should write their mana amount to. */
-	const manaNode = null; // TODO: Get the enemy's mana node from the DOM.
+	const manaNode = _enemyManaCount;
 
 	/** @type {HTMLElement} The HTML that the player will append cards to in their hand. */
-	const handNode = null; // TODO: Get the enemy's hand node from the DOM.
+	const handNode = _enemyHand;
 
 	/** @type {number} The number of times this player has won the game. */
 	const wins = 0; //TODO: Get this AI's wins from local storage.
@@ -966,18 +1003,18 @@ const getStarterDeck = () => {
 	const cards = [];
 
 	//populate the array of cards:
-	const heroCards = normalize(heroStats,1)
-        const pokeCards = normalize(pokeStats, 1.5)
+	const heroCards = normalize(heroStats, 1)
+	const pokeCards = normalize(pokeStats, 1)
 	let deckData = heroCards.concat(pokeCards)
 
-	for (i= 0; i < deckData.length; i ++){
+	for (i = 0; i < deckData.length; i++) {
 		const name = deckData[i]["name"][0];
 		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
-		const art = {};
+		const art = "../assets/images/textures/card-b2.png";
 		// TODO need to decide on power curves for each stat & make mana value algorithm
 		const cost = 0;
 		const attack = deckData[i]["attack"][0];
-		const defense = deckData[i]["defense"][0]; 
+		const defense = deckData[i]["defense"][0];
 		const health = deckData[i]["health"][0];
 		const speed = deckData[i]["speed"][0];
 
@@ -1398,7 +1435,7 @@ const _concedeButton = document.querySelector("#concede-button");
 
 	// BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
-const _allBattletracks = document.querySelectorAll(".battletrack");	
+const _allBattletracks = document.querySelectorAll(".battletrack");
 
 /** @type {HTMLElement[]} Array of battletrack enemy HP containers -> div = progress bar, span = count */
 const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp");				
@@ -1407,7 +1444,7 @@ const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp");
 const _btPlayerHp = document.querySelectorAll(".bt-player-hp");
 
 /** @type {HTMLElement[]} Array of battletrack enemy Armor counts */
-const _btEnemyArmor = document.querySelectorAll(".bt-enemy-armor > span");		
+const _btEnemyArmor = document.querySelectorAll(".bt-enemy-armor > span");
 
 /** @type {HTMLElement[]} Array of battletrack player Armor counts */
 const _btPlayerArmor = document.querySelectorAll(".bt-player-armor > span");
@@ -1417,13 +1454,13 @@ const _btPlayerArmor = document.querySelectorAll(".bt-player-armor > span");
 const _enemyHead = document.querySelector("#enemy-head");
 
 /** @type {HTMLElement} Top card of the enemy deck */
-const _enemyDeck = document.querySelector("#enemy-top-card");	
+const _enemyDeck = document.querySelector("#enemy-top-card");
 
 /** @type {HTMLElement} Div that holds enemy cards */
 const _enemyHand = document.querySelector("#enemy-hand");
 
 /** @type {HTMLElement} Span containing enemy mana count "X" */
-const _enemyManaCount = document.querySelector("#enemy-mana-count");	
+const _enemyManaCount = document.querySelector("#enemy-mana-count");
 
 /** @type {HTMLElement[]} Array of all 3 enemy table card divs */
 const _enemyTableCards = document.querySelectorAll(".enemy-cards");
@@ -1433,7 +1470,7 @@ const _enemyTableCards = document.querySelectorAll(".enemy-cards");
 const _playerHead = document.querySelector("#player-head");
 
 /** @type {HTMLElement} Top card of the player deck */
-const _playerDeck = document.querySelector("#player-top-card");		
+const _playerDeck = document.querySelector("#player-top-card");
 
 /** @type {HTMLElement} Div that holds player cards */
 const _playerHand = document.querySelector("#player-hand");
@@ -1444,7 +1481,7 @@ const _playerManaCount = document.querySelector("#player-mana-count");
 /** @type {HTMLElement[]} Array of all 3 player table card divs */
 const _playerTableCards = document.querySelectorAll(".player-cards");
 
-	// #endregion
+// #endregion
 
 /** @type {Location[]} array of game locations */
 const curatedLocations = [
@@ -1454,12 +1491,6 @@ const curatedLocations = [
 
 /** @type {Stage} The current state of the game. */
 let currentGameStage = Stage.Initializing;
-
-/** @type {Player} The human player. */
-const human = buildHumanPlayer();
-
-/** @type {Player} The AI player */
-const enemy = buildAIPlayer();
 
 /** @type {Player} The current player allowed to perform card plays. */
 let currentPlayer = null;
@@ -1485,6 +1516,7 @@ const activeCards = [];
 //#endregion
 
 // Start the game.
-gameStart();
+//gameStart();
+// Dont start the game on page load. We need to wait until the fetches are done.
 
 
