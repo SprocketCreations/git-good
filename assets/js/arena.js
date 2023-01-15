@@ -17,7 +17,7 @@ document.getElementById("undo-button").addEventListener("click", (event) => {
 			drag: function (event) {
 			},
 			stop: function (event) {
-				console.log(window.lastMove);
+				//
 			}
 		});
 	}
@@ -64,7 +64,6 @@ function getPokeStats() {
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
 fetch(heroUrl)
 	.then(function (response) {
-		console.log(response);
 		response.json().then(function (data) {
 			for (i = 0; i < data.length; i++) {
 				// Appends stat object to array. Each index as follows: {name:x, attack:x, defense:x, health:x, speed:x}
@@ -349,7 +348,7 @@ class Card {
 		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
-		this.cost = cost;
+		this.cost = Math.max(1, cost);
 		/** @type {number} The attack power of this card. */
 		this.attack = attack;
 		/** @type {number} The defense of this card. */
@@ -369,6 +368,13 @@ class Card {
 	 * Kills this card, sending it back to the graveyard.
 	 */
 	die() {
+		// Remove this card from the action pool
+		{
+			const activeIndex = activeCards.indexOf(this);
+			const actIndex = cardsToAct.indexOf(this);
+			if (activeIndex !== -1) { activeCards.splice(activeIndex, 1); }
+			if (actIndex !== -1) { cardsToAct.splice(actIndex, 1); }
+		}
 		this.battleline.removeCard(this);
 		this.deleteNode();
 		this.owner.getDeck().addToGraveyard(this);
@@ -475,10 +481,16 @@ class Card {
 		return this.totalHitpoints;
 	}
 	/**
+	 * @returns {string} the displayable name of this card.
+	 */
+	getDisplayName() {
+		return this.name;
+	}
+	/**
 	 * @param {number} damage The amount of damage to deal to this card.
 	 */
 	damage(damage) {
-		this.setCurrentHitpoints(this.hitpoints - damage);
+		this.setCurrentHitpoints(this.currentHitpoints - damage);
 	}
 	/**
 	 * @param {number} hitpoints The new amount of hitpoints this card should have.
@@ -486,8 +498,8 @@ class Card {
 	setCurrentHitpoints(hitpoints) {
 		this.currentHitpoints = Math.max(0, Math.min(this.totalHitpoints, hitpoints));
 		//TODO: Walk the tree to update the card's health appearance.
-		let hitpointsEl = this.node.children[0].children[2].children[1].children[3].children[1];
-		hitpointsEl = this.currentHitpoints;
+		let hitpointsEl = this.node.children[3].children[1];
+		hitpointsEl.textContent = this.currentHitpoints;
 	}
 }
 
@@ -510,6 +522,8 @@ class Battleline {
 		this.battletrack = battletrack;
 		/** @type {number} The number of hitpoints this side of the battletrack has. */
 		this.hitpoints = hitpoints;
+		/** @type {number} The number of hitpoints this side of the battletrack started with. */
+		this.originalHitpoints = this.hitpoints;
 		/** @type {HTMLElement} The HTML element that the hitpoints will be written to. */
 		this.hitpointsNode = hitpointsNode;
 		/** @type {HTMLElement} The HTML element to write the defense to. */
@@ -518,6 +532,10 @@ class Battleline {
 		this.zoneNode = zoneNode;
 		/** @type {Card[]} The cards in play on this side of the battletrack. */
 		this.cards = [];
+
+		this.hitpointsNode.children[1].textContent = this.hitpoints;
+		this.hitpointsNode.children[0].style.width = `${100}%`;
+		this.defenseNode.textContent = 0;
 	}
 	/**
 	 * @param {number} damage The amount of damage to deal to this battleline;
@@ -542,6 +560,8 @@ class Battleline {
 		this.cards.push(card);
 		// Update the defense visualization.
 		this.defenseNode.textContent = this.getDefense();
+		// Inform this card what battleline it's in.
+		card.setBattleline(this);
 	}
 	/**
 	 * Removes a given card from this battleline.
@@ -552,6 +572,8 @@ class Battleline {
 		const removedCard = this.cards.splice(this.cards.indexOf(card), 1)[0];
 		// Update the defense visualization.
 		this.defenseNode.textContent = this.getDefense();
+		// Inform this card what battleline it's in.
+		card.setBattleline(null);
 
 		return removedCard;
 	}
@@ -566,7 +588,8 @@ class Battleline {
 	 */
 	setHitpoints(hitpoints) {
 		this.hitpoints = Math.max(0, hitpoints);
-		this.hitpointsNode.textContent = hitpoints;
+		this.hitpointsNode.children[1].textContent = this.hitpoints;
+		this.hitpointsNode.children[0].style.width = `${Math.min(100, Math.max(0, this.hitpoints / this.originalHitpoints * 100))}%`;
 	}
 	/**
 	 * Kills all the cards present in this battleline, sending them back to their graveyards.
@@ -606,54 +629,8 @@ class Battletrack {
 		const enemyHitpointsNode = _btEnemyHp[index];
 		const enemyDefenseNode = _btEnemyArmor[index];
 		const enemyCardZoneNode = _enemyTableCards[index];
-		/** @type {Battletrack} a this. */
-		const thisBattletrack = this;
-		// Makes the zone accept draggables
-		$(friendlyCardZoneNode).droppable({
-			classes: {
-				"ui-droppable-active": "ui-state-active",
-				"ui-droppable-hover": "ui-state-hover"
-			},
-			tolerance: "pointer",
-			// on drop, check if player-card box is full, if not, updated lastMove.successfullyPlaced global var, capture
-			// which battletrack it was dropped on, and the index that the card is in the player-card box
-			// then append a new div with the same attributes to the player-card box
-			// remove the lastMove.targetCard from the DOM
-			drop: function (event, ui) {
-				/** @type {Card} */
-				const card = window.lastMove.draggedCard;
-				playerTryPlayCard(card, thisBattletrack);
-				// if (this.children.length < 4) {
-				// 	// window.lastMove.successfullyPlaced = true;
-				// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
-				// 	// window.lastMove.droppedIndex = this.children.length;
-				// 	// card.getOwner().getHand().remove();
-				// 	// /** @type {HTMLElement} The card's node. */
-				// 	// const cardNode = card.getNode();
-				// 	// //Append it to the box
-				// 	// $(this).append($(cardNode));
-				// }
 
-				// //
-				// if (this.children.length == 4) {
-				// 	$(this).droppable("disable");
-				// } else {
-				// 	$(this).droppable("enable");
-				// }
-
-				$(this).css('background-color', 'rgba(255, 255, 255, .2');
-			},
-			over: function (event) {
-				console.log(event.target.children.length);
-				if ($(event.target).children.length < 4) {
-					$(event.target).droppable("enable");
-					$(this).css('background-color', 'rgba(255, 255, 255, .5');
-				}
-			},
-			out: function () {
-				$(this).css('background-color', 'rgba(255, 255, 255, .2')
-			}
-		});
+		addDroppableToBattleline(this, friendlyCardZoneNode);
 
 		/** @type {HTMLElement} A reference to the HTML on the DOM that is the root node for this battletrack. */
 		this.node = _allBattletracks[i];
@@ -1112,6 +1089,8 @@ const playerTryPlayCard = (card, battletrack) => {
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
 
+		console.log("Human played ", card.getDisplayName());
+
 		// If the AI can make a move
 		if (enemy.canPlayCard()) {
 			currentPlayer = enemy;
@@ -1128,6 +1107,7 @@ const playerTryPlayCard = (card, battletrack) => {
  * Called when the player presses the end turn button.
  */
 const playerEndTurnEarly = () => {
+	console.log("human skipped their turn.")
 	// If the AI can make a move
 	if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
@@ -1161,6 +1141,8 @@ const AI_playcard = () => {
 	// Reduce AI mana by card cost
 	enemy.setMana(mana - cardToPlay.getCost());
 
+	console.log("Ai played ", cardToPlay.getDisplayName());
+
 	// If the player can make a move.
 	if (human.canPlayCard()) {
 		// Set the current player to the human player
@@ -1181,6 +1163,8 @@ const AI_playcard = () => {
  * Called after the player and the ai cannot play any more cards.
  */
 const endPlayCardStage = () => {
+	console.log("No more cards can be played. Beginning actions.");
+
 	// Set stage to action
 	currentGameStage = Stage.Action;
 
@@ -1193,7 +1177,8 @@ const endPlayCardStage = () => {
 			// Add all the cards on this battletrack to cardsToAct.
 			cardsToAct.push(...(battletrack.getFriendlyCards()), ...(battletrack.getEnemyCards()));
 		}
-	})
+	});
+
 	// Sort cardsToAct by speed
 	cardsToAct.sort((a, b) => {
 		const aSpeed = a.getSpeed();
@@ -1229,7 +1214,6 @@ const endPlayCardStage = () => {
 			}
 		}
 	});
-
 	letNextCardDoAction();
 };
 
@@ -1248,15 +1232,21 @@ const letNextCardDoAction = () => {
 		/** @returns {number} the speed of the next card on the cardsToAct stack. */
 		const nextSpeed = () => cardsToAct[cardsToAct.length - 1].getSpeed();
 
-		/** @type {number} The speed of the firsy card popped from the stack. */
+		/** @type {number} The speed of the first card popped from the stack. */
 		const speed = nextSpeed();
 
 		// Pop cardsToAct and add it to the active card array
 		do {
-			activeCards.push(cardsToAct.pop());
-		} while (cardsToAct.length > 0 && nextSpeed() === speed);
+			/** @type {Card} The next card to act. */
+			const nextCard = cardsToAct.pop();
+			// Add it to the active cards.
+			activeCards.push(nextCard);
+			// Give the player the power to drag the card.
+			if (nextCard.getOwner() === human) { addDraggableToNextPlayerCard(nextCard); }
+		} while (false);//(cardsToAct.length > 0 && nextSpeed() === speed);
 	}
 
+	console.log("Next active cards are", activeCards[0].getDisplayName());
 	// If the card is owned by the AI
 	if (activeCards[0].getOwner() === enemy) {
 		AI_action();
@@ -1279,6 +1269,8 @@ const AI_action = () => {
 	// Pick a random enemy card, or if the index is -1, the battleline itself.
 	const target = randomIndex === -1 ? activeCard.getBattleline().getBattletrack().getFriendlyBattleline() : targets[randomIndex];
 
+	console.log("AI is ordering", activeCard.getDisplayName(), 'to attack', target instanceof Battleline ? "battleline" : target.getDisplayName());
+
 	// Order active card to attack
 	if (!cardAttackAction(activeCard, target)) {
 		letNextCardDoAction();
@@ -1291,6 +1283,7 @@ const AI_action = () => {
  * @param {Card | Battleline} defender The card or battleline the player is trying to attack.
  */
 const playerTryAttack = (card, defender) => {
+	console.log("The player is trying to attack:", defender, ", with attacker:", card);
 	/** @type {number} Index of the card in active cards. */
 	const cardIndex = activeCards.indexOf(card);
 	/** @type {boolean} If the stage is action. */
@@ -1321,6 +1314,7 @@ const playerTryAttack = (card, defender) => {
  * @returns {boolean} true if the game ended.
  */
 const cardAttackAction = (attacker, defender) => {
+	console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
 	/** @type {number} The attack value of the attacking card. */
 	const attack = attacker.getAttack();
 
@@ -1338,6 +1332,7 @@ const cardAttackAction = (attacker, defender) => {
 	if (defender instanceof Card) {
 		// If the defender dies
 		if (defender.getCurrentHitpoints() === 0) {
+			console.log("defender dies")
 			// Kill the card. This function takes care of all the disposal.
 			defender.die();
 		}
@@ -1346,6 +1341,7 @@ const cardAttackAction = (attacker, defender) => {
 	else {
 		// If the battletrack dies
 		if (defender.getHitpoints() === 0) {
+			console.log("battletrack is conquored")
 			/** @type {Player} the player that owns the attacking card. */
 			const player = attacker.getOwner();
 			// Increment the player's conquered tracks stat.
@@ -1372,6 +1368,8 @@ const cardAttackAction = (attacker, defender) => {
 const endRound = () => {
 	++currentRound;
 
+	console.log("new round beginning:", currentRound);
+
 	// Set mana for both players to round number
 	// Refresh both players mana, awarding an extra 2 if they spent no mana last round.
 	human.setMana(currentRound + human.isReinforcing() ? 2 : 0);
@@ -1388,7 +1386,7 @@ const endRound = () => {
 	currentGameStage = Stage.Playing;
 
 	// If the player won the coinflip, they go first on even numbered rounds
-	if (humanGoesFirst && currentRound % 2 !== 0) {
+	if ((humanGoesFirst && currentRound % 2 !== 0) || (!humanGoesFirst && currentRound % 2 === 0)) {
 		currentPlayer = human;
 	}
 	else {
@@ -1435,10 +1433,116 @@ const trackLastMove = (event) => {
 	window.lastMove.successfullyPlaced = false;
 }
 
+/**
+ * @param {Card} nextCard The next card that the player can play.
+ */
+const addDraggableToNextPlayerCard = nextCard => {
+	/** @type {Card[]} The cards that can be attacked by the active card. */
+	const enemyCards = nextCard.getBattleline().getBattletrack().getEnemyBattleline().cards;
+	/** @type {HTMLElement} */
+	const nextCardNode = nextCard.getNode();
+	$(nextCardNode).draggable({
+		revert: true,
+		start: function (event) {
+			//Give the card some cool styling
+			$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
+
+			enemyCards.forEach(enemyCard => {
+				addDroppableToEnemyCard(enemyCard, nextCard);
+			});
+		},
+		drag: function (event) {
+		},
+		stop: function (event) {
+			// Stop dragging this card.
+			lastMove.draggedCard = null;
+			//Reset the styling:
+			$(event.target).css('transform', 'scale(1)');
+		}
+	});
+	$(nextCardNode).draggable("enable");
+};
+
+/**
+ * @param {Card} enemyCard The enemy card that is attackable.
+ * @param {Card} cardThatWouldAttack The player card that would perform this attack.
+ */
+const addDroppableToEnemyCard = (enemyCard, cardThatWouldAttack) => {
+	$(enemyCard.getNode()).droppable({
+		tolerance: "pointer",
+		drop: function (event, ui) {
+			// The player is ordering nextCard to attack enemyCard
+			playerTryAttack(cardThatWouldAttack, enemyCard);
+			// If the enemy was not killed by this attack
+			if(enemyCard.getCurrentHitpoints() !== 0) {
+				$(enemyCard.getNode()).droppable("disable");
+			}
+			$(cardThatWouldAttack.getNode()).draggable("disable");
+		},
+	});
+	$(enemyCard.getNode()).droppable("enable");
+};
+
+/**
+ * This has to be a seperate function because Javascript function definitions capture by reference, not copy.
+ * @param {Battletrack} battletrack The battletrack this lane is on.
+ * @param {HTMLElement} battlelineNode The Element to put the draggable on.
+ */
+const addDroppableToBattleline = (battletrack, battlelineNode) => {
+	// Makes the zone accept draggables
+	$(battlelineNode).droppable({
+		classes: {
+			"ui-droppable-active": "ui-state-active",
+			"ui-droppable-hover": "ui-state-hover"
+		},
+		tolerance: "pointer",
+		// on drop, check if player-card box is full, if not, updated lastMove.successfullyPlaced global var, capture
+		// which battletrack it was dropped on, and the index that the card is in the player-card box
+		// then append a new div with the same attributes to the player-card box
+		// remove the lastMove.targetCard from the DOM
+		drop: function (event, ui) {
+			/** @type {Card} */
+			const card = window.lastMove.draggedCard;
+			playerTryPlayCard(card, battletrack);
+			// if (this.children.length < 4) {
+			// 	// window.lastMove.successfullyPlaced = true;
+			// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
+			// 	// window.lastMove.droppedIndex = this.children.length;
+			// 	// card.getOwner().getHand().remove();
+			// 	// /** @type {HTMLElement} The card's node. */
+			// 	// const cardNode = card.getNode();
+			// 	// //Append it to the box
+			// 	// $(this).append($(cardNode));
+			// }
+
+			// //
+			// if (this.children.length == 4) {
+			// 	$(this).droppable("disable");
+			// } else {
+			// 	$(this).droppable("enable");
+			// }
+
+			$(this).css('background-color', 'rgba(255, 255, 255, .2');
+		},
+		accept: function (draggable) {
+			return currentPlayer === human;
+		},
+		over: function (event) {
+			if ($(event.target).children.length < 4) {
+				$(event.target).droppable("enable");
+				$(this).css('background-color', 'rgba(255, 255, 255, .5');
+			}
+		},
+		out: function () {
+			$(this).css('background-color', 'rgba(255, 255, 255, .2')
+		}
+	});
+};
+
 //#endregion
 
 //#region GLOBAL VARIABLES
-	
+
 // create global lastMove object to track across different jQuery event listeners
 window.lastMove = {
 	pickupIndex: 0,
@@ -1451,12 +1555,12 @@ window.lastMove = {
 	draggedCard: null,
 };
 
-	//#region HTML NODES
-	// GAME LEVEL
+//#region HTML NODES
+// GAME LEVEL
 /** @type {HTMLElement} The concede button.  */
-const _concedeButton = document.querySelector("#concede-button");	
+const _concedeButton = document.querySelector("#concede-button");
 
-	// BATTLETRACK VARS
+// BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
 
