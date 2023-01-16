@@ -1448,8 +1448,10 @@ const endRound = () => {
 
 	// Set mana for both players to round number
 	// Refresh both players mana, awarding an extra 2 if they spent no mana last round.
-	human.setMana(currentRound + human.isReinforcing() ? 2 : 0);
-	enemy.setMana(currentRound + enemy.isReinforcing() ? 2 : 0);
+	human.setMana(currentRound + (human.isReinforcing() ? 2 : 0));
+	enemy.setMana(currentRound + (enemy.isReinforcing() ? 2 : 0));
+
+	console.log("human mana:",human.mana);
 
 	human.reinforcing = true;
 	enemy.reinforcing = true;
