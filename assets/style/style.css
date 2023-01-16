@@ -470,13 +470,88 @@ body {
 }
 
 .player-card {
+	position: relative;
+	display: flex;
+	margin: 5px;
+	padding: 3px;
 	height: 200px;
 	width: 150px;
 	border-radius: 5px;
+	flex-direction: column;
 	transition: transform .5s cubic-bezier(.23, 1, .32, 1);
-	background-color: orange;
+	background-color: antiquewhite;
 	border: 1px solid black;
 	z-index: 3;
+}
+
+.player-card p {
+	font-size: 12px;
+}
+
+.card-art {
+	height: 100%;
+        width: 100%;
+        object-fit: cover;
+	position: absolute;
+	z-index: 0;
+}
+
+.mana-initiative {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: solid black 1px;
+	padding: 0 6px;
+	margin: 5px;
+	border-radius: 5px;
+	background-color: lightseagreen;
+}
+
+.card-table {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px;
+	border: solid black 1px;
+	background-color: silver;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border-radius: 5px;
+	width: 40%;
+	padding: 0;
+	z-index: 1;
+}
+
+.card-table div {
+	display: flex;
+	flex-direction: row;
+}
+
+.card-footer {
+	z-index: 1;
+}
+
+.card-footer h2 {
+	position: absolute;
+	border: solid black 1px;
+	border-radius: 5px;
+	background-color: gainsboro;
+	margin: 5px;
+	bottom: 0;
+	left: 0;
+	font-size: 28px;
+}
+
+.card-footer p {
+	position: absolute;
+	border: solid black 1px;
+	padding: 0 6px;
+	border-radius: 5px;
+	background-color: red;
+	margin: 5px;
+	bottom: 0;
+	right: 0;
 }
 
 .enemy-cards > div {
