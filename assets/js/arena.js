@@ -1,9 +1,9 @@
 
 
 $('.dropdown-trigger').dropdown();
-$(document).ready(function(){
-    $('.modal').modal();
-  });
+$(document).ready(function () {
+	$('.modal').modal();
+});
 
 document.getElementById("undo-button").addEventListener("click", (event) => {
 	event.preventDefault();
@@ -501,7 +501,7 @@ class Card {
 	setCurrentHitpoints(hitpoints) {
 		this.currentHitpoints = Math.max(0, Math.min(this.totalHitpoints, hitpoints));
 		//TODO: Walk the tree to update the card's health appearance.
-		let hitpointsEl = this.node.children[3].children[1];
+		let hitpointsEl = this.node.children[2].children[1];
 		hitpointsEl.textContent = this.currentHitpoints;
 	}
 }
@@ -644,6 +644,14 @@ class Battletrack {
 		/** @type {Location} The location of this battletrack. */
 		this.location = location;
 		// TODO: Crawl the node to get the elements used to indicate location
+		/** @type {HTMLElement} The Element that the player needs to target when attacking this battletrack. */
+		this.targetableNode = _btNames[index];
+	}
+	/**
+	 * @returns {HTMLElement} the element taht should be targeted by the player when attacking this battletrack.
+	 */
+	getTargetable() {
+		return this.targetableNode;
 	}
 	/**
 	 * @returns {Battleline} the battleline on the friendly side of the battletrack.
@@ -1436,7 +1444,7 @@ const endGame = () => {
 	}
 	// Display victory or failure screen/animation
 	// TODO: add an endgame screen or page to show.
-	
+
 };
 
 /**
@@ -1459,15 +1467,22 @@ const addDraggableToNextPlayerCard = nextCard => {
 	const enemyCards = nextCard.getBattleline().getBattletrack().getEnemyBattleline().cards;
 	/** @type {HTMLElement} */
 	const nextCardNode = nextCard.getNode();
+	/** @type {HTMLElement} The battletrack. */
+	const battletrack = nextCard.getBattleline().getBattletrack();
+
 	$(nextCardNode).draggable({
 		revert: true,
 		start: function (event) {
 			//Give the card some cool styling
 			$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
 
+			//Add the droppables
 			enemyCards.forEach(enemyCard => {
 				addDroppableToEnemyCard(enemyCard, nextCard);
 			});
+
+			addDroppableToBattletrack(battletrack, nextCard);
+
 		},
 		drag: function (event) {
 		},
@@ -1492,13 +1507,30 @@ const addDroppableToEnemyCard = (enemyCard, cardThatWouldAttack) => {
 			// The player is ordering nextCard to attack enemyCard
 			playerTryAttack(cardThatWouldAttack, enemyCard);
 			// If the enemy was not killed by this attack
-			if(enemyCard.getCurrentHitpoints() !== 0) {
+			if (enemyCard.getCurrentHitpoints() !== 0) {
 				$(enemyCard.getNode()).droppable("disable");
 			}
 			$(cardThatWouldAttack.getNode()).draggable("disable");
 		},
 	});
 	$(enemyCard.getNode()).droppable("enable");
+};
+
+/**
+ * @param {Battletrack} battletrack The battletrack card that is attackable.
+ * @param {Card} cardThatWouldAttack The player card that would perform this attack.
+ */
+const addDroppableToBattletrack = (battletrack, cardThatWouldAttack) => {
+	$(battletrack.getTargetable()).droppable({
+		tolerance: "pointer",
+		drop: function (event, ui) {
+			playerTryAttack(cardThatWouldAttack, battletrack.getEnemyBattleline());
+
+			$(battletrack.getTargetable()).droppable("disable");
+			$(cardThatWouldAttack.getNode()).draggable("disable");
+		},
+	});
+	$(battletrack.getTargetable()).droppable("enable");
 };
 
 /**
@@ -1590,6 +1622,9 @@ const _rejectHandButton = document.querySelector("#reject-hand-button");
 // BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
+
+/** @type {HTMLElement[]} Array of battletrack names elements. */
+const _btNames = document.querySelectorAll(".location-text");
 
 /** @type {HTMLElement[]} Array of battletrack enemy HP containers -> div = progress bar, span = count */
 const _btEnemyHp = document.querySelectorAll(".bt-enemy-hp");
