@@ -857,24 +857,26 @@ class Hand {
 		// to their initial space if not dropped in a droppable,
 		// and snap to their target droppable
 		// Makes both enemy and player cards draggable?
-		$(cardNode).draggable({
-			revert: "invalid",
-			snap: true,
-			start: function (event) {
-				//Give the card some cool styling
-				$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
-				// Make a note of what card is being dragged.
-				lastMove.draggedCard = card;
-			},
-			drag: function (event) {
-			},
-			stop: function (event) {
-				// Stop dragging this card.
-				lastMove.draggedCard = null;
-				//Reset the styling:
-				$(event.target).css('transform', '');
-			}
-		});
+		if(card.owner === human){
+			$(cardNode).draggable({
+				revert: "invalid",
+				snap: true,
+				start: function (event) {
+					//Give the card some cool styling
+					$(event.target).css('transform', 'translateY(0) scale(.75) perspective(750px) rotateX(25deg)');
+					// Make a note of what card is being dragged.
+					lastMove.draggedCard = card;
+				},
+				drag: function (event) {
+				},
+				stop: function (event) {
+					// Stop dragging this card.
+					lastMove.draggedCard = null;
+					//Reset the styling:
+					$(event.target).css('transform', '');
+				}
+			});
+		}
 	}
 	/**
 	 * Removes a given card from the hand and returns it.
@@ -883,7 +885,9 @@ class Hand {
 	 * @returns {Card} the card that was removed.
 	 */
 	remove(card) {
-		$(card.getNode()).draggable("disable");
+		if(card.owner === human){
+			$(card.getNode()).draggable("disable");
+		}
 		return this.cards.splice(this.cards.indexOf(card), 1)[0];
 	}
 	/**
