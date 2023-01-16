@@ -46,6 +46,11 @@ card-slot: 2;
 	box-sizing: border-box;
 }
 
+img, video {
+	width: 25%;
+	height: 25%;
+}
+
 .row {
 	margin: 0;
 }
@@ -69,11 +74,82 @@ body {
 	height: 100vh;
 }
 
-#menu-btn {
+#modal-button {
+	height: 50px;
+	width: 125px;
+	left: 0px;
+	top: calc(50% - 25px);
+	padding-top: 5px;
+	font-size: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	background-image: url('../images/textures/leather-menu-button.png');
+	background-size: contain;
+	background-position: center;
+	border-radius: 0px 25px 25px 0px;
+	border-top: 2px solid white;
+	border-right: 2px solid white;
+	border-bottom: 2px solid white;
+}
+
+#modal-button:hover::after {
+	width: inherit;
+	content: '';
+	position: absolute;
+	top: -5px;
+	left: 0;
+	right: -5px;
+	bottom: -5px;
+	border-radius: inherit;
+	z-index: -1;
+	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
+	filter: blur(5px);
+}
+
+#modal {
+	background-image: url('../images/backgrounds/cracked-stone-med.png');
+	background-size: cover;
+	background-position: center;
+	color: white;
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+.modal-content {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+#modal-player-hand {
+	height: 200px;
+	width: 100%;
+	background-color: gray;
+	box-shadow: inset 0px 0px 8px black
+}
+
+#modal-footer {
+	background-color: black;
+	color: white;
+}
+
+#start-button {
+	color: white;
+	transition: all .2s ease-out;
+}
+
+#start-button:hover {
+	background-color: green;
+}
+
+#menu-button {
 	height: 50px;
 	position: absolute;
 	left: 0px;
-	bottom: 300px;
+	bottom: calc(30% - 25px);
 	transition: transform .5s ease-out;
 	background-image: url("../images/textures/leather-menu-button.png");
 	background-size: contain;
@@ -83,12 +159,12 @@ body {
 	align-items: center;
 	border-radius: 0 25px 25px 0;
 	box-shadow: 3px 3px 3px black;
-	border-top: 1px solid white;
-	border-right: 1px solid white;
-	border-bottom: 1px solid white;
+	border-top: 2px solid white;
+	border-right: 2px solid white;
+	border-bottom: 2px solid white;
 }
 
-#menu-btn:hover::after {
+#menu-button:hover::after {
 	width: inherit;
 	content: '';
 	position: absolute;
@@ -96,7 +172,6 @@ body {
 	left: 0;
 	right: -5px;
 	bottom: -5px;
-	background-color: red;
 	border-radius: inherit;
 	z-index: -1;
 	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
@@ -438,6 +513,7 @@ body {
 	position: absolute;
 	bottom: -20px;
 	right: -30px;
+	background-color: red;
 }
 
 .bt-enemy-armor {
@@ -501,37 +577,15 @@ body {
 	z-index: -1;
 }
 
-/* can't apply background-color to another class, have to do it through ids? */
-#bt1-enemy-hp {
-	width: 80%;
-	background-color: red;
-}
-
-#bt2-enemy-hp {
-	width: 100%;
-	background-color: red;
-}
-
+#bt1-enemy-hp,
+#bt2-enemy-hp,
 #bt3-enemy-hp {
-	width: 50%;
 	background-color: red;
 }
 
-#bt1-player-hp {
-	height: 80px;
-	width: 100%;
-	background-color: rgb(147, 69, 255);
-}
-
-#bt2-player-hp {
-	height: 80px;
-	width: 25%;
-	background-color: rgb(147, 69, 255);
-}
-
+#bt1-player-hp,
+#bt2-player-hp,
 #bt3-player-hp {
-	height: 80px;
-	width: 0%;
 	background-color: rgb(147, 69, 255);
 }
 
