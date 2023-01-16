@@ -459,15 +459,14 @@ body {
 }
 
 .player-cards > div {
-	height: 100px;
-	width: 80px;
 	margin: 3px;
 	color: black;
 	z-index: 2;
 	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	transform: scale(.5);
 }
 
-#player-hand > div:hover {
+#player-card > div:hover {
 	transform: scale(1.8);
 	z-index: 4;
 }
@@ -558,12 +557,11 @@ body {
 }
 
 .enemy-cards > div {
-	height: 100px;
-	width: 80px;
 	margin: 3px;
 	background-color: blue;
 	color: white;
 	z-index: 2;
+	transform: scale(.5);
 }
 
 .bt-hp-container {

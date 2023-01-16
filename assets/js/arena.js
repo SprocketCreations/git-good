@@ -870,7 +870,7 @@ class Hand {
 				// Stop dragging this card.
 				lastMove.draggedCard = null;
 				//Reset the styling:
-				$(event.target).css('transform', 'scale(1)');
+				$(event.target).css('transform', '');
 			}
 		});
 	}
@@ -1495,7 +1495,7 @@ const addDraggableToNextPlayerCard = nextCard => {
 			// Stop dragging this card.
 			lastMove.draggedCard = null;
 			//Reset the styling:
-			$(event.target).css('transform', 'scale(1)');
+			$(event.target).css('transform', '');
 		}
 	});
 	$(nextCardNode).draggable("enable");
