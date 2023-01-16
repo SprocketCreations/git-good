@@ -1604,8 +1604,9 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 		drop: function (event, ui) {
 			/** @type {Card} */
 			const card = window.lastMove.draggedCard;
-			playerTryPlayCard(card, battletrack);
-			
+			if(card != null) {
+				playerTryPlayCard(card, battletrack);
+			}
 			// if (this.children.length < 4) {
 				// 	// window.lastMove.successfullyPlaced = true;
 			// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
