@@ -581,6 +581,10 @@ class Battleline {
 		const cardNode = card.getNode();
 		cardNode.style.transform = "";
 		cardNode.style.inset = "";
+		cardNode.style.top = "";
+		cardNode.style.bottom = "";
+		cardNode.style.left = "";
+		cardNode.style.right = "";
 		// Append the card to the battleline.
 		this.zoneNode.appendChild(cardNode);
 		// Add this card to the internal tracking.
@@ -1160,6 +1164,12 @@ const playerTryPlayCard = (card, battletrack) => {
 		if(cardNode.parentElement !== handNode) {
 			hand.node.appendChild(cardNode);
 		}
+		cardNode.style.transform = "";
+		cardNode.style.inset = "";
+		cardNode.style.top = "";
+		cardNode.style.bottom = "";
+		cardNode.style.left = "";
+		cardNode.style.right = "";
 	}
 };
 
