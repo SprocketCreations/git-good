@@ -1,8 +1,15 @@
+document.addEventListener('DOMContentLoaded', function() {
+	var elem = document.querySelector('.modal');
+	M.Modal.init(elem, {
+		dismissible: false
+	});
+});
 
-
-$('.dropdown-trigger').dropdown();
-$(document).ready(function () {
-	$('.modal').modal();
+document.addEventListener('DOMContentLoaded', function() {
+    let elem = document.querySelector('#menu-button');
+	M.Dropdown.init(elem, {
+		hover: true
+	});
 });
 
 document.getElementById("undo-button").addEventListener("click", (event) => {
@@ -847,6 +854,7 @@ class Hand {
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
 		// and snap to their target droppable
+		// Makes both enemy and player cards draggable?
 		$(cardNode).draggable({
 			revert: "invalid",
 			snap: true,
@@ -1062,9 +1070,6 @@ const rejectFirstHand = () => {
 
 	// Rebuild the player's hand.
 	refillHand(human);
-
-	//Start the game.
-	startFirstRound();
 };
 
 /**
