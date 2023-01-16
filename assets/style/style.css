@@ -501,6 +501,9 @@ body {
 }
 
 .location-text {
+	width: calc(100% + 50px);
+	text-align: center;
+
 	color: rgb(86, 213, 255);
 	font-size: 32px;
 	font-weight: bold;
