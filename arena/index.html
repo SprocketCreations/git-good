@@ -11,15 +11,13 @@
 	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,700&family=Luckiest+Guy&family=Rozha+One&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link rel="stylesheet" href="../assets/style/style.css">
-	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
 </head>
 
 <body>
 	<main id="battlefield" class="row">
 		  <!-- Dropdown Trigger -->
-		  <a class='dropdown-trigger btn' id="menu-btn" href='#' data-target='dropdown'>Menu</a>
-
+		  <a class='dropdown-trigger btn' id="menu-button" href='#' data-target='dropdown'>Menu</a>
+		  <a id="modal-button" class="waves-effect waves-light btn modal-trigger" href="#modal">Start</a>
 		  <!-- Dropdown Structure -->
 		  <ul id='dropdown' class='dropdown-content'>
 			<li><a href="#!">Main Menu</a></li>
@@ -53,11 +51,11 @@
 					
 					<div class="progress bt-hp-container bt-enemy-hp">
 						<div id="bt1-enemy-hp" class="determinate bt-hp-progress"></div>
-						<span class="bt-hp-count">18</span>
+						<span class="bt-hp-count"></span>
 					</div>
 
 					<div class="bt-enemy-armor">
-						<span class="bt-armor-count">4</span>
+						<span class="bt-armor-count"></span>
 					</div>
 					<div class="enemy-cards"></div>
 					<!-- Middle of table -->
@@ -65,38 +63,38 @@
 					<div id="player-cards-1" class="player-cards"></div>
 					<div class="progress bt-hp-container bt-player-hp">
 						<div id="bt1-player-hp" class="determinate bt-hp-progress"></div>
-						<span class="bt-hp-count">20</span>
+						<span class="bt-hp-count"></span>
 					</div>
 					<div class="bt-player-armor">
-						<span class="bt-armor-count">1</span>
+						<span class="bt-armor-count"></span>
 					</div>
 				</div>
 				<div id="battletrack-2" class="row battletrack">
 					<div class="progress bt-hp-container bt-enemy-hp">
 						<div id="bt2-enemy-hp" class="determinate bt-hp-progress"></div>
-						<span class="bt-hp-count">20</span>
+						<span class="bt-hp-count"></span>
 					</div>
 					<div class="bt-enemy-armor">
-						<span class="bt-armor-count">0</span>
+						<span class="bt-armor-count"></span>
 					</div>
 					<div class="enemy-cards"></div>
 					<div class="location-text">Wakanda</div>
 					<div class="player-cards"></div>
 					<div class="progress bt-hp-container bt-player-hp">
 						<div id="bt2-player-hp" class="determinate bt-hp-progress"></div>
-						<span class="bt-hp-count">5</span>
+						<span class="bt-hp-count"></span>
 					</div>
 					<div class="bt-player-armor">
-						<span class="bt-armor-count">2</span>
+						<span class="bt-armor-count"></span>
 					</div>
 				</div>
 				<div id="battletrack-3" class="row battletrack">
 					<div class="progress bt-hp-container bt-enemy-hp">
 						<div id="bt3-enemy-hp" class="determinate bt-hp-progress"></div>
-						<span class="bt-hp-count">10</span>
+						<span class="bt-hp-count"></span>
 					</div>
 					<div class="bt-enemy-armor">
-						<span class="bt-armor-count">1</span>
+						<span class="bt-armor-count"></span>
 					</div>
 					<div class="enemy-cards"></div>
 					<!-- Middle of table -->
@@ -107,7 +105,7 @@
 						<span class="bt-hp-count"></span>
 					</div>
 					<div class="bt-player-armor">
-						<span class="bt-armor-count">2</span>
+						<span class="bt-armor-count"></span>
 					</div>
 				</div>
 			</div>
@@ -131,9 +129,21 @@
 			</div>
 		</div>
 
+		<div id="modal" class="modal">
+			<div class="modal-content">
+			  <h4>Planning</h4>
+			  <p>Keep your cards or decide to draw again!</p>
+			  <div id="modal-player-hand"></div>
+			</div>
+			<div id="modal-footer" class="modal-footer">
+				<a id="start-button" class="modal-close waves-effect waves-green btn-flat">Begin</a>
+				<a id="reject-hand-button" class="waves-effect waves-white btn-flat red">Reject Hand</a>
+			</div>
+		</div>
+
 		<!-- Card Template -->
 		<template id="card-template">
-			<div class="card-container">
+			<div class="player-card">
 				<img class="card-art" src="" alt="">
 				<div class="card-header">
 					<p class="mana-initiative"></p>
@@ -160,6 +170,8 @@
 		</template>
 	</main>
 
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	<script src="../assets/js/arena.js"></script>
 </body>
