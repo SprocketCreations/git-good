@@ -50,6 +50,16 @@ card-slot: 2;
                         supported by Chrome, Edge, Opera and Firefox */
 }
 
+.grab {
+	cursor: -webkit-grab;
+	cursor: grab;
+}
+
+.grabbing {
+	cursor: -webkit-grabbing;
+	cursor: grabbing;
+}
+
 *, *::before, *::after{
 	margin: 0;
 	padding: 0;
