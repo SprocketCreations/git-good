@@ -60,6 +60,70 @@ body {
 	overflow: hidden;
 }
 
+/* Card Template Styling */
+.card-container {
+	display: flex;
+	padding: 3px;
+	margin: 5px;
+	flex-direction: column;
+	height: 200px;
+	width: 150px;
+	border: solid black;
+	border-radius: 6px;
+	background-color: antiquewhite;
+}
+
+.card-art {
+	height: 100%;
+        width: 100%;
+        object-fit: cover;
+	position: absolute;
+	z-index: 0;
+}
+
+.card-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.card-table {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border-radius: 6px;
+	height: 50%;
+	width: 40%;
+	margin: 0;
+	padding: 0;
+	z-index: 1;
+}
+
+.card-table div {
+	display: flex;
+	flex-direction: row;
+}
+
+.card-footer {
+	display: flex;
+	margin-top: auto;
+	justify-content: center;
+	background-color: gainsboro;
+	border-top-left-radius: 6%;
+	border-top-right-radius: 6%;
+	width: 100%;
+	z-index: 1;
+}
+
+.card-footer h2 {
+	margin: 0;
+	font-size: 28px;
+}
+
+.card-footer p {
+	margin: 0;
+}
+
+
 /*Getting rid of row::after from materialize*/
 .row::after {
 	display: none;

@@ -135,19 +135,23 @@
 		<template id="card-template">
 			<div class="card-container">
 				<img class="card-art" src="" alt="">
-				<p class="mana-initiative"></p>
-				<table class="card-stats">
-					<thead>
-						<th>Attack</th>
-						<th>Defense</th>
-						<th>Speed</th>
-					</thead>
-					<tbody>
-						<tr class="card-attack"></tr>
-						<tr class="card-defense"></tr>
-						<tr class="card-speed"></tr>
-					</tbody>
-				</table>
+				<div class="card-header">
+					<p class="mana-initiative"></p>
+					<section class="card-table">
+						<div>
+							<p>ATK: &nbsp;</p>
+							<p class="card-attack"></p>
+						</div>
+						<div>
+							<p>DEF: &nbsp;</p>
+							<p class="card-defense"></p>
+						</div>
+						<div>
+							<p>SPD: &nbsp;</p>
+							<p class="card-speed"></p>
+						</div>
+					</section>
+				</div>
 				<section class="card-footer">
 					<h2 id="card-name"></h2>
 					<p class="card-health"></p>
