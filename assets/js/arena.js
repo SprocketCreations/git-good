@@ -12,25 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 
-document.getElementById("undo-button").addEventListener("click", (event) => {
+document.getElementById("end-turn-button").addEventListener("click", (event) => {
 	event.preventDefault();
-	if (window.lastMove.successfullyPlaced == true) {
-		$(`#${window.lastMove.targetCardId}`).remove();
-		$("#player-hand").append(`<div id='${window.lastMove.targetCardId}' class='player-card ui-draggable ui-draggable-handle' data-str='${window.lastMove.targetCardStr}' data-hp='${window.lastMove.targetCardHP}' data-speed='${window.lastMove.targetCardSpeed}'>
-									</div>`);
-		$("#player-hand div").last().draggable({
-			revert: "invalid",
-			snap: true,
-			start: function (event) {
-				trackLastMove(event);
-			},
-			drag: function (event) {
-			},
-			stop: function (event) {
-				//
-			}
-		});
-	}
+	endRound();
 })
 
 // API FETCH & DECK DATA COLLECTION:
