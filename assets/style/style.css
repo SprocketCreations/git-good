@@ -87,11 +87,12 @@ body {
 }
 
 .card-table {
+	border: solid black;
+	background-color: silver;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	border-radius: 6px;
-	height: 50%;
 	width: 40%;
 	margin: 0;
 	padding: 0;
@@ -104,12 +105,12 @@ body {
 }
 
 .card-footer {
+	margin: auto 0 0 0;
 	display: flex;
-	margin-top: auto;
 	justify-content: center;
 	background-color: gainsboro;
-	border-top-left-radius: 6%;
-	border-top-right-radius: 6%;
+	border: solid black;
+	border-radius: 6%;
 	width: 100%;
 	z-index: 1;
 }
