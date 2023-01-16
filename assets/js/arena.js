@@ -409,13 +409,13 @@ class Card {
 
 			// populate the new template with an id and stats
 			let templateContainer = fragment.children[0];
-			let templateTableBody = templateContainer.children[2].children[1];
-			let templateFooter = templateContainer.children[3];
+			let templateTable = templateContainer.children[1].children[1];
+			let templateFooter = templateContainer.children[2];
 			templateContainer.children[0].setAttribute("src", this.art);
-			templateContainer.children[1].textContent = this.cost;
-			templateTableBody.children[0].textContent = this.attack;
-			templateTableBody.children[1].textContent = this.defense;
-			templateTableBody.children[2].textContent = this.speed;
+			templateContainer.children[1].children[0].textContent = this.cost;
+			templateTable.children[0].children[1].textContent = this.attack;
+			templateTable.children[1].children[1].textContent = this.defense;
+			templateTable.children[2].children[1].textContent = this.speed;
 			templateFooter.children[0].textContent = this.name;
 			templateFooter.children[1].textContent = this.health;
 
