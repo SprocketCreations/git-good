@@ -414,7 +414,7 @@ class Card {
 			templateTable.children[1].children[1].textContent = this.defense;
 			templateTable.children[2].children[1].textContent = this.speed;
 			templateFooter.children[0].textContent = this.name;
-			templateFooter.children[1].textContent = this.health;
+			templateFooter.children[1].textContent = this.currentHitpoints;
 
 			// append newTemplate to index.html
 			this.node = templateContainer;
