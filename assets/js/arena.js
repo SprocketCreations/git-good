@@ -1,6 +1,9 @@
 
 
 $('.dropdown-trigger').dropdown();
+$(document).ready(function(){
+    $('.modal').modal();
+  });
 
 document.getElementById("undo-button").addEventListener("click", (event) => {
 	event.preventDefault();
@@ -890,15 +893,28 @@ const gameStart = () => {
 
 	makePlayers();
 
-	refillHand(human);
-	refillHand(enemy);
+	// Reset display of modal button and reject hand button inside modal
+	_modalButton.style.display = "block";
+	_rejectHandButton.style.display = "inline-block";
 
-	/**TODO: Present the player with two buttons:
-	 * Button one is labled Start game.
-	 * 	This calls startFirstRound()
-	 * Button two is labled Reject hand.
-	 * 	This calls rejectFirstHand()
-	 */
+	// On click, deal 5 cards to the player
+	// TODO: target modal pop-up #modal-player-hand
+	_modalButton.addEventListener("click", () => {
+		refillHand(human);
+	})
+
+	// When the hand is accepted, deal the enemy's cards, start the first round, hide the modal menu button
+	_startButton.addEventListener("click", () => {
+		refillHand(enemy);
+		startFirstRound()
+		_modalButton.style.display = "none";
+	})
+
+	// When player rejects the hand, take away the option to reject the hand again, reject the first hand, start the game
+	_rejectHandButton.addEventListener("click", () => {
+		_rejectHandButton.style.display = "none";
+		rejectFirstHand();
+	})
 };
 
 /**
@@ -1399,8 +1415,9 @@ const endRound = () => {
  * This is called once a player has defeated two battletracks.
  */
 const endGame = () => {
-	// Update the game state prevent the players from doing anything.
+	// Update the game state prevent the players from doing anything and reappear start button
 	currentGameStage = Stage.Over;
+	_modalButton.style.display = "block";
 
 	// If the human won.
 	if (human.isWinner()) {
@@ -1419,6 +1436,7 @@ const endGame = () => {
 	}
 	// Display victory or failure screen/animation
 	// TODO: add an endgame screen or page to show.
+	
 };
 
 /**
@@ -1560,6 +1578,15 @@ window.lastMove = {
 /** @type {HTMLElement} The concede button.  */
 const _concedeButton = document.querySelector("#concede-button");
 
+/** @type {HTMLElement} The modal button.  */
+const _modalButton = document.querySelector("#modal-button");
+
+/** @type {HTMLElement} The start button.  */
+const _startButton = document.querySelector("#start-button");
+
+/** @type {HTMLElement} The reject hand button.  */
+const _rejectHandButton = document.querySelector("#reject-hand-button");
+
 // BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
@@ -1643,7 +1670,6 @@ const activeCards = [];
 //#endregion
 
 // Start the game.
-//gameStart();
-// Dont start the game on page load. We need to wait until the fetches are done.
+
 
 
