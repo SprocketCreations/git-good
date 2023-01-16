@@ -136,6 +136,7 @@ function minMaxNormalization(data, balanceMultiplier) {
 		attack: [],
 		defense: [],
 		speed: [],
+		cost: [],
 		imgUrl: [],
 	}
 
@@ -150,12 +151,22 @@ function minMaxNormalization(data, balanceMultiplier) {
 			for (i = 0; i < data[key].length; i++) {
 				let x = data[key][i]
 				if (key === "health") {
-					statsNormalized[key].push(Math.round((x - min) / (max - min) * balanceMultiplier * 20))
+					statsNormalized[key].push(Math.max(1, Math.round((x - min) / (max - min) * balanceMultiplier * 20)))
 				} else {
-					statsNormalized[key].push(Math.round((x - min) / (max - min) * balanceMultiplier * 5))
+					statsNormalized[key].push(Math.max(1, Math.round((x - min) / (max - min) * balanceMultiplier * 5)))
 				}
 			}
 		}
+	}
+
+	let statTotal = []
+	for (i = 0; i < statsNormalized.name.length; i++) {
+		statTotal.push(statsNormalized.attack[i] + statsNormalized.health[i] + statsNormalized.defense[i] + statsNormalized.speed[i])
+	}
+	let max = Math.max(...statTotal)
+	let min = Math.min(...statTotal)
+	for (i = 0; i < statTotal.length; i++) {
+		statsNormalized["cost"].push(Math.max(1, Math.round((statTotal[i] - min) / (max - min) * 8)))
 	}
 
 	return statsNormalized
@@ -172,13 +183,14 @@ function getCardStats(normalizedData) {
 			let index = normalizedData["name"].indexOf(cardNames[i])
 			let obj = {}
 
-			let statNames = ["name", "health", "attack", "defense", "speed", "imgUrl"]
+			let statNames = ["name", "health", "attack", "defense", "speed", "imgUrl", "cost"]
 			for (x = 0; x < statNames.length; x++) {
 				obj[statNames[x]] = normalizedData[statNames[x]][index]
 			}
 			cardStats.push(obj);
 		}
 	}
+	console.log(cardStats)
 	return cardStats
 }
 
@@ -358,7 +370,7 @@ class Card {
 		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
-		this.cost = Math.max(1, cost);
+		this.cost = cost;
 		/** @type {number} The attack power of this card. */
 		this.attack = attack;
 		/** @type {number} The defense of this card. */
@@ -1031,7 +1043,7 @@ const getStarterDeck = () => {
 		// TODO get art links for cards... Can easily be done w/ API but need to decide if that's what we want
 		const art = deckData[i]["imgUrl"];
 		// TODO need to decide on power curves for each stat & make mana value algorithm
-		const cost = 0;
+		const cost = deckData[i]["cost"];
 		const attack = deckData[i]["attack"];
 		const defense = deckData[i]["defense"];
 		const health = deckData[i]["health"];
