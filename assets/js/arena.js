@@ -1,12 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 	var elem = document.querySelector('.modal');
 	M.Modal.init(elem, {
 		dismissible: false
 	});
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    let elem = document.querySelector('#menu-button');
+document.addEventListener('DOMContentLoaded', function () {
+	let elem = document.querySelector('#menu-button');
 	M.Dropdown.init(elem, {
 		hover: true
 	});
@@ -564,6 +564,7 @@ class Battleline {
 	 * @param {Card} card The card to play to this battleline.
 	 */
 	playCard(card) {
+		console.log("Card played to battleline:", card.getDisplayName());
 		// Append the card to the battleline.
 		this.zoneNode.appendChild(card.getNode());
 		// Add this card to the internal tracking.
@@ -605,6 +606,7 @@ class Battleline {
 	 * Kills all the cards present in this battleline, sending them back to their graveyards.
 	 */
 	conquer() {
+		console.log("Conquoring:", this.cards);
 		this.cards.forEach(card => card.die());
 		this.cards = [];
 	}
@@ -632,7 +634,7 @@ class Battletrack {
 	 * @param {number} friendlyHitpoints The amount of hitpoints the friendly side of the battletrack should start with. Defaults to 40.
 	 * @param {number} enemyHitpoints The amount of hitpoints the enemy side of the battletrack should start with. Defaults to 40.
 	 */
-	constructor(index, location, friendlyHitpoints = 40, enemyHitpoints = 40) {
+	constructor(index, location, friendlyHitpoints = 1, enemyHitpoints = 1) {
 		const friendlyHitpointsNode = _btPlayerHp[index];
 		const friendlyDefenseNode = _btPlayerArmor[index];
 		const friendlyCardZoneNode = _playerTableCards[index];
@@ -1162,7 +1164,10 @@ const AI_playcard = () => {
 	/** @type {Battletrack} A random unconquered battletrack. */
 	let battletrack = null;
 	// Pick a random battletrack that is not conquored
-	do { battletrack = battletracks[Math.floor(Math.random() * battletracks.length)]; } while (battletrack.isConquered());
+	do {
+		battletrack = battletracks[Math.floor(Math.random() * battletracks.length)];
+		console.log("picking battletrack:", battletrack);
+	} while (battletrack.isConquered());
 
 	// Play the random card to the random battletrack.
 	battletrack.playEnemyCard(cardToPlay);
@@ -1312,7 +1317,7 @@ const AI_action = () => {
  * @param {Card | Battleline} defender The card or battleline the player is trying to attack.
  */
 const playerTryAttack = (card, defender) => {
-	console.log("The player is trying to attack:", defender, ", with attacker:", card);
+	//console.log("The player is trying to attack:", defender, ", with attacker:", card);
 	/** @type {number} Index of the card in active cards. */
 	const cardIndex = activeCards.indexOf(card);
 	/** @type {boolean} If the stage is action. */
@@ -1428,6 +1433,7 @@ const endRound = () => {
  * This is called once a player has defeated two battletracks.
  */
 const endGame = () => {
+	console.log("game over");
 	// Update the game state prevent the players from doing anything and reappear start button
 	currentGameStage = Stage.Over;
 	_modalButton.style.display = "block";
@@ -1508,14 +1514,12 @@ const addDraggableToNextPlayerCard = nextCard => {
 const addDroppableToEnemyCard = (enemyCard, cardThatWouldAttack) => {
 	$(enemyCard.getNode()).droppable({
 		tolerance: "pointer",
+		// If the enemy was not killed by this attack
 		drop: function (event, ui) {
+			$(cardThatWouldAttack.getNode()).draggable("disable");
+
 			// The player is ordering nextCard to attack enemyCard
 			playerTryAttack(cardThatWouldAttack, enemyCard);
-			// If the enemy was not killed by this attack
-			if (enemyCard.getCurrentHitpoints() !== 0) {
-				$(enemyCard.getNode()).droppable("disable");
-			}
-			$(cardThatWouldAttack.getNode()).draggable("disable");
 		},
 	});
 	$(enemyCard.getNode()).droppable("enable");
@@ -1529,10 +1533,9 @@ const addDroppableToBattletrack = (battletrack, cardThatWouldAttack) => {
 	$(battletrack.getTargetable()).droppable({
 		tolerance: "pointer",
 		drop: function (event, ui) {
-			playerTryAttack(cardThatWouldAttack, battletrack.getEnemyBattleline());
-
-			$(battletrack.getTargetable()).droppable("disable");
 			$(cardThatWouldAttack.getNode()).draggable("disable");
+
+			playerTryAttack(cardThatWouldAttack, battletrack.getEnemyBattleline());
 		},
 	});
 	$(battletrack.getTargetable()).droppable("enable");
