@@ -671,6 +671,10 @@ class Battletrack {
 	 */
 	playFriendlyCard(card) {
 		this.friendlyBattleline.playCard(card);
+
+		if(this.friendlyBattleline.cards.length >= maxCardsPerBattleline) {
+			friendlyCardZoneNode.droppable("disable");
+		}
 	}
 	/**
 	 * @param {Card} card The card to play to the enemy side of the battletrack.
@@ -805,6 +809,7 @@ class Deck {
 	 * @param {Card} card card to insert into the deck.
 	 */
 	insertCardIntoDeck(card) {
+		card.deleteNode();
 		card.setOwner(this.owner);
 		this.cards.push(card);
 	}
@@ -1784,7 +1789,7 @@ const maxCardsPerBattleline = 4;
 
 //#endregion
 
-//#region Event listeners
+//#region EVENT LISTENERS
 
 document.addEventListener('DOMContentLoaded', function () {
 	var elem = document.querySelector('.modal');
