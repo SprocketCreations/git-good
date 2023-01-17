@@ -1158,6 +1158,14 @@ const playerTryPlayCard = (card, battletrack) => {
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
 
+		// Grow card on double click
+		card.node.addEventListener("dblclick", function() {
+			card.node.classList.add("grow")
+			card.node.addEventListener("mouseleave", function(){
+				card.node.classList.remove("grow")
+			})
+		})
+
 		console.log("Human played ", card.getDisplayName());
 
 		// If the AI can make a move
@@ -1211,6 +1219,14 @@ const AI_playcard = () => {
 	/** @type {Card} A card picked at random from the hand. */
 	// Pick a random card from hand that can be played
 	const cardToPlay = enemy.getHand().random(mana);
+
+	// Grow card on double click...ADD ROTATE 180
+	cardToPlay.node.addEventListener("dblclick", function() {
+		cardToPlay.node.classList.add("grow")
+		cardToPlay.node.addEventListener("mouseleave", function(){
+			cardToPlay.node.classList.remove("grow")
+		})
+	})
 
 	/** @type {Battletrack[]} An array of all the battletracks that are no conquered and also have less than 4 cards in play. */
 	const validBattletracks = [];
@@ -1482,6 +1498,13 @@ const cardAttackAction = (attacker, defender) => {
 			// Kill the card. This function takes care of all the disposal.
 			defender.die();
 		}
+		if (defender.currentHitpoints < defender.totalHitpoints) {
+			defender.node.children[2].children[1].setAttribute("style", "background-color: orange")
+		}
+
+		if (defender.currentHitpoints != defender.totalHitpoints && defender.currentHitpoints <= 1) {
+			defender.node.children[2].children[1].setAttribute("style", "background-color: red")
+		}
 	}
 	// Else if the defender is the battleline
 	else {
@@ -1599,6 +1622,8 @@ const addDraggableToNextPlayerCard = nextCard => {
 	const nextCardNode = nextCard.getNode();
 	/** @type {HTMLElement} The battletrack. */
 	const battletrack = nextCard.getBattleline().getBattletrack();
+	console.log("======")
+	console.log(battletrack.getTargetable())
 
 	let isDragging = false;
 	$(nextCardNode).draggable({
@@ -1619,8 +1644,7 @@ const addDraggableToNextPlayerCard = nextCard => {
 		},
 		stop: function (event) {
 			if(isDragging) {
-				enemyCards.forEach(enemyCard => $(enemyCard.getNode()).droppable("disable"));
-				$(battletrack.getTargetable()).droppable("disable");
+				lastMove.draggedCard = null;
 
 				//Reset the styling:
 				$(event.target).css('transform', '');
