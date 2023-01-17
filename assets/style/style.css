@@ -50,20 +50,31 @@ card-slot: 2;
                         supported by Chrome, Edge, Opera and Firefox */
 }
 
-.grab {
+.grab:hover {
 	cursor: -webkit-grab;
 	cursor: grab;
 }
 
-.grabbing {
+.grabbing:active {
 	cursor: -webkit-grabbing;
 	cursor: grabbing;
 }
 
-.hoverable:hover {
+.pointer:hover {
+	cursor: pointer;
+}
+
+.hover-grow:hover {
 	transform: scale(1.5) translateY(-100px);
 	transition: transform .3s cubic-bezier(0,.98,.61,.99);
 	z-index: 5;
+}
+
+.hover-glow:hover {
+	box-shadow: 3px -3px 5px white,
+				3px 3px 5px white,
+				-3px -3px 5px white,
+				-3px 3px 5px white;
 }
 
 *, *::before, *::after{
@@ -125,11 +136,6 @@ body {
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
 	transition: all .2s ease-out;
-}
-
-#modal-button:hover {
-	box-shadow: 3px -3px 5px white,
-				3px 3px 5px white;
 }
 
 #modal {
@@ -400,23 +406,26 @@ body {
 }
 
 #end-turn-button {
-	width: 100px;
-	height: 100px;
+	display: none;
+	width: 75px;
+	height: 75px;
 	position: absolute;
 	right: 75px;
 	bottom: 150px;
-	background-image: url('../images/icons/next-turn-med.png');
+	background-image: url('../images/icons/right-arrow-med.png');
 	background-size: cover;
 	background-repeat: no-repeat;
 	border-radius: 5px;
-	/* border: 1px solid black;
-	box-shadow: 0px 0px 3px 5px white; */
+	border: 1px solid black;
 	transition: transform .2s ease-out;
 }
 
 #end-turn-button:hover {
-	transform: perspective(100px) rotateY(-35deg);
-	cursor: pointer;
+	transform: perspective(200px) rotateY(25deg);
+}
+
+#end-turn-button:active {
+	transform: scale(.9);
 }
 
 #player-hand div {

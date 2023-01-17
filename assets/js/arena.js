@@ -12,11 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 });
 
-document.getElementById("end-turn-button").addEventListener("click", (event) => {
-	event.preventDefault();
-	endRound();
-})
-
 // API FETCH & DECK DATA COLLECTION:
 // initializing an empty deck that can be added to on fetch completion.
 var pokeStats = []
@@ -950,6 +945,7 @@ const gameStart = () => {
 		refillHand(enemy);
 		startFirstRound()
 		_modalButton.style.display = "none";
+		_endTurnButton.style.display = "block";
 	})
 
 	// When player rejects the hand, take away the option to reject the hand again, reject the first hand, start the game
@@ -1479,6 +1475,7 @@ const endGame = () => {
 	// Update the game state prevent the players from doing anything and reappear start button
 	currentGameStage = Stage.Over;
 	_modalButton.style.display = "block";
+	_endTurnButton.style.display = "none";
 
 	// If the human won.
 	if (human.isWinner()) {
@@ -1672,6 +1669,9 @@ const _startButton = document.querySelector("#start-button");
 /** @type {HTMLElement} The reject hand button.  */
 const _rejectHandButton = document.querySelector("#reject-hand-button");
 
+/** @type {HTMLElement} The end turn hand button.  */
+const _endTurnButton = document.querySelector("#end-turn-button");
+
 // BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
@@ -1774,7 +1774,9 @@ const activeCards = [];
 
 //#endregion
 
-// Start the game.
+_endTurnButton.addEventListener("click", (event) => {
+	event.preventDefault();
+	endRound();
+})
 
-
-
+_concedeButton.addEventListener("click", endGame);
