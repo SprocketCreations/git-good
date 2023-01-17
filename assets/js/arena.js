@@ -1273,10 +1273,12 @@ const endPlayCardStage = () => {
 		const bSpeed = b.getSpeed();
 		// A is faster.
 		if (aSpeed > bSpeed) {
+			// A should be left of B
 			return +1;
 		}
 		// B is faster.
 		else if (bSpeed > aSpeed) {
+			// B should be left of A
 			return -1;
 		}
 		// They are the same speed.
@@ -1290,19 +1292,43 @@ const endPlayCardStage = () => {
 				return 0;
 			}
 
-			const isAFirst = (humanGoesFirst && aOwner === human) || (!humanGoesFirst && aOwner !== human);
+			const isAHuman = aOwner === human;
 
-			// A's owner has priority
-			if (isAFirst) {
-				return +1;
+			// If the round is odd and the human won the coin flip
+			// or
+			// if the round is even and the human did not win the coin flip
+			const doesHumanHavePriority = (currentRound % 2 !== 0 && humanGoesFirst) || (!humanGoesFirst && currentRound % 2 === 0);
+
+			// Human has priority
+			if(doesHumanHavePriority) {
+				if(isAHuman) {
+					// A should be left of B
+					return +1;
+				}
+				else /*A is enemy*/ {
+					// B should be left of A
+					return -1;
+				}
 			}
-			// B's owner has priority
+			// AI Has priority
 			else {
-				return -1;
+				if(isAHuman) {
+					// B should be left of A
+					return -1;
+				}
+				else /*A is enemy*/ {
+					// A should be left of B
+					return +1;
+				}
 			}
 		}
 	});
-	cardsToAct.forEach(card => console.log(card.getSpeed()));
+	console.log("Current round:", currentRound);
+	console.log(humanGoesFirst ? "Human won coin flip." : "Enemy won coin flip.");
+	for(let i = cardsToAct.length - 1; i >= 0; --i) {
+		const card = cardsToAct[i];
+		console.log(`${i}:\nSpeed: ${card.getSpeed()}\nOwner: ${card.getOwner() === human ? "Human" : "Enemy"}`);
+	}
 	letNextCardDoAction();
 };
 
