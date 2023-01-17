@@ -1621,6 +1621,8 @@ const addDraggableToNextPlayerCard = nextCard => {
 	const nextCardNode = nextCard.getNode();
 	/** @type {HTMLElement} The battletrack. */
 	const battletrack = nextCard.getBattleline().getBattletrack();
+	console.log("======")
+	console.log(battletrack.getTargetable())
 
 	let isDragging = false;
 	$(nextCardNode).draggable({
@@ -1641,8 +1643,7 @@ const addDraggableToNextPlayerCard = nextCard => {
 		},
 		stop: function (event) {
 			if(isDragging) {
-				enemyCards.forEach(enemyCard => $(enemyCard.getNode()).droppable("disable"));
-				$(battletrack.getTargetable()).droppable("disable");
+				lastMove.draggedCard = null;
 
 				//Reset the styling:
 				$(event.target).css('transform', '');
