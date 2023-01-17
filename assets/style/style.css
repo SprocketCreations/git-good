@@ -669,7 +669,7 @@ body {
 	position: absolute;
 	border: solid black 1px;
 	border-radius: 5px;
-	background-color: red;
+	background-color: rgb(55, 193, 55);
 	display: flex;
 	justify-content: center;
 	align-items: center;

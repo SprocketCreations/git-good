@@ -1498,6 +1498,13 @@ const cardAttackAction = (attacker, defender) => {
 			// Kill the card. This function takes care of all the disposal.
 			defender.die();
 		}
+		if (defender.currentHitpoints < defender.totalHitpoints) {
+			defender.node.children[2].children[1].setAttribute("style", "background-color: orange")
+		}
+
+		if (defender.currentHitpoints != defender.totalHitpoints && defender.currentHitpoints <= 1) {
+			defender.node.children[2].children[1].setAttribute("style", "background-color: red")
+		}
 	}
 	// Else if the defender is the battleline
 	else {
