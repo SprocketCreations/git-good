@@ -180,6 +180,7 @@ function getCardStats(normalizedData) {
  * @Playing The game is allowing the players to play cards to the active battletrack.
  * @Action The game is allowing the players to decide their card's actions.
  * @Over The game has ended.
+ * @Waiting The game is waiting for an animation to finish playing.
  */
 const Stage = {
 	/** The game is setting itself up */
@@ -190,13 +191,139 @@ const Stage = {
 	Action: 2,
 	/** The game has ended. */
 	Over: 3,
+	/** The game is waiting for an animation to finish playing. */
+	Waiting: 4,
 };
 //#endregion
 
 //#region CLASS DEFINITIONS
+
+class Animation {
+	/**
+	 * @param {string} name The name of this animation to be referenced.
+	 * @param {string} cssClass The CSS class that is this animation.
+	 * @param {number} duration The duration of this animation in milliseconds.
+	 */
+	constructor(name, cssClass, duration) {
+		/** @type {string} The name of this animation to be referenced. */
+		this.name = name;
+
+		/** @type {string} The CSS class that is this animation. */
+		this.cssClass = cssClass;
+
+		/** @type {number} The duration of this animation in milliseconds. */
+		this.duration = duration;
+	}
+	/**
+	 * @returns {string} the name of the animation.
+	 */
+	getName() {
+		return this.name;
+	}
+	/**
+	 * 
+	 * @param {HTMLElement} node The element to add this animation to.
+	 */
+	playAnimation(node) {
+		node.classList.add(this.cssClass);
+		node.setAttribute("data-animation", this.name);
+	}
+	/**
+	 * Removes this animation from a node.
+	 * @param {HTMLElement} node The element to remove this animation from.
+	 */
+	removeAnimation(node) {
+		node.classList.remove(this.cssClass);
+		node.removeAttribute("data-animation");
+		void node.offsetWidth;
+	}
+	/**
+	 * @returns {number} The time in milliseconds that this animation lasts.
+	 */
+	getDuration() {
+		return this.duration;
+	}
+}
+/**
+ * This class is a tool for managing animations.
+ */
+class Animator {
+	constructor() {
+		/** @type {Object} Map of all the animations that have been added to this Animator. */
+		this.Animations = {};
+
+		/** @type {Object} Map of all the handles for outgoing animations. */
+		this.handles = {};
+
+		/** @type {number} The next valid and unique id for a handle. */
+		this.nextHandleId = 0;
+	}
+	/**
+	 * @param {Animation} animation The animation to add to this animator.
+	 */
+	addAnimation(animation) {
+		this.Animations[animation.getName()] = animation;
+	}
+	/**
+	 * @param {Animation | string} animation The animation to be played.
+	 * @param {HTMLELement} node The HTML element to apply this animation to.
+	 */
+	playAnimation(animation, node, callback) {
+		// Halt any existing animation.
+		this.haltAnimation(node);
+
+		// Get the animation.
+		if (!(animation instanceof Animation)) {
+			animation = this.Animations[animation];
+		}
+
+		// Start playing the animation.
+		animation.playAnimation(node);
+
+		const handleIndex = (this.nextHandleId)++;
+		node.setAttribute("data-handle-index", handleIndex);
+		// The function to call when the animation completes.
+		const animationCallback = () => callback();
+		// Make a handle to track the timeout and callback.
+		this.handles[handleIndex] = {
+			interval: setTimeout(animationCallback, animation.getDuration()),
+			callback: animationCallback,
+		};
+	}
+	/**
+	 * Cancels an animation mid playback, and cancels the callback from being called.
+	 * @param {HTMLElement} node The element to remove an animation from.
+	 * @param {boolean} callCallbackNow Will call the animation callback right now instead of just canceling it. Defaults to true.
+	 */
+	haltAnimation(node, callCallbackNow = true) {
+		// Gets the currently playing animation.
+		const currentAnimation = this.getNodeAnimation(node);
+		// If there is a currently playing animation, stop it.
+		if (currentAnimation !== null) {
+			this.Animations[currentAnimation].removeAnimation(node);
+		}
+		// Get the handle
+		const handleIndex = node.getAttribute("data-handle-index");
+		if (handleIndex !== null) {
+			const handle = this.handles[handleIndex];
+			if (callCallbackNow) {
+				handle.callback();
+			}
+			node.remove("data-handle-index");
+			clearTimeout(handle.interval);
+		}
+	}
+	/**
+	 * @param {HTMLElement} node The element to check for an animation.
+	 * @returns {string} the currently playing animation, or null if there is not one.
+	 */
+	getNodeAnimation(node) {
+		return node.getAttribute("data-animation");
+	}
+}
 /**
  * This class is used to represent a player.
- * I manages the mana, deck, and hand.
+ * It manages the mana, deck, and hand.
  */
 class Player {
 	/**
@@ -405,7 +532,7 @@ class Card {
 			const template = document.querySelector("#card-template");
 			const fragment = template.content.cloneNode(true);
 
-			
+
 			// populate the new template with an id and stats
 			let templateContainer = fragment.children[0];
 			let templateTable = templateContainer.children[1].children[1];
@@ -834,10 +961,10 @@ class Deck {
 
 		let shuffleCount = 100;
 
-		for(let i = 0; i < shuffleCount; i++){
+		for (let i = 0; i < shuffleCount; i++) {
 			let takeOut = this.cards.splice([Math.floor(Math.random() * this.cards.length)], 1)[0];
-			if(Math.floor(Math.random() * 2) == 0){
-				this.cards.unshift(takeOut);			
+			if (Math.floor(Math.random() * 2) == 0) {
+				this.cards.unshift(takeOut);
 			} else {
 				this.cards.push(takeOut);
 			}
@@ -866,14 +993,14 @@ class Hand {
 	add(card) {
 		this.cards.push(card);
 		const cardNode = card.getNode();
-		
-		if(currentGameStage == Stage.Initializing){
+
+		if (currentGameStage == Stage.Initializing) {
 			const cardClone = cardNode.cloneNode(true);
 			document.querySelector("#modal-player-hand").appendChild(cardClone);
 		}
-		
+
 		this.node.appendChild(cardNode);
-		
+
 
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
@@ -921,12 +1048,12 @@ class Hand {
 		/** @type {Card[]} An array of cards with a mana cost <= maxMana*/
 		const playableCards = [];
 		this.cards.forEach(card => {
-			if(card.getCost() <= maxMana) {
+			if (card.getCost() <= maxMana) {
 				playableCards.push(card);
 			};
 		});
 		// If there are no playable cards, someone did something wrong.
-		if(playableCards.length === 0) {
+		if (playableCards.length === 0) {
 			throw new Error("Hand.random() called when there were no playable cards. Please use Player.canPlayCard() to check before calling Hand.random().");
 		}
 		return this.remove(playableCards[Math.floor(Math.random() * playableCards.length)]);
@@ -1127,7 +1254,7 @@ const startFirstRound = () => {
 	if (humanGoesFirst && human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else if (enemy.canPlayCard()){
+	else if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
 	}
@@ -1172,7 +1299,7 @@ const playerTryPlayCard = (card, battletrack) => {
 	else {
 		const cardNode = card.getNode();
 		const handNode = card.getOwner().getHand().node;
-		if(cardNode.parentElement !== handNode) {
+		if (cardNode.parentElement !== handNode) {
 			hand.node.appendChild(cardNode);
 		}
 		cardNode.style.transform = "";
@@ -1210,12 +1337,12 @@ const AI_playcard = () => {
 	/** @type {Card} A card picked at random from the hand. */
 	// Pick a random card from hand that can be played
 	const cardToPlay = enemy.getHand().random(mana);
-	
+
 	/** @type {Battletrack[]} A clone of the battletracks array. */
 	const battletracksCopy = [...battletracks];
-	
-	for(let i = battletracksCopy.length - 1; i >= 0; --i) {
-		if(battletracksCopy[i].isConquered()) {
+
+	for (let i = battletracksCopy.length - 1; i >= 0; --i) {
+		if (battletracksCopy[i].isConquered()) {
 			battletracksCopy.splice(i, 1);
 		}
 	}
@@ -1336,14 +1463,14 @@ const letNextCardDoAction = () => {
 	}
 	if (activeCards[0].owner === human) {
 		// Set active human card glow
-		activeCards[0].node.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
+		activeCards[0].node.setAttribute("style", "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
 
 		let targetableBattleTrack = activeCards[0].getBattleline().getBattletrack().targetableNode
 		let targetableCards = activeCards[0].getBattleline().getBattletrack().enemyBattleline.cards
-		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
-	
+		targetableBattleTrack.setAttribute("style", "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+
 		for (i = 0; i < targetableCards.length; i++) {
-			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+			targetableCards[i].node.setAttribute("style", "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
 		}
 	}
 
@@ -1390,7 +1517,7 @@ const playerTryAttack = (card, defender) => {
 	card.getBattleline().getBattletrack().targetableNode.setAttribute("style", "box-shadow: ''")
 	let targetableCards = card.getBattleline().getBattletrack().enemyBattleline.cards
 	for (i = 0; i < targetableCards.length; i++) {
-		targetableCards[i].node.setAttribute("style",  "box-shadow: ''")
+		targetableCards[i].node.setAttribute("style", "box-shadow: ''")
 	}
 	/** @type {number} Index of the card in active cards. */
 	const cardIndex = activeCards.indexOf(card);
@@ -1481,7 +1608,7 @@ const endRound = () => {
 	human.setMana(currentRound + (human.isReinforcing() ? 2 : 0));
 	enemy.setMana(currentRound + (enemy.isReinforcing() ? 2 : 0));
 
-	console.log("human mana:",human.mana);
+	console.log("human mana:", human.mana);
 
 	human.reinforcing = true;
 	enemy.reinforcing = true;
@@ -1499,7 +1626,7 @@ const endRound = () => {
 		&& human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else if(enemy.canPlayCard()) {
+	else if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
 	}
@@ -1642,11 +1769,11 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 		drop: function (event, ui) {
 			/** @type {Card} */
 			const card = window.lastMove.draggedCard;
-			if(card != null) {
+			if (card != null) {
 				playerTryPlayCard(card, battletrack);
 			}
 			// if (this.children.length < 4) {
-				// 	// window.lastMove.successfullyPlaced = true;
+			// 	// window.lastMove.successfullyPlaced = true;
 			// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
 			// 	// window.lastMove.droppedIndex = this.children.length;
 			// 	// card.getOwner().getHand().remove();
@@ -1660,9 +1787,9 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 			// if (this.children.length == 4) {
 			// 	$(this).droppable("disable");
 			// } else {
-				// 	$(this).droppable("enable");
+			// 	$(this).droppable("enable");
 			// }
-			
+
 			$(this).css('background-color', 'rgba(255, 255, 255, .2');
 		},
 		accept: function (draggable) {
@@ -1817,9 +1944,9 @@ const activeCards = [];
 
 _endTurnButton.addEventListener("click", (event) => {
 	event.preventDefault();
-	if(currentGameStage == Stage.Playing){
+	if (currentGameStage == Stage.Playing) {
 		playerEndTurnEarly();	//skip having to play a card
-	} 
+	}
 })
 
 _concedeButton.addEventListener("click", endGame);
