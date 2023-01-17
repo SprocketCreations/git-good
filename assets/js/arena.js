@@ -833,16 +833,14 @@ class Deck {
 	/**
 	 * Shuffles the cards in the deck by looping through (deckLength) times
 	 * Taking a card from a random location in the deck and then placing it in the front or the back of the deck
-	 * We can do this as many times as we'd like by changing deckLength to loopCount and updating 
-	 * desired number of loops.
-	 * 
+	 * Current shuffle count is set to 100
 	 */
 	shuffle() {
 
-		let deckLength = this.cards.length;
+		let shuffleCount = 100;
 
-		for(let i = 0; i < deckLength; i++){
-			let takeOut = this.cards.splice([Math.floor(Math.random() * deckLength)], 1)[0];
+		for(let i = 0; i < shuffleCount; i++){
+			let takeOut = this.cards.splice([Math.floor(Math.random() * this.cards.length)], 1)[0];
 			if(Math.floor(Math.random() * 2) == 0){
 				this.cards.unshift(takeOut);			
 			} else {
