@@ -1551,6 +1551,7 @@ const endRound = () => {
  */
 const endGame = () => {
 	console.log("game over");
+	endGameModal.open()
 	// Update the game state prevent the players from doing anything and reappear start button
 	currentGameStage = Stage.Over;
 	_modalButton.style.display = "block";
@@ -1864,11 +1865,15 @@ const maxCardsPerBattleline = 4;
 
 //#region EVENT LISTENERS
 
+let endGameModal;
 document.addEventListener('DOMContentLoaded', function () {
-	var elem = document.querySelector('.modal');
-	M.Modal.init(elem, {
+	let elements = document.querySelectorAll('.modal');
+	let instances = M.Modal.init(elements, {
 		dismissible: false
 	});
+
+	endGameModal = M.Modal.getInstance(elements[1]);
+	
 });
 
 document.addEventListener('DOMContentLoaded', function () {

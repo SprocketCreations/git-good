@@ -16,7 +16,7 @@
 <body>
 	<main id="battlefield" class="row">
 		  <!-- Dropdown Trigger -->
-		  <a id="modal-button" class="btn modal-trigger hover-glow" href="#modal">Start</a>
+		  <a id="modal-button" class="btn modal-trigger hover-glow" href="#start-game-modal">Start</a>
 		  <a class='dropdown-trigger btn' id="menu-button" href='#' data-target='dropdown'>Menu</a>
 		  <div id="end-turn-button" class="hover-glow pointer"></div>
 		  <!-- Dropdown Structure -->
@@ -129,16 +129,27 @@
 			</div>
 		</div>
 
-		<div id="modal" class="modal">
+		<div id="start-game-modal" class="modal">
 			<div class="modal-content">
 			  <h4>Planning</h4>
 			  <p>Keep your cards or decide to draw again!</p>
 			  <div id="modal-player-hand"></div>
 			</div>
-			<div id="modal-footer" class="modal-footer">
+			<div id="start-modal-footer" class="modal-footer">
 				<a id="start-button" class="modal-close waves-effect waves-green btn-flat">Begin</a>
 				<a id="reject-hand-button" class="waves-effect waves-white btn-flat red">Reject Hand</a>
 			</div>
+		</div>
+
+		<!-- Modal Structure -->
+		<div id="endgame-modal" class="modal">
+		  <div class="modal-content">
+			<h4>Game Over!</h4>
+			<p></p>
+		  </div>
+		  <div id="endgame-modal-footer"class="modal-footer">
+			<a id="play-again-button" class="modal-close waves-effect waves-green btn-flat" href="./index.html">Play Again!</a>
+		  </div>
 		</div>
 
 		<!-- Card Template -->
