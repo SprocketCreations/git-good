@@ -76,6 +76,10 @@ card-slot: 2;
 	z-index: 10;
 }
 
+.grow:hover {
+	transform: scale(4);
+}
+
 .hover-grow:hover {
 	transform: scale(1.5) translateY(-100px);
 	transition: transform .3s cubic-bezier(0,.98,.61,.99);

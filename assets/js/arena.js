@@ -1158,6 +1158,14 @@ const playerTryPlayCard = (card, battletrack) => {
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
 
+		// Grow card on double click
+		card.node.addEventListener("dblclick", function() {
+			card.node.classList.add("grow")
+			card.node.addEventListener("mouseleave", function(){
+				card.node.classList.remove("grow")
+			})
+		})
+
 		console.log("Human played ", card.getDisplayName());
 
 		// If the AI can make a move
@@ -1211,6 +1219,14 @@ const AI_playcard = () => {
 	/** @type {Card} A card picked at random from the hand. */
 	// Pick a random card from hand that can be played
 	const cardToPlay = enemy.getHand().random(mana);
+
+	// Grow card on double click...ADD ROTATE 180
+	cardToPlay.node.addEventListener("dblclick", function() {
+		cardToPlay.node.classList.add("grow")
+		cardToPlay.node.addEventListener("mouseleave", function(){
+			cardToPlay.node.classList.remove("grow")
+		})
+	})
 
 	/** @type {Battletrack[]} An array of all the battletracks that are no conquered and also have less than 4 cards in play. */
 	const validBattletracks = [];
