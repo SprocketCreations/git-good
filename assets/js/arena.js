@@ -48,7 +48,7 @@ function getPokeStats() {
 			})
 	}
 }
-
+console.log(heroStats)
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
 fetch(heroUrl)
@@ -349,7 +349,7 @@ class Card {
 		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
-		this.cost = cost;
+		this.cost = 1;
 		/** @type {number} The attack power of this card. */
 		this.attack = attack;
 		/** @type {number} The defense of this card. */
@@ -866,7 +866,14 @@ class Hand {
 	add(card) {
 		this.cards.push(card);
 		const cardNode = card.getNode();
+		
+		if(currentGameStage == Stage.Initializing){
+			const cardClone = cardNode.cloneNode(true);
+			document.querySelector("#modal-player-hand").appendChild(cardClone);
+		}
+		
 		this.node.appendChild(cardNode);
+		
 
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
@@ -911,11 +918,18 @@ class Hand {
 	 * @returns {Card} a random card removed from the hand.
 	 */
 	random(maxMana) {
-		let card = null;
-		do {
-			card = this.cards[Math.floor(Math.random() * this.cards.length)];
-		} while (card.getCost() > maxMana);
-		return this.remove(card);
+		/** @type {Card[]} An array of cards with a mana cost <= maxMana*/
+		const playableCards = [];
+		this.cards.forEach(card => {
+			if(card.getCost() <= maxMana) {
+				playableCards.push(card);
+			};
+		});
+		// If there are no playable cards, someone did something wrong.
+		if(playableCards.length === 0) {
+			throw new Error("Hand.random() called when there were no playable cards. Please use Player.canPlayCard() to check before calling Hand.random().");
+		}
+		return this.remove(playableCards[Math.floor(Math.random() * playableCards.length)]);
 	}
 }
 //#endregion
@@ -1110,12 +1124,15 @@ const startFirstRound = () => {
 	enemy.reinforcing = true;
 
 	// If the player won the coinflip, they go first first round.
-	if (humanGoesFirst) {
+	if (humanGoesFirst && human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else {
+	else if (enemy.canPlayCard()){
 		currentPlayer = enemy;
 		AI_playcard();
+	}
+	else {
+		endPlayCardStage();
 	}
 };
 
@@ -1370,6 +1387,11 @@ const playerTryAttack = (card, defender) => {
 	//console.log("The player is trying to attack:", defender, ", with attacker:", card);
 	// resets the box shadow after attack action has been made
 	card.node.setAttribute("style", "box-shadow: ''")
+	card.getBattleline().getBattletrack().targetableNode.setAttribute("style", "box-shadow: ''")
+	let targetableCards = card.getBattleline().getBattletrack().enemyBattleline.cards
+	for (i = 0; i < targetableCards.length; i++) {
+		targetableCards[i].node.setAttribute("style",  "box-shadow: ''")
+	}
 	/** @type {number} Index of the card in active cards. */
 	const cardIndex = activeCards.indexOf(card);
 	/** @type {boolean} If the stage is action. */
@@ -1472,12 +1494,17 @@ const endRound = () => {
 	currentGameStage = Stage.Playing;
 
 	// If the player won the coinflip, they go first on even numbered rounds
-	if ((humanGoesFirst && currentRound % 2 !== 0) || (!humanGoesFirst && currentRound % 2 === 0)) {
+	if (
+		((humanGoesFirst && currentRound % 2 !== 0) || (!humanGoesFirst && currentRound % 2 === 0))
+		&& human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else {
+	else if(enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
+	}
+	else {
+		endPlayCardStage();
 	}
 };
 

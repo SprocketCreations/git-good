@@ -105,6 +105,7 @@ img, video {
 }
 
 html {
+	min-width: 1800px;
 	background-image: var(--stone-table);
 	background-size: cover;
 	background-position-x: center;
@@ -151,6 +152,8 @@ body {
 }
 
 #modal {
+	width: 70%;
+	min-width: 1300px;
 	background-image: url('../images/backgrounds/cracked-stone-med.png');
 	background-size: cover;
 	background-position: center;
@@ -160,6 +163,7 @@ body {
 }
 
 .modal-content {
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -167,10 +171,20 @@ body {
 }
 
 #modal-player-hand {
-	height: 200px;
+	height: 450px;
 	width: 100%;
+	padding: 25px;
 	background-color: gray;
-	box-shadow: inset 0px 0px 8px black
+	box-shadow: inset 0px 0px 8px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 80px;
+}
+
+#modal-player-hand > div {
+	box-shadow: 5px 5px 5px black;
+	scale: 1.5;
 }
 
 #modal-footer {
