@@ -447,7 +447,12 @@ body {
 	border-radius: 5px;
 	background-image: var(--card-back-a1);
 	background-size: contain;
+	position: relative;
 	/* margin-left: var(--enemy-hand-offset); Causing weird shrinking issue with #enemy-hand*/
+}
+
+#enemy-hand div > * {
+	visibility: hidden;
 }
 
 .enemy-cards {

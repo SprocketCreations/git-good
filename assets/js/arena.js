@@ -410,6 +410,7 @@ class Card {
 			const template = document.querySelector("#card-template");
 			const fragment = template.content.cloneNode(true);
 
+			
 			// populate the new template with an id and stats
 			let templateContainer = fragment.children[0];
 			let templateTable = templateContainer.children[1].children[1];
