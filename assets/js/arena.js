@@ -1317,6 +1317,18 @@ const letNextCardDoAction = () => {
 			if (nextCard.getOwner() === human) { addDraggableToNextPlayerCard(nextCard); }
 		} while (false);//(cardsToAct.length > 0 && nextSpeed() === speed);
 	}
+	if (activeCards[0].owner === human) {
+		// Set active human card glow
+		activeCards[0].node.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
+
+		let targetableBattleTrack = activeCards[0].getBattleline().getBattletrack().targetableNode
+		let targetableCards = activeCards[0].getBattleline().getBattletrack().enemyBattleline.cards
+		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+	
+		for (i = 0; i < targetableCards.length; i++) {
+			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+		}
+	}
 
 	console.log("Next active cards are", activeCards[0].getDisplayName());
 	// If the card is owned by the AI
@@ -1356,6 +1368,8 @@ const AI_action = () => {
  */
 const playerTryAttack = (card, defender) => {
 	//console.log("The player is trying to attack:", defender, ", with attacker:", card);
+	// resets the box shadow after attack action has been made
+	card.node.setAttribute("style", "box-shadow: ''")
 	/** @type {number} Index of the card in active cards. */
 	const cardIndex = activeCards.indexOf(card);
 	/** @type {boolean} If the stage is action. */
