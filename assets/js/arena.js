@@ -578,6 +578,10 @@ class Battleline {
 		// Inform this card what battleline it's in.
 		card.setBattleline(null);
 
+		if(this.cards.length < maxCardsPerBattleline && this.getBattletrack().getFriendlyBattleline() === this) {
+			$(this.zoneNode).droppable("enable");
+		}
+		
 		return removedCard;
 	}
 	/**
