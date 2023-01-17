@@ -60,6 +60,12 @@ card-slot: 2;
 	cursor: grabbing;
 }
 
+.hoverable:hover {
+	transform: scale(1.5) translateY(-100px);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 5;
+}
+
 *, *::before, *::after{
 	margin: 0;
 	padding: 0;
@@ -118,20 +124,12 @@ body {
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
+	transition: all .2s ease-out;
 }
 
-#modal-button:hover::after {
-	width: inherit;
-	content: '';
-	position: absolute;
-	top: -5px;
-	left: 0;
-	right: -5px;
-	bottom: -5px;
-	border-radius: inherit;
-	z-index: -1;
-	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
-	filter: blur(5px);
+#modal-button:hover {
+	box-shadow: 3px -3px 5px white,
+				3px 3px 5px white;
 }
 
 #modal {
@@ -188,20 +186,6 @@ body {
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
-}
-
-#menu-button:hover::after {
-	width: inherit;
-	content: '';
-	position: absolute;
-	top: -5px;
-	left: 0;
-	right: -5px;
-	bottom: -5px;
-	border-radius: inherit;
-	z-index: -1;
-	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
-	filter: blur(5px);
 }
 
 #dropdown {
@@ -421,8 +405,6 @@ body {
 	position: absolute;
 	right: 75px;
 	bottom: 150px;
-	border-image: none;
-	background-color: transparent;
 	background-image: url('../images/icons/next-turn-med.png');
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -434,6 +416,7 @@ body {
 
 #end-turn-button:hover {
 	transform: perspective(100px) rotateY(-35deg);
+	cursor: pointer;
 }
 
 #player-hand div {
@@ -768,12 +751,6 @@ body {
 .custom-row-2 {
 	display: flex;
 	margin: 0;
-}
-
-.hoverable:hover {
-	transform: scale(1.5);
-	transition: transform .3s cubic-bezier(0,.98,.61,.99);
-	z-index: 5;
 }
 
 @media screen and (max-width: 470px) {
