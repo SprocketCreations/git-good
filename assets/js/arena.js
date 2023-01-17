@@ -673,7 +673,7 @@ class Battletrack {
 		this.friendlyBattleline.playCard(card);
 
 		if(this.friendlyBattleline.cards.length >= maxCardsPerBattleline) {
-			friendlyCardZoneNode.droppable("disable");
+			$(this.friendlyBattleline.zoneNode).droppable("disable");
 		}
 	}
 	/**
