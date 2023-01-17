@@ -38,7 +38,7 @@ function getPokeStats() {
 			})
 	}
 }
-
+console.log(heroStats)
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
 fetch(heroUrl)
@@ -341,7 +341,7 @@ class Card {
 		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
-		this.cost = cost;
+		this.cost = 1;
 		/** @type {number} The attack power of this card. */
 		this.attack = attack;
 		/** @type {number} The defense of this card. */
@@ -867,7 +867,14 @@ class Hand {
 	add(card) {
 		this.cards.push(card);
 		const cardNode = card.getNode();
+		
+		if(currentGameStage == Stage.Initializing){
+			const cardClone = cardNode.cloneNode(true);
+			document.querySelector("#modal-player-hand").appendChild(cardClone);
+		}
+		
 		this.node.appendChild(cardNode);
+		
 
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
@@ -1366,10 +1373,19 @@ const letNextCardDoAction = () => {
 			if (nextCard.getOwner() === human) { addDraggableToNextPlayerCard(nextCard); }
 		} while (cardsToAct.length > 0 && nextSpeed() === speed && nextOwner() === owner);
 	}
-	let activeCardNames = "";
-	activeCards.forEach(card => activeCardNames = activeCardNames + card.getDisplayName() + ", ");
-	console.log("Next active cards are:", activeCardNames);
+	if (activeCards[0].owner === human) {
+		// Set active human card glow
+		activeCards[0].node.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
+
+		let targetableBattleTrack = activeCards[0].getBattleline().getBattletrack().targetableNode
+		let targetableCards = activeCards[0].getBattleline().getBattletrack().enemyBattleline.cards
+		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
 	
+		for (i = 0; i < targetableCards.length; i++) {
+			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+		}
+	}
+
 	// If the card is owned by the AI
 	if (activeCards[0].getOwner() === enemy) {
 		AI_action();
@@ -1407,6 +1423,13 @@ const AI_action = () => {
  */
 const playerTryAttack = (card, defender) => {
 	//console.log("The player is trying to attack:", defender, ", with attacker:", card);
+	// resets the box shadow after attack action has been made
+	card.node.setAttribute("style", "box-shadow: ''")
+	card.getBattleline().getBattletrack().targetableNode.setAttribute("style", "box-shadow: ''")
+	let targetableCards = card.getBattleline().getBattletrack().enemyBattleline.cards
+	for (i = 0; i < targetableCards.length; i++) {
+		targetableCards[i].node.setAttribute("style",  "box-shadow: ''")
+	}
 	/** @type {number} Index of the card in active cards. */
 	const cardIndex = activeCards.indexOf(card);
 	/** @type {boolean} If the stage is action. */
