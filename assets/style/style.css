@@ -76,10 +76,6 @@ card-slot: 2;
 	z-index: 10;
 }
 
-.grow:hover {
-	transform: scale(4);
-}
-
 .hover-grow:hover {
 	transform: scale(1.5) translateY(-100px);
 	transition: transform .3s cubic-bezier(0,.98,.61,.99);
@@ -187,6 +183,18 @@ body {
 
 #modal-player-hand {
 	height: 450px;
+	width: 100%;
+	padding: 25px;
+	background-color: gray;
+	box-shadow: inset 0px 0px 8px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 80px;
+}
+
+#modal-endgame-display {
+	height: 225px;
 	width: 100%;
 	padding: 25px;
 	background-color: gray;
@@ -683,7 +691,7 @@ body {
 	position: absolute;
 	border: solid black 1px;
 	border-radius: 5px;
-	background-color: rgb(55, 193, 55);
+	background-color: red;
 	display: flex;
 	justify-content: center;
 	align-items: center;
