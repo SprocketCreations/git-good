@@ -1,16 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () {
-	var elem = document.querySelector('.modal');
-	M.Modal.init(elem, {
-		dismissible: false
-	});
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-	let elem = document.querySelector('#menu-button');
-	M.Dropdown.init(elem, {
-		hover: true
-	});
-});
+
+//#region API FETCHING AND NORMALIZATION
 
 // API FETCH & DECK DATA COLLECTION:
 // initializing an empty deck that can be added to on fetch completion.
@@ -172,6 +162,8 @@ function getCardStats(normalizedData) {
 	console.log(cardStats)
 	return cardStats
 }
+
+//#endregion
 
 //#region ENUM DEFINITIONS
 /**
@@ -1787,7 +1779,26 @@ const cardsToAct = [];
 /** @type {Card[]} The current card waiting to perform its action. If there are multiple cards with the same speed, they will all be put into this array. */
 const activeCards = [];
 
+/** @type {number} The maximum amount of cards that can be played to a battleline. */
+const maxCardsPerBattleline = 4;
+
 //#endregion
+
+//#region Event listeners
+
+document.addEventListener('DOMContentLoaded', function () {
+	var elem = document.querySelector('.modal');
+	M.Modal.init(elem, {
+		dismissible: false
+	});
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	let elem = document.querySelector('#menu-button');
+	M.Dropdown.init(elem, {
+		hover: true
+	});
+});
 
 _endTurnButton.addEventListener("click", (event) => {
 	event.preventDefault();
@@ -1797,3 +1808,4 @@ _endTurnButton.addEventListener("click", (event) => {
 })
 
 _concedeButton.addEventListener("click", endGame);
+//#endregion
