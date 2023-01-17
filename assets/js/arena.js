@@ -916,11 +916,18 @@ class Hand {
 	 * @returns {Card} a random card removed from the hand.
 	 */
 	random(maxMana) {
-		let card = null;
-		do {
-			card = this.cards[Math.floor(Math.random() * this.cards.length)];
-		} while (card.getCost() > maxMana);
-		return this.remove(card);
+		/** @type {Card[]} An array of cards with a mana cost <= maxMana*/
+		const playableCards = [];
+		this.cards.forEach(card => {
+			if(card.getCost() <= maxMana) {
+				playableCards.push(card);
+			};
+		});
+		// If there are no playable cards, someone did something wrong.
+		if(playableCards.length === 0) {
+			throw new Error("Hand.random() called when there were no playable cards. Please use Player.canPlayCard() to check before calling Hand.random().");
+		}
+		return this.remove(playableCards[Math.floor(Math.random() * playableCards.length)]);
 	}
 }
 //#endregion
@@ -1114,12 +1121,15 @@ const startFirstRound = () => {
 	enemy.reinforcing = true;
 
 	// If the player won the coinflip, they go first first round.
-	if (humanGoesFirst) {
+	if (humanGoesFirst && human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else {
+	else if (enemy.canPlayCard()){
 		currentPlayer = enemy;
 		AI_playcard();
+	}
+	else {
+		endPlayCardStage();
 	}
 };
 
@@ -1462,12 +1472,17 @@ const endRound = () => {
 	currentGameStage = Stage.Playing;
 
 	// If the player won the coinflip, they go first on even numbered rounds
-	if ((humanGoesFirst && currentRound % 2 !== 0) || (!humanGoesFirst && currentRound % 2 === 0)) {
+	if (
+		((humanGoesFirst && currentRound % 2 !== 0) || (!humanGoesFirst && currentRound % 2 === 0))
+		&& human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else {
+	else if(enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
+	}
+	else {
+		endPlayCardStage();
 	}
 };
 
