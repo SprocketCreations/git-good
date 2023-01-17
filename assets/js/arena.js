@@ -1323,12 +1323,12 @@ const endPlayCardStage = () => {
 			}
 		}
 	});
-	console.log("Current round:", currentRound);
-	console.log(humanGoesFirst ? "Human won coin flip." : "Enemy won coin flip.");
-	for(let i = cardsToAct.length - 1; i >= 0; --i) {
-		const card = cardsToAct[i];
-		console.log(`${i}:\nSpeed: ${card.getSpeed()}\nOwner: ${card.getOwner() === human ? "Human" : "Enemy"}`);
-	}
+	// console.log("Current round:", currentRound);
+	// console.log(humanGoesFirst ? "Human won coin flip." : "Enemy won coin flip.");
+	// for(let i = cardsToAct.length - 1; i >= 0; --i) {
+	// 	const card = cardsToAct[i];
+	// 	console.log(`${i}:\nSpeed: ${card.getSpeed()}\nOwner: ${card.getOwner() === human ? "Human" : "Enemy"}`);
+	// }
 	letNextCardDoAction();
 };
 
@@ -1347,8 +1347,14 @@ const letNextCardDoAction = () => {
 		/** @returns {number} the speed of the next card on the cardsToAct stack. */
 		const nextSpeed = () => cardsToAct[cardsToAct.length - 1].getSpeed();
 
+		/** @returns {Player} the owner of the next card on the cardsToAct stack. */
+		const nextOwner = () => cardsToAct[cardsToAct.length - 1].getOwner();
+
 		/** @type {number} The speed of the first card popped from the stack. */
 		const speed = nextSpeed();
+
+		/** @type {Player} The owner of the first card popped from the stack. */
+		const owner = nextOwner();
 
 		// Pop cardsToAct and add it to the active card array
 		do {
@@ -1358,10 +1364,12 @@ const letNextCardDoAction = () => {
 			activeCards.push(nextCard);
 			// Give the player the power to drag the card.
 			if (nextCard.getOwner() === human) { addDraggableToNextPlayerCard(nextCard); }
-		} while (false);//(cardsToAct.length > 0 && nextSpeed() === speed);
+		} while (cardsToAct.length > 0 && nextSpeed() === speed && nextOwner() === owner);
 	}
-
-	console.log("Next active cards are", activeCards[0].getDisplayName());
+	let activeCardNames = "";
+	activeCards.forEach(card => activeCardNames = activeCardNames + card.getDisplayName() + ", ");
+	console.log("Next active cards are:", activeCardNames);
+	
 	// If the card is owned by the AI
 	if (activeCards[0].getOwner() === enemy) {
 		AI_action();
@@ -1584,8 +1592,9 @@ const addDraggableToNextPlayerCard = nextCard => {
 		drag: function (event) {
 		},
 		stop: function (event) {
-			// Stop dragging this card.
-			lastMove.draggedCard = null;
+			enemyCards.forEach(enemyCard => $(enemyCard.getNode()).droppable("disable"));
+			$(battletrack.getTargetable()).droppable("disable");
+
 			//Reset the styling:
 			$(event.target).css('transform', '');
 		}
