@@ -397,7 +397,7 @@ class Card {
 			const template = document.querySelector("#card-template");
 			const fragment = template.content.cloneNode(true);
 
-			
+
 			// populate the new template with an id and stats
 			let templateContainer = fragment.children[0];
 			let templateTable = templateContainer.children[1].children[1];
@@ -578,10 +578,10 @@ class Battleline {
 		// Inform this card what battleline it's in.
 		card.setBattleline(null);
 
-		if(this.cards.length < maxCardsPerBattleline && this.getBattletrack().getFriendlyBattleline() === this) {
+		if (this.cards.length < maxCardsPerBattleline && this.getBattletrack().getFriendlyBattleline() === this) {
 			$(this.zoneNode).droppable("enable");
 		}
-		
+
 		return removedCard;
 	}
 	/**
@@ -676,7 +676,7 @@ class Battletrack {
 	playFriendlyCard(card) {
 		this.friendlyBattleline.playCard(card);
 
-		if(this.friendlyBattleline.cards.length >= maxCardsPerBattleline) {
+		if (this.friendlyBattleline.cards.length >= maxCardsPerBattleline) {
 			$(this.friendlyBattleline.zoneNode).droppable("disable");
 		}
 	}
@@ -835,10 +835,10 @@ class Deck {
 
 		let shuffleCount = 100;
 
-		for(let i = 0; i < shuffleCount; i++){
+		for (let i = 0; i < shuffleCount; i++) {
 			let takeOut = this.cards.splice([Math.floor(Math.random() * this.cards.length)], 1)[0];
-			if(Math.floor(Math.random() * 2) == 0){
-				this.cards.unshift(takeOut);			
+			if (Math.floor(Math.random() * 2) == 0) {
+				this.cards.unshift(takeOut);
 			} else {
 				this.cards.push(takeOut);
 			}
@@ -915,12 +915,12 @@ class Hand {
 		/** @type {Card[]} An array of cards with a mana cost <= maxMana*/
 		const playableCards = [];
 		this.cards.forEach(card => {
-			if(card.getCost() <= maxMana) {
+			if (card.getCost() <= maxMana) {
 				playableCards.push(card);
 			};
 		});
 		// If there are no playable cards, someone did something wrong.
-		if(playableCards.length === 0) {
+		if (playableCards.length === 0) {
 			throw new Error("Hand.random() called when there were no playable cards. Please use Player.canPlayCard() to check before calling Hand.random().");
 		}
 		return this.remove(playableCards[Math.floor(Math.random() * playableCards.length)]);
@@ -1121,7 +1121,7 @@ const startFirstRound = () => {
 	if (humanGoesFirst && human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else if (enemy.canPlayCard()){
+	else if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
 	}
@@ -1166,7 +1166,7 @@ const playerTryPlayCard = (card, battletrack) => {
 	else {
 		const cardNode = card.getNode();
 		const handNode = card.getOwner().getHand().node;
-		if(cardNode.parentElement !== handNode) {
+		if (cardNode.parentElement !== handNode) {
 			hand.node.appendChild(cardNode);
 		}
 		cardNode.style.transform = "";
@@ -1204,26 +1204,32 @@ const AI_playcard = () => {
 	/** @type {Card} A card picked at random from the hand. */
 	// Pick a random card from hand that can be played
 	const cardToPlay = enemy.getHand().random(mana);
-	
-	/** @type {Battletrack[]} A clone of the battletracks array. */
-	const battletracksCopy = [...battletracks];
-	
-	for(let i = battletracksCopy.length - 1; i >= 0; --i) {
-		if(battletracksCopy[i].isConquered()) {
-			battletracksCopy.splice(i, 1);
+
+	/** @type {Battletrack[]} An array of all the battletracks that are no conquered and also have less than 4 cards in play. */
+	const validBattletracks = [];
+
+	battletracks.forEach(battletrack => {
+		if (!(battletrack.isConquered()) && battletrack.getEnemyCards().length < maxCardsPerBattleline) {
+			validBattletracks.push(battletrack);
 		}
+	});
+
+	const isABattletrackTargetable = validBattletracks.length !== 0;
+
+	//There are targetable battletracks.
+	if (isABattletrackTargetable) {
+		// Pick a random battletrack that is not conquored.
+		/** @type {Battletrack} A random unconquered battletrack. */
+		const battletrack = validBattletracks[Math.floor(Math.random() * validBattletracks.length)];
+
+		// Play the random card to the random battletrack.
+		battletrack.playEnemyCard(cardToPlay);
+
+		// Reduce AI mana by card cost
+		enemy.setMana(mana - cardToPlay.getCost());
+
+		console.log("Ai played ", cardToPlay.getDisplayName());
 	}
-	// Pick a random battletrack that is not conquored.
-	/** @type {Battletrack} A random unconquered battletrack. */
-	const battletrack = battletracksCopy[Math.floor(Math.random() * battletracksCopy.length)];
-
-	// Play the random card to the random battletrack.
-	battletrack.playEnemyCard(cardToPlay);
-
-	// Reduce AI mana by card cost
-	enemy.setMana(mana - cardToPlay.getCost());
-
-	console.log("Ai played ", cardToPlay.getDisplayName());
 
 	// If the player can make a move.
 	if (human.canPlayCard()) {
@@ -1231,8 +1237,8 @@ const AI_playcard = () => {
 		currentPlayer = human;
 	}
 	// Else if the AI can make a move.
-	else if (enemy.canPlayCard()) {
-		// Recursively call this funciton.
+	else if (enemy.canPlayCard() && isABattletrackTargetable) {
+		// Recursively call this function.
 		AI_playcard();
 	}
 	// Else if no one can make a move.
@@ -1456,7 +1462,7 @@ const endRound = () => {
 	human.setMana(currentRound + (human.isReinforcing() ? 2 : 0));
 	enemy.setMana(currentRound + (enemy.isReinforcing() ? 2 : 0));
 
-	console.log("human mana:",human.mana);
+	console.log("human mana:", human.mana);
 
 	human.reinforcing = true;
 	enemy.reinforcing = true;
@@ -1474,7 +1480,7 @@ const endRound = () => {
 		&& human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else if(enemy.canPlayCard()) {
+	else if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
 	}
@@ -1617,11 +1623,11 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 		drop: function (event, ui) {
 			/** @type {Card} */
 			const card = window.lastMove.draggedCard;
-			if(card != null) {
+			if (card != null) {
 				playerTryPlayCard(card, battletrack);
 			}
 			// if (this.children.length < 4) {
-				// 	// window.lastMove.successfullyPlaced = true;
+			// 	// window.lastMove.successfullyPlaced = true;
 			// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
 			// 	// window.lastMove.droppedIndex = this.children.length;
 			// 	// card.getOwner().getHand().remove();
@@ -1635,9 +1641,9 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 			// if (this.children.length == 4) {
 			// 	$(this).droppable("disable");
 			// } else {
-				// 	$(this).droppable("enable");
+			// 	$(this).droppable("enable");
 			// }
-			
+
 			$(this).css('background-color', 'rgba(255, 255, 255, .2');
 		},
 		accept: function (draggable) {
@@ -1811,9 +1817,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 _endTurnButton.addEventListener("click", (event) => {
 	event.preventDefault();
-	if(currentGameStage == Stage.Playing){
+	if (currentGameStage == Stage.Playing) {
 		playerEndTurnEarly();	//skip having to play a card
-	} 
+	}
 })
 
 _concedeButton.addEventListener("click", endGame);
