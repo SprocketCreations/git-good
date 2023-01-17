@@ -592,7 +592,7 @@ body {
 }
 
 .card-table {
-	height: 50px;
+	height: fit-content;
 	position: absolute;
 	top: 0;
 	right: 0;
