@@ -866,7 +866,14 @@ class Hand {
 	add(card) {
 		this.cards.push(card);
 		const cardNode = card.getNode();
+		
+		if(currentGameStage == Stage.Initializing){
+			const cardClone = cardNode.cloneNode(true);
+			document.querySelector("#modal-player-hand").appendChild(cardClone);
+		}
+		
 		this.node.appendChild(cardNode);
+		
 
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
