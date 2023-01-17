@@ -50,14 +50,43 @@ card-slot: 2;
                         supported by Chrome, Edge, Opera and Firefox */
 }
 
-.grab {
+.grab:hover {
 	cursor: -webkit-grab;
 	cursor: grab;
 }
 
-.grabbing {
+.grabbing:active {
 	cursor: -webkit-grabbing;
 	cursor: grabbing;
+}
+
+.pointer:hover {
+	cursor: pointer;
+}
+
+.hover-grow-small-flip:hover {
+	transform: scale(3) rotate(180deg);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-grow-small:hover {
+	transform: scale(3);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-grow:hover {
+	transform: scale(1.5) translateY(-100px);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-glow:hover {
+	box-shadow: 3px -3px 5px white,
+				3px 3px 5px white,
+				-3px -3px 5px white,
+				-3px 3px 5px white;
 }
 
 *, *::before, *::after{
@@ -118,20 +147,7 @@ body {
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
-}
-
-#modal-button:hover::after {
-	width: inherit;
-	content: '';
-	position: absolute;
-	top: -5px;
-	left: 0;
-	right: -5px;
-	bottom: -5px;
-	border-radius: inherit;
-	z-index: -1;
-	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
-	filter: blur(5px);
+	transition: all .2s ease-out;
 }
 
 #modal {
@@ -188,20 +204,6 @@ body {
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
-}
-
-#menu-button:hover::after {
-	width: inherit;
-	content: '';
-	position: absolute;
-	top: -5px;
-	left: 0;
-	right: -5px;
-	bottom: -5px;
-	border-radius: inherit;
-	z-index: -1;
-	background: linear-gradient(90deg, hsla(39, 100%, 50%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
-	filter: blur(5px);
 }
 
 #dropdown {
@@ -416,16 +418,26 @@ body {
 }
 
 #end-turn-button {
-	width: 50px;
-	height: 50px;
-	background-color: green;
+	display: none;
+	width: 75px;
+	height: 75px;
 	position: absolute;
-	right: -55px;
-	background-image: url('../images/icons/reverse.png');
+	right: 75px;
+	bottom: 150px;
+	background-image: url('../images/icons/right-arrow-med.png');
 	background-size: cover;
-	border: 1px solid black;
+	background-repeat: no-repeat;
 	border-radius: 5px;
-	box-shadow: 0px 0px 3px 5px white;
+	border: 1px solid black;
+	transition: transform .2s ease-out;
+}
+
+#end-turn-button:hover {
+	transform: perspective(200px) rotateY(25deg);
+}
+
+#end-turn-button:active {
+	transform: scale(.9);
 }
 
 #player-hand div {
@@ -760,12 +772,6 @@ body {
 .custom-row-2 {
 	display: flex;
 	margin: 0;
-}
-
-.hoverable:hover {
-	transform: scale(1.5);
-	transition: transform .3s cubic-bezier(0,.98,.61,.99);
-	z-index: 5;
 }
 
 @media screen and (max-width: 470px) {
