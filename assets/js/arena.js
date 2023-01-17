@@ -1776,7 +1776,9 @@ const activeCards = [];
 
 _endTurnButton.addEventListener("click", (event) => {
 	event.preventDefault();
-	endRound();
+	if(currentGameStage == Stage.Playing){
+		playerEndTurnEarly();	//skip having to play a card
+	} 
 })
 
 _concedeButton.addEventListener("click", endGame);

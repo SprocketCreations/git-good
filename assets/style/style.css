@@ -64,10 +64,22 @@ card-slot: 2;
 	cursor: pointer;
 }
 
+.hover-grow-small-flip:hover {
+	transform: scale(3) rotate(180deg);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-grow-small:hover {
+	transform: scale(3);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
 .hover-grow:hover {
 	transform: scale(1.5) translateY(-100px);
 	transition: transform .3s cubic-bezier(0,.98,.61,.99);
-	z-index: 5;
+	z-index: 10;
 }
 
 .hover-glow:hover {
