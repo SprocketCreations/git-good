@@ -485,11 +485,19 @@ body {
 }
 
 .player-cards > div {
+	height: 100px;
+	width: 75px;
 	margin: 3px;
 	color: black;
 	z-index: 2;
 	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-	transform: scale(.5);
+	transform: scale(1);
+}
+
+.player-cards p {
+	font-size: 12px;
+	height: fit-content;
+	width: fit-content;
 }
 
 #player-card > div:hover {
@@ -512,8 +520,36 @@ body {
 	z-index: 3;
 }
 
-.player-card p {
-	font-size: 12px;
+.card-header {
+	height: 10%;
+	width: 100%;
+}
+
+.player-cards p {
+	font-size: 10px;
+	height: 15px;
+}
+
+.player-cards .card-name,
+.enemy-cards .card-name {
+	font-size: 14px;
+}
+
+.player-cards .mana-initiative,
+.enemy-cards .mana-initiative {
+	height: 15px;
+	width: 15px;
+	left: 2px;
+	top: 2px;
+}
+
+.player-cards .card-health,
+.enemy-cards .card-health {
+	height: 15px;
+	width: 15px;
+	position: absolute;
+	right: 0px;
+	bottom: 20px;
 }
 
 .card-art {
@@ -524,18 +560,34 @@ body {
 	z-index: 0;
 }
 
-.mana-initiative {
+.mana-initiative{
+	height: 20px;
+	width: 20px;
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 0px;
+	left: 0px;
 	border: solid black 1px;
-	padding: 0 6px;
-	margin: 5px;
 	border-radius: 5px;
 	background-color: lightseagreen;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card-health {
+	height: 20px;
+	width: 20px;
+	position: absolute;
+	border: solid black 1px;
+	border-radius: 5px;
+	background-color: lightseagreen;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .card-table {
+	height: 50px;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -583,11 +635,19 @@ body {
 }
 
 .enemy-cards > div {
+	height: 100px;
+	width: 75px;
 	margin: 3px;
-	background-color: blue;
-	color: white;
+	color: black;
 	z-index: 2;
-	transform: scale(.5);
+	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	transform: scale(1);
+}
+
+.enemy-cards p {
+	font-size: 12px;
+	height: fit-content;
+	width: fit-content;
 }
 
 .bt-hp-container {
