@@ -349,7 +349,7 @@ class Card {
 		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
-		this.cost = cost;
+		this.cost = 1;
 		/** @type {number} The attack power of this card. */
 		this.attack = attack;
 		/** @type {number} The defense of this card. */
@@ -866,7 +866,14 @@ class Hand {
 	add(card) {
 		this.cards.push(card);
 		const cardNode = card.getNode();
+		
+		if(currentGameStage == Stage.Initializing){
+			const cardClone = cardNode.cloneNode(true);
+			document.querySelector("#modal-player-hand").appendChild(cardClone);
+		}
+		
 		this.node.appendChild(cardNode);
+		
 
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
