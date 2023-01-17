@@ -831,10 +831,25 @@ class Deck {
 		this.graveyard.push(card);
 	}
 	/**
-	 * Shuffles the cards in the deck.
+	 * Shuffles the cards in the deck by looping through (deckLength) times
+	 * Taking a card from a random location in the deck and then placing it in the front or the back of the deck
+	 * We can do this as many times as we'd like by changing deckLength to loopCount and updating 
+	 * desired number of loops.
+	 * 
 	 */
 	shuffle() {
-		// TODO: Implement an algorithm to shuffle the `this.cards` array.
+
+		let deckLength = this.cards.length;
+
+		for(let i = 0; i < deckLength; i++){
+			let takeOut = this.cards.splice([Math.floor(Math.random() * deckLength)], 1)[0];
+			if(Math.floor(Math.random() * 2) == 0){
+				this.cards.unshift(takeOut);			
+			} else {
+				this.cards.push(takeOut);
+			}
+		}
+		console.log(this.cards);
 	}
 }
 
