@@ -105,6 +105,7 @@ img, video {
 }
 
 html {
+	min-width: 1800px;
 	background-image: var(--stone-table);
 	background-size: cover;
 	background-position-x: center;
@@ -152,6 +153,7 @@ body {
 
 #modal {
 	width: 70%;
+	min-width: 1300px;
 	background-image: url('../images/backgrounds/cracked-stone-med.png');
 	background-size: cover;
 	background-position: center;
