@@ -1622,6 +1622,7 @@ const addDraggableToNextPlayerCard = nextCard => {
 	/** @type {HTMLElement} The battletrack. */
 	const battletrack = nextCard.getBattleline().getBattletrack();
 
+	let isDragging = false;
 	$(nextCardNode).draggable({
 		revert: true,
 		start: function (event) {
@@ -1634,15 +1635,19 @@ const addDraggableToNextPlayerCard = nextCard => {
 			});
 
 			addDroppableToBattletrack(battletrack, nextCard);
+			isDragging = true;
 		},
 		drag: function (event) {
 		},
 		stop: function (event) {
-			enemyCards.forEach(enemyCard => $(enemyCard.getNode()).droppable("disable"));
-			$(battletrack.getTargetable()).droppable("disable");
+			if(isDragging) {
+				enemyCards.forEach(enemyCard => $(enemyCard.getNode()).droppable("disable"));
+				$(battletrack.getTargetable()).droppable("disable");
 
-			//Reset the styling:
-			$(event.target).css('transform', '');
+				//Reset the styling:
+				$(event.target).css('transform', '');
+				isDragging = false;
+			}
 		}
 	});
 	$(nextCardNode).draggable("enable");
