@@ -89,7 +89,7 @@ card-slot: 2;
 				-3px 3px 5px white;
 }
 
-*, *::before, *::after{
+*, *::before, *::after, h2, p{
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -525,30 +525,52 @@ body {
 	transform: scale(1);
 }
 
-.player-cards p {
+.player-cards p,
+.enemy-cards p {
 	font-size: 12px;
 	height: fit-content;
 	width: fit-content;
-}
-
-#player-card > div:hover {
-	transform: scale(1.8);
-	z-index: 4;
 }
 
 .player-card {
 	position: relative;
 	display: flex;
 	margin: 5px;
-	padding: 3px;
 	height: 200px;
 	width: 150px;
 	border-radius: 5px;
 	flex-direction: column;
 	transition: transform .5s cubic-bezier(.23, 1, .32, 1);
 	background-color: antiquewhite;
-	border: 1px solid black;
+	background: linear-gradient(rgb(16, 187, 255), black);
 	z-index: 3;
+}
+
+.card-table {
+	height: fit-content;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px;
+	padding: 1px 3px;
+	background-color: rgba(255, 255, 255, .6);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-end;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px black;
+}
+
+.card-table div {
+	display: flex;
+	flex-direction: row;
+}
+
+.card-table div p {
+	color: black;
+	letter-spacing: 1.2px;
+	font-family: 'Bangers', cursive;
 }
 
 .card-header {
@@ -556,14 +578,16 @@ body {
 	width: 100%;
 }
 
-.player-cards p {
-	font-size: 10px;
+.player-cards .card-table div p,
+.enemy-cards .card-table div p {
+	font-size: 12px;
+	letter-spacing: 1px;
 	height: 15px;
 }
 
 .player-cards .card-name,
 .enemy-cards .card-name {
-	font-size: 14px;
+	font-size: 12px;
 }
 
 .player-cards .mana-initiative,
@@ -585,84 +609,68 @@ body {
 
 .card-art {
 	height: 100%;
-        width: 100%;
-        object-fit: cover;
+	width: 100%;
+	object-fit: cover;
 	position: absolute;
 	z-index: 0;
+	border-radius: inherit;
 }
 
 .mana-initiative{
 	height: 20px;
 	width: 20px;
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 5px;
+	left: 5px;
 	border: solid black 1px;
 	border-radius: 5px;
 	background-color: lightseagreen;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.card-footer {
+	z-index: 1;
+	height: 20px;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.card-name {
+	height: fit-content;
+	width: 90%;
+	position: absolute;
+	border-radius: 5px;
+	background-color: rgba(255, 255, 255, .4);
+	left: calc(50% - 90%/2);/* 50%-half the width */
+	bottom: 7px;
+	font-size: 28px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: 'Bangers', cursive;
+	font-size: 20px;
+	text-shadow: 2px 2px 2px black;
+	letter-spacing: 1.2px;
+	white-space: nowrap;
+	color: rgb(239, 25, 25);
 }
 
 .card-health {
 	height: 20px;
 	width: 20px;
+	padding: 0 6px;
 	position: absolute;
 	border: solid black 1px;
 	border-radius: 5px;
-	background-color: lightseagreen;
+	background-color: red;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-
-.card-table {
-	height: fit-content;
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin: 5px;
-	border: solid black 1px;
-	background-color: silver;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	border-radius: 5px;
-	width: 40%;
-	padding: 0;
-	z-index: 1;
-}
-
-.card-table div {
-	display: flex;
-	flex-direction: row;
-}
-
-.card-footer {
-	z-index: 1;
-}
-
-.card-footer h2 {
-	position: absolute;
-	border: solid black 1px;
-	border-radius: 5px;
-	background-color: gainsboro;
-	margin: 5px;
-	bottom: 0;
-	left: 0;
-	font-size: 28px;
-}
-
-.card-footer p {
-	position: absolute;
-	border: solid black 1px;
-	padding: 0 6px;
-	border-radius: 5px;
-	background-color: red;
-	margin: 5px;
-	bottom: 0;
-	right: 0;
+	right: 5px;
+	bottom: calc(100% + 20px);
 }
 
 .enemy-cards > div {
@@ -673,12 +681,6 @@ body {
 	z-index: 2;
 	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 	transform: scale(1);
-}
-
-.enemy-cards p {
-	font-size: 12px;
-	height: fit-content;
-	width: fit-content;
 }
 
 .bt-hp-container {
