@@ -1,16 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () {
-	var elem = document.querySelector('.modal');
-	M.Modal.init(elem, {
-		dismissible: false
-	});
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-	let elem = document.querySelector('#menu-button');
-	M.Dropdown.init(elem, {
-		hover: true
-	});
-});
+
+//#region API FETCHING AND NORMALIZATION
 
 // API FETCH & DECK DATA COLLECTION:
 // initializing an empty deck that can be added to on fetch completion.
@@ -172,6 +162,8 @@ function getCardStats(normalizedData) {
 	console.log(cardStats)
 	return cardStats
 }
+
+//#endregion
 
 //#region ENUM DEFINITIONS
 /**
@@ -405,7 +397,7 @@ class Card {
 			const template = document.querySelector("#card-template");
 			const fragment = template.content.cloneNode(true);
 
-			
+
 			// populate the new template with an id and stats
 			let templateContainer = fragment.children[0];
 			let templateTable = templateContainer.children[1].children[1];
@@ -586,6 +578,10 @@ class Battleline {
 		// Inform this card what battleline it's in.
 		card.setBattleline(null);
 
+		if (this.cards.length < maxCardsPerBattleline && this.getBattletrack().getFriendlyBattleline() === this) {
+			$(this.zoneNode).droppable("enable");
+		}
+
 		return removedCard;
 	}
 	/**
@@ -679,6 +675,10 @@ class Battletrack {
 	 */
 	playFriendlyCard(card) {
 		this.friendlyBattleline.playCard(card);
+
+		if (this.friendlyBattleline.cards.length >= maxCardsPerBattleline) {
+			$(this.friendlyBattleline.zoneNode).droppable("disable");
+		}
 	}
 	/**
 	 * @param {Card} card The card to play to the enemy side of the battletrack.
@@ -813,6 +813,7 @@ class Deck {
 	 * @param {Card} card card to insert into the deck.
 	 */
 	insertCardIntoDeck(card) {
+		card.deleteNode();
 		card.setOwner(this.owner);
 		this.cards.push(card);
 	}
@@ -834,10 +835,10 @@ class Deck {
 
 		let shuffleCount = 100;
 
-		for(let i = 0; i < shuffleCount; i++){
+		for (let i = 0; i < shuffleCount; i++) {
 			let takeOut = this.cards.splice([Math.floor(Math.random() * this.cards.length)], 1)[0];
-			if(Math.floor(Math.random() * 2) == 0){
-				this.cards.unshift(takeOut);			
+			if (Math.floor(Math.random() * 2) == 0) {
+				this.cards.unshift(takeOut);
 			} else {
 				this.cards.push(takeOut);
 			}
@@ -921,12 +922,12 @@ class Hand {
 		/** @type {Card[]} An array of cards with a mana cost <= maxMana*/
 		const playableCards = [];
 		this.cards.forEach(card => {
-			if(card.getCost() <= maxMana) {
+			if (card.getCost() <= maxMana) {
 				playableCards.push(card);
 			};
 		});
 		// If there are no playable cards, someone did something wrong.
-		if(playableCards.length === 0) {
+		if (playableCards.length === 0) {
 			throw new Error("Hand.random() called when there were no playable cards. Please use Player.canPlayCard() to check before calling Hand.random().");
 		}
 		return this.remove(playableCards[Math.floor(Math.random() * playableCards.length)]);
@@ -1127,7 +1128,7 @@ const startFirstRound = () => {
 	if (humanGoesFirst && human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else if (enemy.canPlayCard()){
+	else if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
 	}
@@ -1172,7 +1173,7 @@ const playerTryPlayCard = (card, battletrack) => {
 	else {
 		const cardNode = card.getNode();
 		const handNode = card.getOwner().getHand().node;
-		if(cardNode.parentElement !== handNode) {
+		if (cardNode.parentElement !== handNode) {
 			hand.node.appendChild(cardNode);
 		}
 		cardNode.style.transform = "";
@@ -1210,26 +1211,32 @@ const AI_playcard = () => {
 	/** @type {Card} A card picked at random from the hand. */
 	// Pick a random card from hand that can be played
 	const cardToPlay = enemy.getHand().random(mana);
-	
-	/** @type {Battletrack[]} A clone of the battletracks array. */
-	const battletracksCopy = [...battletracks];
-	
-	for(let i = battletracksCopy.length - 1; i >= 0; --i) {
-		if(battletracksCopy[i].isConquered()) {
-			battletracksCopy.splice(i, 1);
+
+	/** @type {Battletrack[]} An array of all the battletracks that are no conquered and also have less than 4 cards in play. */
+	const validBattletracks = [];
+
+	battletracks.forEach(battletrack => {
+		if (!(battletrack.isConquered()) && battletrack.getEnemyCards().length < maxCardsPerBattleline) {
+			validBattletracks.push(battletrack);
 		}
+	});
+
+	const isABattletrackTargetable = validBattletracks.length !== 0;
+
+	//There are targetable battletracks.
+	if (isABattletrackTargetable) {
+		// Pick a random battletrack that is not conquored.
+		/** @type {Battletrack} A random unconquered battletrack. */
+		const battletrack = validBattletracks[Math.floor(Math.random() * validBattletracks.length)];
+
+		// Play the random card to the random battletrack.
+		battletrack.playEnemyCard(cardToPlay);
+
+		// Reduce AI mana by card cost
+		enemy.setMana(mana - cardToPlay.getCost());
+
+		console.log("Ai played ", cardToPlay.getDisplayName());
 	}
-	// Pick a random battletrack that is not conquored.
-	/** @type {Battletrack} A random unconquered battletrack. */
-	const battletrack = battletracksCopy[Math.floor(Math.random() * battletracksCopy.length)];
-
-	// Play the random card to the random battletrack.
-	battletrack.playEnemyCard(cardToPlay);
-
-	// Reduce AI mana by card cost
-	enemy.setMana(mana - cardToPlay.getCost());
-
-	console.log("Ai played ", cardToPlay.getDisplayName());
 
 	// If the player can make a move.
 	if (human.canPlayCard()) {
@@ -1237,8 +1244,8 @@ const AI_playcard = () => {
 		currentPlayer = human;
 	}
 	// Else if the AI can make a move.
-	else if (enemy.canPlayCard()) {
-		// Recursively call this funciton.
+	else if (enemy.canPlayCard() && isABattletrackTargetable) {
+		// Recursively call this function.
 		AI_playcard();
 	}
 	// Else if no one can make a move.
@@ -1273,10 +1280,12 @@ const endPlayCardStage = () => {
 		const bSpeed = b.getSpeed();
 		// A is faster.
 		if (aSpeed > bSpeed) {
+			// A should be left of B
 			return +1;
 		}
 		// B is faster.
 		else if (bSpeed > aSpeed) {
+			// B should be left of A
 			return -1;
 		}
 		// They are the same speed.
@@ -1290,19 +1299,43 @@ const endPlayCardStage = () => {
 				return 0;
 			}
 
-			const isAFirst = (humanGoesFirst && aOwner === human) || (!humanGoesFirst && aOwner !== human);
+			const isAHuman = aOwner === human;
 
-			// A's owner has priority
-			if (isAFirst) {
-				return +1;
+			// If the round is odd and the human won the coin flip
+			// or
+			// if the round is even and the human did not win the coin flip
+			const doesHumanHavePriority = (currentRound % 2 !== 0 && humanGoesFirst) || (!humanGoesFirst && currentRound % 2 === 0);
+
+			// Human has priority
+			if(doesHumanHavePriority) {
+				if(isAHuman) {
+					// A should be left of B
+					return +1;
+				}
+				else /*A is enemy*/ {
+					// B should be left of A
+					return -1;
+				}
 			}
-			// B's owner has priority
+			// AI Has priority
 			else {
-				return -1;
+				if(isAHuman) {
+					// B should be left of A
+					return -1;
+				}
+				else /*A is enemy*/ {
+					// A should be left of B
+					return +1;
+				}
 			}
 		}
 	});
-	cardsToAct.forEach(card => console.log(card.getSpeed()));
+	// console.log("Current round:", currentRound);
+	// console.log(humanGoesFirst ? "Human won coin flip." : "Enemy won coin flip.");
+	// for(let i = cardsToAct.length - 1; i >= 0; --i) {
+	// 	const card = cardsToAct[i];
+	// 	console.log(`${i}:\nSpeed: ${card.getSpeed()}\nOwner: ${card.getOwner() === human ? "Human" : "Enemy"}`);
+	// }
 	letNextCardDoAction();
 };
 
@@ -1321,8 +1354,14 @@ const letNextCardDoAction = () => {
 		/** @returns {number} the speed of the next card on the cardsToAct stack. */
 		const nextSpeed = () => cardsToAct[cardsToAct.length - 1].getSpeed();
 
+		/** @returns {Player} the owner of the next card on the cardsToAct stack. */
+		const nextOwner = () => cardsToAct[cardsToAct.length - 1].getOwner();
+
 		/** @type {number} The speed of the first card popped from the stack. */
 		const speed = nextSpeed();
+
+		/** @type {Player} The owner of the first card popped from the stack. */
+		const owner = nextOwner();
 
 		// Pop cardsToAct and add it to the active card array
 		do {
@@ -1332,7 +1371,7 @@ const letNextCardDoAction = () => {
 			activeCards.push(nextCard);
 			// Give the player the power to drag the card.
 			if (nextCard.getOwner() === human) { addDraggableToNextPlayerCard(nextCard); }
-		} while (false);//(cardsToAct.length > 0 && nextSpeed() === speed);
+		} while (cardsToAct.length > 0 && nextSpeed() === speed && nextOwner() === owner);
 	}
 	if (activeCards[0].owner === human) {
 		// Set active human card glow
@@ -1347,7 +1386,6 @@ const letNextCardDoAction = () => {
 		}
 	}
 
-	console.log("Next active cards are", activeCards[0].getDisplayName());
 	// If the card is owned by the AI
 	if (activeCards[0].getOwner() === enemy) {
 		AI_action();
@@ -1481,7 +1519,7 @@ const endRound = () => {
 	human.setMana(currentRound + (human.isReinforcing() ? 2 : 0));
 	enemy.setMana(currentRound + (enemy.isReinforcing() ? 2 : 0));
 
-	console.log("human mana:",human.mana);
+	console.log("human mana:", human.mana);
 
 	human.reinforcing = true;
 	enemy.reinforcing = true;
@@ -1499,7 +1537,7 @@ const endRound = () => {
 		&& human.canPlayCard()) {
 		currentPlayer = human;
 	}
-	else if(enemy.canPlayCard()) {
+	else if (enemy.canPlayCard()) {
 		currentPlayer = enemy;
 		AI_playcard();
 	}
@@ -1577,8 +1615,9 @@ const addDraggableToNextPlayerCard = nextCard => {
 		drag: function (event) {
 		},
 		stop: function (event) {
-			// Stop dragging this card.
-			lastMove.draggedCard = null;
+			enemyCards.forEach(enemyCard => $(enemyCard.getNode()).droppable("disable"));
+			$(battletrack.getTargetable()).droppable("disable");
+
 			//Reset the styling:
 			$(event.target).css('transform', '');
 		}
@@ -1642,11 +1681,11 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 		drop: function (event, ui) {
 			/** @type {Card} */
 			const card = window.lastMove.draggedCard;
-			if(card != null) {
+			if (card != null) {
 				playerTryPlayCard(card, battletrack);
 			}
 			// if (this.children.length < 4) {
-				// 	// window.lastMove.successfullyPlaced = true;
+			// 	// window.lastMove.successfullyPlaced = true;
 			// 	// window.lastMove.droppedBattletrackID = $(event.target).parent()[0].id;
 			// 	// window.lastMove.droppedIndex = this.children.length;
 			// 	// card.getOwner().getHand().remove();
@@ -1660,9 +1699,9 @@ const addDroppableToBattleline = (battletrack, battlelineNode) => {
 			// if (this.children.length == 4) {
 			// 	$(this).droppable("disable");
 			// } else {
-				// 	$(this).droppable("enable");
+			// 	$(this).droppable("enable");
 			// }
-			
+
 			$(this).css('background-color', 'rgba(255, 255, 255, .2');
 		},
 		accept: function (draggable) {
@@ -1813,13 +1852,33 @@ const cardsToAct = [];
 /** @type {Card[]} The current card waiting to perform its action. If there are multiple cards with the same speed, they will all be put into this array. */
 const activeCards = [];
 
+/** @type {number} The maximum amount of cards that can be played to a battleline. */
+const maxCardsPerBattleline = 4;
+
 //#endregion
+
+//#region EVENT LISTENERS
+
+document.addEventListener('DOMContentLoaded', function () {
+	var elem = document.querySelector('.modal');
+	M.Modal.init(elem, {
+		dismissible: false
+	});
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	let elem = document.querySelector('#menu-button');
+	M.Dropdown.init(elem, {
+		hover: true
+	});
+});
 
 _endTurnButton.addEventListener("click", (event) => {
 	event.preventDefault();
-	if(currentGameStage == Stage.Playing){
+	if (currentGameStage == Stage.Playing) {
 		playerEndTurnEarly();	//skip having to play a card
-	} 
+	}
 })
 
 _concedeButton.addEventListener("click", endGame);
+//#endregion
