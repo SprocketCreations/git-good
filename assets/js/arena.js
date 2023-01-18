@@ -1544,7 +1544,7 @@ const cardAttackAction = (attacker, defender) => {
 	defender.damage(damage);
 
 	M.toast({
-		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? "battleline" : defender.getDisplayName()} (${damage} dmg)`,
+		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? `their battletrack!` : defender.getDisplayName()} (${damage} dmg)`,
 		classes: 'rounded positionToast'
 	})
 
@@ -2000,3 +2000,9 @@ _endTurnButton.addEventListener("click", (event) => {
 
 _concedeButton.addEventListener("click", endGame);
 //#endregion
+
+document.addEventListener("keypress", (event) => {
+	if(event.code === "Space"){
+		M.Toast.dismissAll();
+	}
+})

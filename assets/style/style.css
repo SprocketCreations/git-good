@@ -54,49 +54,43 @@ card-slot: 2;
 	top: 225px !important;
 	right: 25px !important;
 	counter-reset: toasts;
+	padding: 10px;
 }
 
 #toast-container div {
-	width: 200px;
 	counter-increment: toasts;
 	font-family: 'Bangers', cursive;
-	font-size: 28px;
+	font-size: 24px;
 	letter-spacing: 1.2px;
-	background-color: transparent;
-	color: red;
+	color: white;
 	font-weight: bold;
 	text-shadow: 2px 2px black;
 	position: relative;
-	padding: 10px;
-	border-radius: 50%;
-	text-align: center;
+	padding: 10px 25px 10px 10px;
 	box-shadow: none;
-}
-
-#toast-container div::after {
-	content: '';
-	position: absolute;
-	inset: 50px;
-	border-radius: 25% 13%;
-	background-color: white;
-	z-index: -1;
-	filter: blur(3px);
+	display: flex;
+	justify-content: flex-end;
 }
 
 .fifties-toast {
 	background-color: black !important;
-	color: #56d5ff !important;
 	text-shadow: none;
 }
 
 #toast-container div::before {
-	font-family: 'Courier New', Courier, monospace;
-	font-size: 12px;
+	width: 25px;
+	height: 25px;
 	text-shadow: 0px 0px 0px;
 	content: counter(toasts);
 	position: absolute;
-	left: 10px;
-	bottom: 2px;
+	bottom: -8px;
+	left: -8px;
+	background-color: white;
+	color: red;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #toast-container div:first-letter {
