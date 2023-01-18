@@ -1426,10 +1426,10 @@ const letNextCardDoAction = () => {
 
 		let targetableBattleTrack = activeCards[0].getBattleline().getBattletrack().targetableNode
 		let targetableCards = activeCards[0].getBattleline().getBattletrack().enemyBattleline.cards
-		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px red, 3px 3px 5px red, -3px -3px 5px red, -3px 3px 5px red;")
 	
 		for (i = 0; i < targetableCards.length; i++) {
-			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px red, 3px 3px 5px red, -3px -3px 5px red, -3px 3px 5px red;")
 		}
 	}
 
@@ -1657,8 +1657,6 @@ const addDraggableToNextPlayerCard = nextCard => {
 	const nextCardNode = nextCard.getNode();
 	/** @type {HTMLElement} The battletrack. */
 	const battletrack = nextCard.getBattleline().getBattletrack();
-	console.log("======")
-	console.log(battletrack.getTargetable())
 
 	let isDragging = false;
 	$(nextCardNode).draggable({

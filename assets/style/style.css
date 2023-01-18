@@ -201,6 +201,14 @@ body {
 	color: white;
 }
 
+#tutorial p {
+	margin: 20px 0;
+}
+
+#tutorial-list {
+	margin-left: 20px;
+}
+
 #tutorial-footer {
 	background-color: #323232;
 }
@@ -598,7 +606,9 @@ body {
 	width: fit-content;
 	text-align: center;
 	border-radius: 5px;
-	color: rgb(86, 213, 255);
+	background-color: rgba(255, 255, 255, .4);
+	color: orangered;
+	padding: 3px;
 	font-size: 38px;
 	font-weight: bold;
 	text-shadow: 2px 2px 4px black;
