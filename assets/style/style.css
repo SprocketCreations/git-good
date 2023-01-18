@@ -70,6 +70,7 @@ card-slot: 2;
 	box-shadow: none;
 	display: flex;
 	justify-content: flex-end;
+	border: 2px solid white;
 }
 
 .fifties-toast {
