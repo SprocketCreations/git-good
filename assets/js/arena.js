@@ -1533,9 +1533,9 @@ const cardAttackAction = (attacker, defender) => {
 			console.log("defender dies")
 			// Kill the card. This function takes care of all the disposal.
 			defender.die();
-		} else if (defender.currentHitpoints < defender.totalHitpoints) {
+		} else if (defender.currentHitpoints < defender.totalHitpoints && defender.currentHitpoints > 1) {
 			defender.node.children[2].children[1].setAttribute("style", "background-color: orange")
-		} else if (defender.currentHitpoints != defender.totalHitpoints && defender.currentHitpoints <= 1) {
+		} else if (defender.currentHitpoints <= 1) {
 			defender.node.children[2].children[1].setAttribute("style", "background-color: red")
 		}
 	}
