@@ -334,22 +334,6 @@ body {
 				inset 0px 0px 10px 1px white;
 	border: 3px solid white;
 	border-radius: 33%;
-}
-
-#battletrack-1 {
-	background-image: var(--location-asgard);
-	background-size: cover;
-	background-position: center;
-}
-
-#battletrack-2 {
-	background-image: var(--location-wakanda);
-	background-size: cover;
-	background-position: center;
-}
-
-#battletrack-3 {
-	background-image: var(--location-shield-20);
 	background-size: cover;
 	background-position: center;
 }

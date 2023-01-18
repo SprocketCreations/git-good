@@ -992,6 +992,9 @@ const initializeBattletracks = () => {
 		/** @type {Battletrack} the nth battletrack. */
 		const battletrack = new Battletrack(i, location);
 
+		console.log(battletrack.location.imageURL);
+		_allBattletracks[i].style.backgroundImage = `url(${location.imageURL})`;
+		_btNames[i].textContent = location.displayName;
 		battletracks.push(battletrack);
 	}
 };
@@ -1849,24 +1852,24 @@ const _playerTableCards = document.querySelectorAll(".player-cards");
 /** @type {Location[]} array of game locations */
 const curatedLocations = [
 	//Example:
-	new Location("Wakanda", "../images/backgrounds/location-wakanda.png"),
-	new Location("New York", "../images/backgrounds/location-new-york.png"),
-	new Location("Asgard", "../images/backgrounds/location-asgard.png"),
-	new Location("S.H.I.E.L.D. 2.0", "../images/backgrounds/location-shield-2_0.png"),
-	new Location("Dark Dimension", "../images/backgrounds/location-dark-dimension.png"),
-	new Location("Kingpin's Mansion", "../images/backgrounds/location-kingpins-mansion.png"),
-	new Location("Joker's Lair", "../images/backgrounds/location-jokers-lair.png"),
-	new Location("Arkham Asylum", "../images/backgrounds/location-arkham-asylum.png"),
-	new Location("Speed Force", "../images/backgrounds/location-speed-force.png"),
-	new Location("Krypton", "../images/backgrounds/location-krypton.png"),
-	new Location("Luthor Corp.", "../images/backgrounds/location-luthor-corp.png"),
-	new Location("Shooting Range", "../images/backgrounds/location-shooting-range.png"),
-	new Location("Poke-Arena!", "../images/backgrounds/location-poke-arena.png"),
-	new Location("Poke-Cave!", "../images/backgrounds/location-poke-cave.png"),
-	new Location("Ashe's Home", "../images/backgrounds/location-ashes-home.png"),
-	new Location("Infirmary", "../images/backgrounds/location-infirmary.png"),
-	new Location("Poke-Beach!", "../images/backgrounds/location-poke-beach.png"),
-	new Location("Poke-City!", "../images/backgrounds/location-poke-city.png")
+	new Location("Wakanda", "../assets/images/backgrounds/location-wakanda.png"),
+	new Location("New York", "../assets/images/backgrounds/location-new-york.png"),
+	new Location("Asgard", "../assets/images/backgrounds/location-asgard.png"),
+	new Location("S.H.I.E.L.D. 2.0", "../assets/images/backgrounds/location-shield-2_0.png"),
+	new Location("Dark Dimension", "../assets/images/backgrounds/location-dark-dimension.png"),
+	new Location("Kingpin's Mansion", "../assets/images/backgrounds/location-kingpins-mansion.png"),
+	new Location("Joker's Lair", "../assets/images/backgrounds/location-jokers-lair.png"),
+	new Location("Arkham Asylum", "../assets/images/backgrounds/location-arkham-asylum.png"),
+	new Location("Speed Force", "../assets/images/backgrounds/location-speed-force.png"),
+	new Location("Krypton", "../assets/images/backgrounds/location-krypton.png"),
+	new Location("Luthor Corp.", "../assets/images/backgrounds/location-luthor-corp.png"),
+	new Location("Shooting Range", "../assets/images/backgrounds/location-shooting-range.png"),
+	new Location("Poke-Arena!", "../assets/images/backgrounds/location-poke-arena.png"),
+	new Location("Poke-Cave!", "../assets/images/backgrounds/location-poke-cave.png"),
+	new Location("Ashe's Home", "../assets/images/backgrounds/location-ashes-home.png"),
+	new Location("Infirmary", "../assets/images/backgrounds/location-infirmary.png"),
+	new Location("Poke-Beach!", "../assets/images/backgrounds/location-poke-beach.png"),
+	new Location("Poke-City!", "../assets/images/backgrounds/location-poke-city.png")
 ];
 
 /** @type {Stage} The current state of the game. */
@@ -1901,15 +1904,17 @@ const maxCardsPerBattleline = 4;
 //#region EVENT LISTENERS
 
 let endGameModal;
+
 document.addEventListener('DOMContentLoaded', function () {
 	let elements = document.querySelectorAll('.modal');
-	let instances = M.Modal.init(elements, {
+	M.Modal.init(elements, {
 		dismissible: false
 	});
 
 	endGameModal = M.Modal.getInstance(elements[1]);
-	
 });
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
 	let elem = document.querySelector('#menu-button');
