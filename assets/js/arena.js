@@ -868,9 +868,9 @@ class Hand {
 		this.cards.push(card);
 		const cardNode = card.getNode();
 		
-		if(currentGameStage == Stage.Initializing){
+		if(currentGameStage === Stage.Initializing && card.owner === human){
 			const cardClone = cardNode.cloneNode(true);
-			document.querySelector("#modal-player-hand").appendChild(cardClone);
+			_modalPlayerHand.appendChild(cardClone);
 		}
 		
 		this.node.appendChild(cardNode);
@@ -879,7 +879,6 @@ class Hand {
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
 		// and snap to their target droppable
-		// Makes both enemy and player cards draggable?
 		if (card.owner === human) {
 			$(cardNode).draggable({
 				revert: "invalid",
@@ -1104,6 +1103,11 @@ const rejectFirstHand = () => {
 	rejectedCards.forEach(card => deck.insertCardIntoDeck(card));
 	//Reshuffle the deck
 	deck.shuffle();
+
+	// Delete all cards from the modal display
+	for(let i = 0; i < _modalPlayerHand.children.length;){
+		_modalPlayerHand.children[i].remove();
+	}
 
 	// Rebuild the player's hand.
 	refillHand(human);
@@ -1783,8 +1787,11 @@ const _rejectHandButton = document.querySelector("#reject-hand-button");
 /** @type {HTMLElement} The end turn hand button.  */
 const _endTurnButton = document.querySelector("#end-turn-button");
 
-/** @type {HTMLElement} The end turn hand button.  */
+/** @type {HTMLElement} The end game modal display.  */
 const _endgameModalDisplay = document.querySelector("#modal-endgame-display");
+
+/** @type {HTMLElement} The modal player hand.  */
+const _modalPlayerHand = document.querySelector("#modal-player-hand");
 
 // BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
