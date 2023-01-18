@@ -310,11 +310,13 @@ body {
 
 #game-state {
 	position: absolute;
-	display: flex;
+	display: none;
 	flex-direction: column;
-	border: solid black 1px;
+	border: solid white 1px;
 	border-radius: 5px;
-	background: darkgray;
+	background: #323232;
+	color: white;
+	padding: 3px;
 	bottom: 5%;
 	left: 10%;
 }
