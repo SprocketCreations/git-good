@@ -55,6 +55,10 @@ card-slot: 2;
 	cursor: grab;
 }
 
+.grow:hover {
+	transform: scale(4);
+}
+
 .grabbing:active {
 	cursor: -webkit-grabbing;
 	cursor: grabbing;
