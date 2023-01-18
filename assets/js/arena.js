@@ -38,7 +38,7 @@ function getPokeStats() {
 			})
 	}
 }
-console.log(heroStats)
+
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
 fetch(heroUrl)
@@ -165,7 +165,6 @@ function getCardStats(normalizedData) {
 			cardStats.push(obj);
 		}
 	}
-	console.log(cardStats)
 	return cardStats
 }
 
@@ -910,6 +909,7 @@ class Hand {
 					$(event.target).css('transform', '');
 				}
 			});
+			card.node.classList.add("hover-grow")
 		}
 	}
 	/**
@@ -1179,6 +1179,9 @@ const playerTryPlayCard = (card, battletrack) => {
 		currentPlayer.getHand().remove(card);
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
+
+		// remove hover-grow
+		card.node.classList.remove("hover-grow")
 
 		// Grow card on double click
 		card.node.addEventListener("dblclick", function() {

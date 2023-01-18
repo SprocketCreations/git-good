@@ -90,7 +90,7 @@ card-slot: 2;
 }
 
 .grow:hover {
-	transform: scale(4);
+	transform: scale(3);
 	z-index: 10;
 }
 
