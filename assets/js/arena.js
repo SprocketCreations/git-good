@@ -281,6 +281,7 @@ class Player {
 	 */
 	canPlayCard() {
 		phaseSpan.textContent = "Play"
+		phaseSpan.setAttribute("style", "color:green;")
 		playerHeadHand.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
 		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
@@ -1311,6 +1312,7 @@ const AI_playcard = () => {
 const endPlayCardStage = () => {
 	console.log("No more cards can be played. Beginning actions.");
 	phaseSpan.textContent = "Combat"
+	phaseSpan.setAttribute("style", "color:red;")
 	playerHeadHand.setAttribute("style",  "box-shadow: ''")
 
 	// Set stage to action
@@ -1953,9 +1955,26 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	tutorialModal = M.Modal.getInstance(element);
-	tutorialModal.open()
-	let count = 1
-	// TODO save to localStorage and check that
+	
+	// If storedCount is not equal to a falsy, show the tutorial to new user
+	let storedCount = localStorage.getItem("count")
+	if (!storedCount) {
+		tutorialModal.open()
+	}
+
+	// If user has seen the tutorial, save count to 1
+	let count = 0
+	let tutorialBtnEl = document.querySelector("#tutorial-btn")
+	tutorialBtnEl.addEventListener("click", function(){
+		count = 1
+		localStorage.setItem("count", count)
+	})
+
+	// Show tutorial on menu selection
+	let menuBtnEl = document.querySelector("#menu-tutorial")
+	menuBtnEl.addEventListener("click", function(){
+		tutorialModal.open()
+	})
 });
 
 document.addEventListener('DOMContentLoaded', function () {
