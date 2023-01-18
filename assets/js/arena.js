@@ -1546,7 +1546,7 @@ const cardAttackAction = (attacker, defender) => {
 	defender.damage(damage);
 
 	M.toast({
-		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? `their battletrack!` : defender.getDisplayName()} (${damage} dmg)`,
+		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? `<br>their battletrack!` : defender.getDisplayName()} (${damage} dmg)`,
 		classes: 'rounded positionToast'
 	})
 

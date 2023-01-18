@@ -67,7 +67,7 @@ card-slot: 2;
 	text-shadow: 2px 2px black;
 	position: relative;
 	padding: 10px 25px 10px 10px;
-	box-shadow: none;
+	box-shadow: 3px 3px 5px black;
 	display: flex;
 	justify-content: flex-end;
 	border: 2px solid white;
@@ -87,11 +87,12 @@ card-slot: 2;
 	bottom: -8px;
 	left: -8px;
 	background-color: white;
-	color: red;
+	color: black;
 	border-radius: 50%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow: 2px 2px 3px black;
 }
 
 #toast-container div:first-letter {
