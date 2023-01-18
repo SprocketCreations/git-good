@@ -155,6 +155,22 @@ body {
 	transition: all .2s ease-out;
 }
 
+#tutorial {
+	width: 70%;
+	min-width: 1300px;
+	background-color: #323232;
+	color: white;
+}
+
+#tutorial-footer {
+	background-color: #323232;
+}
+
+#none {
+	background-color: rgb(189, 128, 17);
+	color: white;
+}
+
 #start-game-modal {
 	width: 70%;
 	min-width: 1300px;
