@@ -1867,7 +1867,7 @@ const curatedLocations = [
 	new Location("Poke-Arena!", "../assets/images/backgrounds/location-poke-arena.png"),
 	new Location("Poke-Cave!", "../assets/images/backgrounds/location-poke-cave.png"),
 	new Location("Ashe's Home", "../assets/images/backgrounds/location-ashes-home.png"),
-	new Location("Infirmary", "../assets/images/backgrounds/location-infirmary.png"),
+	new Location("Poke-Infirmary!", "../assets/images/backgrounds/location-infirmary.png"),
 	new Location("Poke-Beach!", "../assets/images/backgrounds/location-poke-beach.png"),
 	new Location("Poke-City!", "../assets/images/backgrounds/location-poke-city.png")
 ];
