@@ -404,8 +404,8 @@ body {
 	background: #323232;
 	color: white;
 	padding: 3px;
-	bottom: 5%;
-	left: 10%;
+	top: 0;
+	transform: translateY(-100%);
 }
 
 #battletracks{
