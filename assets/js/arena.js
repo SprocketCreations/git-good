@@ -163,6 +163,11 @@ function getCardStats(normalizedData) {
 	return cardStats
 }
 
+let roundSpan = document.querySelector("#round")
+let phaseSpan = document.querySelector("#phase")
+console.log(roundSpan)
+console.log(phaseSpan)
+
 //#endregion
 
 //#region ENUM DEFINITIONS
@@ -269,6 +274,7 @@ class Player {
 	 * one card in their hand that they can play.
 	 */
 	canPlayCard() {
+		phaseSpan.textContent = "Play"
 		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
 			const cost = this.hand.cards[i].getCost();
@@ -1123,6 +1129,9 @@ const rejectFirstHand = () => {
 const startFirstRound = () => {
 	// Update the game state to allow the players to play cards.
 	currentGameStage = Stage.Playing;
+	roundSpan.textContent = 1
+	let gameState = document.querySelector("#game-state")
+	gameState.setAttribute("style", "display: flex;")
 
 	// Set mana for both players to 1
 	human.setMana(1);
@@ -1282,6 +1291,7 @@ const AI_playcard = () => {
  */
 const endPlayCardStage = () => {
 	console.log("No more cards can be played. Beginning actions.");
+	phaseSpan.textContent = "Combat"
 
 	// Set stage to action
 	currentGameStage = Stage.Action;
@@ -1538,6 +1548,7 @@ const cardAttackAction = (attacker, defender) => {
  */
 const endRound = () => {
 	++currentRound;
+	roundSpan.textContent = currentRound
 
 	console.log("new round beginning:", currentRound);
 
@@ -1901,6 +1912,7 @@ const maxCardsPerBattleline = 4;
 //#region EVENT LISTENERS
 
 let endGameModal;
+let tutorialModal;
 
 document.addEventListener('DOMContentLoaded', function () {
 	let elements = document.querySelectorAll('.modal');
@@ -1911,7 +1923,17 @@ document.addEventListener('DOMContentLoaded', function () {
 	endGameModal = M.Modal.getInstance(elements[1]);
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+	let element = document.querySelector('#tutorial');
+	M.Modal.init(element, {
+		dismissible: false,
+	});
 
+	tutorialModal = M.Modal.getInstance(element);
+	tutorialModal.open()
+	let count = 1
+	// TODO save to localStorage and check that
+});
 
 document.addEventListener('DOMContentLoaded', function () {
 	let elem = document.querySelector('#menu-button');
