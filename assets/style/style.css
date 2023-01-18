@@ -605,10 +605,10 @@ body {
 .location-text {
 	width: fit-content;
 	text-align: center;
-	border-radius: 5px;
-	background-color: rgba(255, 255, 255, .4);
-	color: orangered;
-	padding: 3px;
+	border-radius: 25px;
+	background-color: #323232;
+	color: white;
+	padding: 10px;
 	font-size: 38px;
 	font-weight: bold;
 	text-shadow: 2px 2px 4px black;
