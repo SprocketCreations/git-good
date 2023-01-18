@@ -281,6 +281,7 @@ class Player {
 	 */
 	canPlayCard() {
 		phaseSpan.textContent = "Play"
+		phaseSpan.setAttribute("style", "color:green;")
 		playerHeadHand.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
 		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
@@ -1311,6 +1312,7 @@ const AI_playcard = () => {
 const endPlayCardStage = () => {
 	console.log("No more cards can be played. Beginning actions.");
 	phaseSpan.textContent = "Combat"
+	phaseSpan.setAttribute("style", "color:red;")
 	playerHeadHand.setAttribute("style",  "box-shadow: ''")
 
 	// Set stage to action
