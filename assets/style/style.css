@@ -57,6 +57,7 @@ card-slot: 2;
 
 .grow:hover {
 	transform: scale(4);
+	z-index: 1000;
 }
 
 .grabbing:active {
@@ -166,9 +167,13 @@ body {
 	background-color: #323232;
 }
 
-#none {
-	background-color: rgb(189, 128, 17);
+#tutorial-btn {
+	background-color: rgb(191, 3, 3);
 	color: white;
+}
+
+#tutorial-btn:hover {
+	background-color: rgb(116, 1, 1);
 }
 
 #start-game-modal {
@@ -536,9 +541,9 @@ body {
 }
 
 .location-text {
-	width: calc(100% + 50px);
+	width: fit-content;
 	text-align: center;
-
+	border-radius: 5px;
 	color: rgb(86, 213, 255);
 	font-size: 32px;
 	font-weight: bold;
@@ -708,7 +713,7 @@ body {
 	position: absolute;
 	border: solid black 1px;
 	border-radius: 5px;
-	background-color: red;
+	background-color: green;
 	display: flex;
 	justify-content: center;
 	align-items: center;
