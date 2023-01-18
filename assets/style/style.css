@@ -50,6 +50,40 @@ card-slot: 2;
                         supported by Chrome, Edge, Opera and Firefox */
 }
 
+#toast-container {
+	top: 225px !important;
+	right: 25px !important;
+	counter-reset: toasts;
+}
+
+#toast-container div {
+	counter-increment: toasts;
+	border: 2px solid red;
+	font-family: 'Bangers', cursive;
+	font-size: 24px;
+	letter-spacing: 1.2px;
+	background-color: blanchedalmond;
+	color: red;
+	font-weight: bold;
+	text-shadow: 2px 2px black;
+	white-space: nowrap;
+	position: relative;
+}
+
+#toast-container div::before {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 12px;
+	text-shadow: 0px 0px 0px;
+	content: counter(toasts);
+	position: absolute;
+	left: 10px;
+	bottom: 2px;
+}
+
+#toast-container div:first-letter {
+	text-transform: uppercase;
+}
+
 .grab:hover {
 	cursor: -webkit-grab;
 	cursor: grab;
@@ -57,7 +91,7 @@ card-slot: 2;
 
 .grow:hover {
 	transform: scale(4);
-	z-index: 1000;
+	z-index: 10;
 }
 
 .grabbing:active {
@@ -141,18 +175,22 @@ body {
 	left: 0px;
 	top: calc(50% - 25px);
 	padding-top: 5px;
-	font-size: 24px;
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.4px;
+	text-shadow: 2px 2px 4px black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	background-color: transparent;
-	background-image: url('../images/textures/leather-menu-button.png');
-	background-size: contain;
+	background-image: url('../images/textures/steel-menu-button.png');
+	background-size: cover;
 	background-position: center;
 	border-radius: 0px 25px 25px 0px;
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
+	color: red;
 	transition: all .2s ease-out;
 }
 
@@ -258,9 +296,12 @@ body {
 	left: 0px;
 	bottom: calc(30% - 25px);
 	transition: transform .5s ease-out;
-	background-image: url("../images/textures/leather-menu-button.png");
-	background-size: contain;
-	font-size: 24px;
+	background-image: url("../images/textures/steel-menu-button.png");
+	background-size: cover;
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	text-shadow: 2px 2px 4px black;
+	letter-spacing: 1.4px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -269,20 +310,27 @@ body {
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
+	color: red;
 }
 
 #dropdown {
 	width: 225px !important;
-	background-image: url('../images/textures/tattered-menu-page-small.png');
+	background-image: url('../images/textures/vert-steel-menu-button.png');
 	background-size: cover;
 	border-radius: 0px 25px 25px 0;
 	overflow: hidden;
 	white-space: nowrap;
 	font-weight: bold;
-	border-top: 3px solid white;
+	/* border-top: 3px solid white;
 	border-right: 3px solid white;
-	border-bottom: 3px solid white;
+	border-bottom: 3px solid white; */
 	box-shadow: 5px 5px 10px black;
+}
+
+#dropdown a {
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.2px;
 }
 
 .dropdown-content li > a {
@@ -307,10 +355,16 @@ body {
 
 #dropdown li:hover {
 	background-color: rgba(255, 255, 255, 0);
-	box-shadow: inset 2px 2px 4px blue,
-				inset -2px -2px 4px blue;
 	font-weight: bold;
 	z-index: 3;
+}
+
+#dropdown li:hover a {
+	color: white;
+}
+
+#dropdown li:nth-child(3):hover a{
+	color: red;
 }
 
 #dropdown li:nth-child(3):hover {
@@ -545,10 +599,11 @@ body {
 	text-align: center;
 	border-radius: 5px;
 	color: rgb(86, 213, 255);
-	font-size: 32px;
+	font-size: 38px;
 	font-weight: bold;
-	text-shadow: 2px 2px black;
-	font-family: 'Josefin Sans', sans-serif;
+	text-shadow: 2px 2px 4px black;
+	font-family: 'Bangers', sans-serif;
+	letter-spacing: 1.4px;
 	white-space: nowrap;
 }
 
