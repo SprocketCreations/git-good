@@ -1574,6 +1574,7 @@ const endRound = () => {
  */
 const endGame = () => {
 	console.log("game over");
+	endGameModal.open()
 	// Update the game state prevent the players from doing anything and reappear start button
 	currentGameStage = Stage.Over;
 	_modalButton.style.display = "block";
@@ -1583,16 +1584,17 @@ const endGame = () => {
 	if (human.isWinner()) {
 		// Advance player win counter
 		human.addWin();
+		_endgameModalDisplay.textContent = "You win! :)";
 	}
 	// If the enemy won.
 	else if (enemy.isWinner()) {
 		// Advance enemy win counter
 		enemy.addWin();
+		_endgameModalDisplay.textContent = "You lose! :(";
 	}
 	// If something forced the game to end early.
 	else {
-		// Idk if this will every be reached.
-		// The game can't tie.
+		_endgameModalDisplay.textContent = "You've conceded :(";
 	}
 	// Display victory or failure screen/animation
 	// TODO: add an endgame screen or page to show.
@@ -1781,6 +1783,9 @@ const _rejectHandButton = document.querySelector("#reject-hand-button");
 /** @type {HTMLElement} The end turn hand button.  */
 const _endTurnButton = document.querySelector("#end-turn-button");
 
+/** @type {HTMLElement} The end turn hand button.  */
+const _endgameModalDisplay = document.querySelector("#modal-endgame-display");
+
 // BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
@@ -1888,11 +1893,15 @@ const maxCardsPerBattleline = 4;
 
 //#region EVENT LISTENERS
 
+let endGameModal;
 document.addEventListener('DOMContentLoaded', function () {
-	var elem = document.querySelector('.modal');
-	M.Modal.init(elem, {
+	let elements = document.querySelectorAll('.modal');
+	let instances = M.Modal.init(elements, {
 		dismissible: false
 	});
+
+	endGameModal = M.Modal.getInstance(elements[1]);
+	
 });
 
 document.addEventListener('DOMContentLoaded', function () {
