@@ -144,7 +144,7 @@ img, video {
 }
 
 html {
-	min-width: 1800px;
+	min-width: 1280px;
 	background-image: var(--stone-table);
 	background-size: cover;
 	background-position-x: center;
@@ -397,6 +397,8 @@ body {
 
 #game-state {
 	position: absolute;
+	width: 200px;
+	justify-content: space-evenly;
 	display: none;
 	flex-direction: row;
 	border: solid white 1px;
