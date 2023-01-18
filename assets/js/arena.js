@@ -109,6 +109,12 @@ function minMaxNormalization(data, balanceMultiplier) {
 		imgUrl: [],
 	}
 
+	for(let i = 0; i < data.name.length; i++){
+		console.log(data.name[i])
+		data.name[i] = data.name[i].charAt(0).toUpperCase() + data.name[i].slice(1, data.name[i].length);
+		console.log(data.name[i])
+	}
+
 	statsNormalized.name = data.name
 	statsNormalized.imgUrl = data.imgUrl
 	keysArr = ["health", "attack", "defense", "speed"]
@@ -143,7 +149,7 @@ function minMaxNormalization(data, balanceMultiplier) {
 
 // gets the normalized card stats for use in game
 function getCardStats(normalizedData) {
-	let cardNames = ["Bullseye", "Thor", "Spider-Man", "Green Goblin", "Black Widow", "Scarlet Witch", "Loki", "Groot", "Black Panther", "Venom", "Thanos", "Hulk", "Kingpin", "Magneto", "Luke Cage", "Amanda Waller", "Black Flash", "Flash", "Batman", "Superman", "Wonder Woman", "Lex Luthor", "Black Adam", "Darkseid", "Beast Boy", "Batgirl", "Aquaman", "Harley Quinn", "Joker", "Sinestro", "Martian Manhunter", "charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
+	let cardNames = ["Bullseye", "Thor", "Spider-Man", "Green Goblin", "Black Widow", "Scarlet Witch", "Loki", "Groot", "Black Panther", "Venom", "Thanos", "Hulk", "Kingpin", "Magneto", "Luke Cage", "Amanda Waller", "Black Flash", "Flash", "Batman", "Superman", "Wonder Woman", "Lex Luthor", "Black Adam", "Darkseid", "Beast Boy", "Batgirl", "Aquaman", "Harley Quinn", "Joker", "Sinestro", "Martian Manhunter", "Charizard", "Pikachu", "Gardevoir", "Sylveon", "Lucario", "Gengar", "Lugia", "Greninja", "Ditto", "Garchomp", "Snorlax", "Heracross", "Teddiursa", "Porygon", "Garbodor"]
 
 	let cardStats = []
 
@@ -1173,7 +1179,11 @@ const playerTryPlayCard = (card, battletrack) => {
 			})
 		})
 
-		console.log("Human played ", card.getDisplayName());
+		M.toast({
+			html: `You played ${card.getDisplayName()}!`,
+			classes: 'rounded positionToast'
+		})
+		// console.log("Human played ", card.getDisplayName());
 
 		// If the AI can make a move
 		if (enemy.canPlayCard()) {
@@ -1258,7 +1268,11 @@ const AI_playcard = () => {
 		// Reduce AI mana by card cost
 		enemy.setMana(mana - cardToPlay.getCost());
 
-		console.log("Ai played ", cardToPlay.getDisplayName());
+		M.toast({
+			html: `AI played ${cardToPlay.getDisplayName()}!`,
+			classes: 'rounded positionToast'
+		})
+		// console.log("Ai played ", cardToPlay.getDisplayName());
 	}
 
 	// If the player can make a move.
@@ -1483,7 +1497,11 @@ const playerTryAttack = (card, defender) => {
  * @returns {boolean} true if the game ended.
  */
 const cardAttackAction = (attacker, defender) => {
-	console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
+	M.toast({
+		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? "battleline" : defender.getDisplayName()}`,
+		classes: 'rounded positionToast'
+	})
+	// console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
 	/** @type {number} The attack value of the attacking card. */
 	const attack = attacker.getAttack();
 

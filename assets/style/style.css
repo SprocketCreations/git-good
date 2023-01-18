@@ -50,6 +50,19 @@ card-slot: 2;
                         supported by Chrome, Edge, Opera and Firefox */
 }
 
+#toast-container {
+	top: 225px !important;
+	right: 25px !important;
+}
+
+#toast-container div {
+	border: 2px solid white;
+}
+
+#toast-container div:first-letter {
+	text-transform: uppercase;
+}
+
 .grab:hover {
 	cursor: -webkit-grab;
 	cursor: grab;
