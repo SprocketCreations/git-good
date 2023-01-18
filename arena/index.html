@@ -6,77 +6,220 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Arena</title>
-
-	<!-- <link type="text/css" rel="stylesheet" href="../assets/style/materialize.min.css" media="screen,projection" /> -->
-	<link type="text/css" rel="stylesheet" href="../assets/style/bulma.min.css" media="screen,projection" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Josefin+Sans:ital,wght@1,700&family=Luckiest+Guy&family=Rozha+One&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link rel="stylesheet" href="../assets/style/style.css">
 </head>
 
 <body>
-	<main class="battlefield">
+	<main id="battlefield" class="row">
+		  <!-- Dropdown Trigger -->
+		  <a id="modal-button" class="btn modal-trigger hover-glow" href="#start-game-modal">Start</a>
+		  <a class='dropdown-trigger btn' id="menu-button" href='#' data-target='dropdown'>Menu</a>
+		  <div id="end-turn-button" class="hover-glow pointer"></div>
+		  <!-- Dropdown Structure -->
+		  <ul id='dropdown' class='dropdown-content'>
+			<li><a href="#!">Main Menu</a></li>
+			<li><a href="#!">Restart Game</a></li>
+			<li><a id="concede-button" href="#!">Concede</a></li>
+			<li class="divider" tabindex="-1"></li>
+			<li id="menu-tutorial"><a href="#!"><i class="sub-text"></i>Tutorial</a></li>
+			<li><a href="#!"><i class="sub-text"></i>About git-good</a></li>
+		  </ul>
 		<!-- Head with enemy data -->
-		<div class="p-0 m-0 enemy-head"></div>
-		<!-- main with battlelanes -->
-		<div class="p-0 m-0 battlefield-view">
-			<div class="battlelanes">
-				<div id="battlelane-1" class="battlelane">
-					<div class="enemy-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-					</div>
-					<div class="location">
-						<img src="" alt="">
-					</div>
-					<div class="player-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+		<div id="enemy-head" class="col s12">
+			<div id="enemy-mana">
+				<span id="enemy-mana-count">3</span>
+			</div>
+			<div id="enemy-hand">
+			</div>
+			<div id="enemy-deck" class="z-depth-5">
+				<div class="z-depth-5">
+					<div class="z-depth-5">
+						<div id="enemy-top-card" class="z-depth-5">
+							<!-- deck layers -->
+						</div>
 					</div>
 				</div>
-				<div id="battlelane-2" class="battlelane">
-					<div class="enemy-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+			</div>
+		</div>
+		<!-- main with battletracks -->
+		<div class="col s12 battlefield-view">		
+			<div id="battletracks">
+				<div id="battletrack-1" class="row battletrack">
+					
+					<div class="progress bt-hp-container bt-enemy-hp">
+						<div id="bt1-enemy-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count"></span>
 					</div>
-					<div class="location">
-						<img src="" alt="">
+
+					<div class="bt-enemy-armor">
+						<span class="bt-armor-count"></span>
 					</div>
-					<div class="player-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+					<div class="enemy-cards"></div>
+					<!-- Middle of table -->
+					<div class="location-text">Asgard</div>
+					<div id="player-cards-1" class="player-cards"></div>
+					<div class="progress bt-hp-container bt-player-hp">
+						<div id="bt1-player-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count"></span>
+					</div>
+					<div class="bt-player-armor">
+						<span class="bt-armor-count"></span>
 					</div>
 				</div>
-				<div id="battlelane-3" class="battlelane">
-					<div class="enemy-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+				<div id="battletrack-2" class="row battletrack">
+					<div class="progress bt-hp-container bt-enemy-hp">
+						<div id="bt2-enemy-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count"></span>
 					</div>
-					<div class="location">
-						<img src="" alt="">
+					<div class="bt-enemy-armor">
+						<span class="bt-armor-count"></span>
 					</div>
-					<div class="player-cards">
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
-						<div class="card-slot"></div>
+					<div class="enemy-cards"></div>
+					<div class="location-text">Wakanda</div>
+					<div class="player-cards"></div>
+					<div class="progress bt-hp-container bt-player-hp">
+						<div id="bt2-player-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count"></span>
+					</div>
+					<div class="bt-player-armor">
+						<span class="bt-armor-count"></span>
+					</div>
+				</div>
+				<div id="battletrack-3" class="row battletrack">
+					<div class="progress bt-hp-container bt-enemy-hp">
+						<div id="bt3-enemy-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count"></span>
+					</div>
+					<div class="bt-enemy-armor">
+						<span class="bt-armor-count"></span>
+					</div>
+					<div class="enemy-cards"></div>
+					<!-- Middle of table -->
+					<div class="location-text">S.H.I.E.L.D. 2.0</div>
+					<div class="player-cards"></div>
+					<div class="progress bt-hp-container bt-player-hp">
+						<div id="bt3-player-hp" class="determinate bt-hp-progress"></div>
+						<span class="bt-hp-count"></span>
+					</div>
+					<div class="bt-player-armor">
+						<span class="bt-armor-count"></span>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- foot with your data -->
-		<div class="p-0 m-0 player-head"></div>
+		<div id="player-head" class="col s12">
+			<div id="player-deck">
+				<div class="z-depth-5">
+					<div class="z-depth-5">
+						<div id="player-top-card" class="z-depth-5">
+							<!-- deck layers -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Round/Phase Tracker -->
+			<section id="game-state">
+				<p>Phase: <span id="phase"></span></p>
+				<p>Round: <span id="round"></span></p>
+			</section>
+			<div id="player-hand" class="selectable">				
+			</div>
+			<div id="player-mana">
+				<span id="player-mana-count"></span>
+			</div>
+		</div>
+
+		<!-- MODALS -->
+		<div id="start-game-modal" class="modal">
+			<div class="modal-content">
+			  <h4>Planning</h4>
+			  <p>Keep your cards or decide to draw again!</p>
+			  <div id="modal-player-hand"></div>
+			</div>
+			<div id="start-modal-footer" class="modal-footer">
+				<a id="start-button" class="modal-close waves-effect waves-green btn-flat">Begin</a>
+				<a id="reject-hand-button" class="waves-effect waves-white btn-flat red">Reject Hand</a>
+			</div>
+		</div>
+
+		<div id="endgame-modal" class="modal">
+		  <div class="modal-content">
+			<h4>Game Over!</h4>
+			<div id="modal-endgame-display"></div>
+		  </div>
+		  <div id="endgame-modal-footer"class="modal-footer">
+			<a id="play-again-button" class="modal-close waves-effect waves-green btn-flat" href="./index.html">Play Again!</a>
+		  </div>
+		</div>
+
+		<!-- Tutorial Modal -->
+		<div id="tutorial" class="modal">
+			<div class="modal-content">
+			  <h4>About</h4>
+			  <p>Git-Good is a lane based strategy card game where you battle against your oppenent in three <em>Battletracks</em>.<br>Conquer two <em>Battletracks</em> to achieve victory...good luck!</p>
+			  <h4>Tutorial</h4>
+			  <ol id="tutorial-list">
+				<li> <em>Interactable objects</em> will glow when moused over.</li>
+				<li><b>Double-click</b> on a card w/in a <em>Battletrack</em> to enlarge the card and view card details.</li>
+				<li>During the <em>play phase</em>, <b>click & drag</b> a card from your hand and onto the <em>Battletrack</em> you wish to play it in.</li>
+				<li>During the <em>combat phase</em>, your <em>active card</em> will glow green, and <em>enemy objects</em> will glow orange. <b>Click & drag</b> from your <em>active card</em> to the <em>enemy object</em> your wish to attack.</li>
+				<li>Navigate to the <em>menu</em> if you wish to concede the current game, or need to review the tutorial.</li>
+			  </ol>
+			  <p>Best of luck from the team at group 12:<br>
+				- Andy Gaudy <br>
+				- Kailen James <br>
+				- Lukas MacMillen <br>
+			</p>
+			</div>
+			<div id="tutorial-footer" class="modal-footer">
+				<a id="tutorial-btn" class="modal-close waves-effect waves-green btn-flat">Close</a>
+			</div>
+		</div>
+
+		<!-- Round/Phase Tracker -->
+		<!-- <section id="game-state">
+			<p>Phase: <span id="phase"></span></p>
+			<p>Round: <span id="round"></span></p>
+		</section> -->
+
+		<!-- Card Template -->
+		<template id="card-template">
+			<div class="player-card hover-glow">
+				<img class="card-art" src="" alt="">
+				<div class="card-header">
+					<p class="mana-initiative"></p>
+					<section class="card-table">
+						<div>
+							<p>ATK: &nbsp;</p>
+							<p class="card-attack"></p>
+						</div>
+						<div>
+							<p>DEF: &nbsp;</p>
+							<p class="card-defense"></p>
+						</div>
+						<div>
+							<p>SPD: &nbsp;</p>
+							<p class="card-speed"></p>
+						</div>
+					</section>
+				</div>
+				<section class="card-footer">
+					<h2 class="card-name"></h2>
+					<p class="card-health"></p>
+				</section>
+			</div>
+		</template>
 	</main>
 
-	<!-- <script type="text/javascript" src="../assets/js/materialize.min.js"></script> -->
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script src="../assets/js/arena.js"></script>
 </body>
 
 </html>

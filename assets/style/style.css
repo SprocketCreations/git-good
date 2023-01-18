@@ -1,64 +1,923 @@
-:root {
+/* index of z-index indexes :)
+player-card div::after: -1;
+any:hover: 5;
+player-deck: 4;
+player-cards div: 3;
+card-slot: 2;
+*/
 
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rozha+One&display=swap');
+
+:root {
+	--card-back-a1: url('../images/textures/card-a1.png');
+	--card-back-b2: url('../images/textures/card-b2.png');
+	
+	--stone-table: url('../images/backgrounds/stone-table.png');
+	--rustic-table: url('../images/backgrounds/rustic-table.png');
+	--pokemon-table-1: url('../images/backgrounds/pokemon-table-1.png');
+	--superhero-table-1: url('../images/backgrounds/superhero-table-1.png');
+	
+	--location-new-york: url('../images/backgrounds/location-new-york.png');
+	--location-wakanda: url('../images/backgrounds/location-wakanda.png');
+	--location-shield-20: url('../images/backgrounds/location-shield-2_0.png');
+	--location-asgard: url('../images/backgrounds/location-asgard.png');
+
+	--shield-icon: url('../images/icons/shield-small.png');
+
+	--bt-card-container-height: 220px;
+	--bt-card-container-width: 180px;
+	--deck-offset-x: 5px;
+	--deck-offset-y: -5px;
+	--armor-offset-x: 15px;
+	--armor-offset-y: -70px;
+	--armor-height: 75px;
+	--armor-width: 50px;
+	--enemy-hand-offset: -50px;
+	--player-hand-offset: 0px;
+	overflow: hidden;
+	resize: none;
+	
 }
 
-* {
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                        supported by Chrome, Edge, Opera and Firefox */
+}
+
+#toast-container {
+	top: 225px !important;
+	right: 25px !important;
+	counter-reset: toasts;
+	padding: 10px;
+}
+
+#toast-container div {
+	counter-increment: toasts;
+	font-family: 'Bangers', cursive;
+	font-size: 24px;
+	letter-spacing: 1.2px;
+	color: white;
+	font-weight: bold;
+	text-shadow: 2px 2px black;
+	position: relative;
+	padding: 10px 25px 10px 10px;
+	box-shadow: 3px 3px 5px black;
+	display: flex;
+	justify-content: flex-end;
+	border: 2px solid white;
+}
+
+.fifties-toast {
+	background-color: black !important;
+	text-shadow: none;
+}
+
+#toast-container div::before {
+	width: 25px;
+	height: 25px;
+	text-shadow: 0px 0px 0px;
+	content: counter(toasts);
+	position: absolute;
+	bottom: -8px;
+	left: -8px;
+	background-color: white;
+	color: black;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 2px 2px 3px black;
+}
+
+#toast-container div:first-letter {
+	text-transform: uppercase;
+}
+
+.grab:hover {
+	cursor: -webkit-grab;
+	cursor: grab;
+}
+
+.grow:hover {
+	transform: scale(3);
+	z-index: 10;
+}
+
+.grabbing:active {
+	cursor: -webkit-grabbing;
+	cursor: grabbing;
+}
+
+.pointer:hover {
+	cursor: pointer;
+}
+
+.hover-grow-small-flip:hover {
+	transform: scale(3) rotate(180deg);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-grow-small:hover {
+	transform: scale(3);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-grow:hover {
+	transform: scale(1.5) translateY(-100px);
+	transition: transform .3s cubic-bezier(0,.98,.61,.99);
+	z-index: 10;
+}
+
+.hover-glow:hover {
+	box-shadow: 3px -3px 5px white,
+				3px 3px 5px white,
+				-3px -3px 5px white,
+				-3px 3px 5px white;
+}
+
+*, *::before, *::after, h2, p{
+	margin: 0;
+	padding: 0;
 	box-sizing: border-box;
 }
 
-body {
+img, video {
+	width: 25%;
+	height: 25%;
+}
+
+.row {
 	margin: 0;
-	padding: 0;
 }
 
-.battlefield {
-	width: 100vw;
+html {
+	min-width: 1280px;
+	background-image: var(--stone-table);
+	background-size: cover;
+	background-position-x: center;
+}
+
+body {
 	height: 100vh;
-	display: flex;
-	flex-flow: column nowrap;
+	overflow: hidden;
 }
 
-.battlefield-view {
-	background-color: blue;
-	flex: 1 1;
+/*Getting rid of row::after from materialize*/
+.row::after {
+	display: none;
 }
 
-.enemy-head,
-.player-head {
-	background-color: red;
-	height: 10vh;	
-}
-
-.battlelanes{
+#battlefield {
 	height: 100%;
-	width: 100%;
-	display: flex;
-	gap: 1em;
-	justify-content: space-evenly;
-}
-
-.battlelane {
-	background-color: orange;
-	/* flex: 1 1; */
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
 }
 
-.enemy-cards,
-.player-cards {
-	background-color: burlywood;
-	padding: 1em;
+#modal-button {
+	height: 50px;
+	width: 125px;
+	position: absolute;
+	left: 0px;
+	top: calc(50% - 25px);
+	padding-top: 5px;
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.4px;
+	text-shadow: 2px 2px 4px black;
 	display: flex;
-	flex-wrap: wrap;
-	gap: 1em;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	background-image: url('../images/textures/steel-menu-button.png');
+	background-size: cover;
+	background-position: center;
+	border-radius: 0px 25px 25px 0px;
+	border-top: 2px solid white;
+	border-right: 2px solid white;
+	border-bottom: 2px solid white;
+	color: red;
+	transition: all .2s ease-out;
 }
 
-.card-slot {
-	aspect-ratio: .66;
-	background-color: darkblue;
-	flex: 1 1 10%;
+#tutorial {
+	width: 70%;
+	min-width: 1300px;
+	background-color: #323232;
+	color: white;
+}
+
+#tutorial p {
+	margin: 20px 0;
+}
+
+#tutorial-list {
+	margin-left: 20px;
+}
+
+#tutorial-footer {
+	background-color: #323232;
+}
+
+#tutorial-btn {
+	background-color: rgb(191, 3, 3);
+	color: white;
+}
+
+#tutorial-btn:hover {
+	background-color: rgb(116, 1, 1);
+}
+
+#start-game-modal {
+	width: 70%;
+	min-width: 1000px;
+	background-image: url('../images/backgrounds/cracked-stone-med.png');
+	background-size: cover;
+	background-position: center;
+	color: white;
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+#endgame-modal {
+	width: 40%;
+	min-width: 500px;
+	background-image: url('../images/backgrounds/cracked-stone-med.png');
+	background-size: cover;
+	background-position: center;
+	color: white;
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+.modal-content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+#modal-player-hand {
+	height: 350px;
+	width: 100%;
+	padding: 25px;
+	background-color: gray;
+	box-shadow: inset 0px 0px 8px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 80px;
+}
+
+#modal-endgame-display {
+	height: 225px;
+	width: 100%;
+	padding: 25px;
+	background-color: gray;
+	box-shadow: inset 0px 0px 8px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 80px;
+}
+
+#modal-player-hand > div {
+	box-shadow: 5px 5px 5px black;
+	scale: 1.5;
+}
+
+#start-modal-footer,
+#endgame-modal-footer {
+	background-color: black;
+	color: white;
+}
+
+#start-button,
+#play-again-button {
+	color: white;
+	transition: all .2s ease-out;
+}
+
+#start-button:hover,
+#play-again-button:hover {
+	background-color: green;
+}
+
+#menu-button {
+	height: 50px;
+	position: absolute;
+	left: 0px;
+	bottom: calc(30% - 25px);
+	transition: transform .5s ease-out;
+	background-image: url("../images/textures/steel-menu-button.png");
+	background-size: cover;
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	text-shadow: 2px 2px 4px black;
+	letter-spacing: 1.4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 0 25px 25px 0;
+	box-shadow: 3px 3px 3px black;
+	border-top: 2px solid white;
+	border-right: 2px solid white;
+	border-bottom: 2px solid white;
+	color: red;
+}
+
+#dropdown {
+	width: 225px !important;
+	background-image: url('../images/textures/vert-steel-menu-button.png');
+	background-size: cover;
+	border-radius: 0px 25px 25px 0;
+	overflow: hidden;
+	white-space: nowrap;
+	font-weight: bold;
+	/* border-top: 3px solid white;
+	border-right: 3px solid white;
+	border-bottom: 3px solid white; */
+	box-shadow: 5px 5px 10px black;
+}
+
+#dropdown a {
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.2px;
+}
+
+.dropdown-content li > a {
+	color: black;
+}
+
+.dropdown-content li {
+	background-color: rgba(255, 255, 255, .6);
+}
+
+#dropdown li:first-child {
+	border-top-right-radius: inherit;
+}
+
+#dropdown li:nth-child(3) > a {
+	color: rgb(181, 0, 0);
+}
+
+#dropdown li:last-child {
+	border-bottom-right-radius: inherit;
+}
+
+#dropdown li:hover {
+	background-color: rgba(255, 255, 255, 0);
+	font-weight: bold;
+	z-index: 3;
+}
+
+#dropdown li:hover a {
+	color: white;
+}
+
+#dropdown li:nth-child(3):hover a{
+	color: red;
+}
+
+#dropdown li:nth-child(3):hover {
+	box-shadow: inset 2px 2px 4px red,
+				inset -2px -2px 4px red;
+}
+
+.dropdown-content li.divider {
+	height: 5px;
+	background-color: black;
+}
+
+.sub-text {
+	font-size: .75rem;
+}
+
+.battlefield-view {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#game-state {
+	position: absolute;
+	width: 200px;
+	justify-content: space-evenly;
+	display: none;
+	flex-direction: row;
+	border: solid white 1px;
+	border-radius: 5px;
+	background: #323232;
+	color: white;
+	padding: 3px;
+	top: 0;
+	transform: translateY(-100%);
+}
+
+#battletracks{
+	height: calc(100vh - 300px);
+	width: 80%;
+	margin: 50px;
+	padding: 10px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-radius: 25px 25px 25px 25px;
+}
+
+.battletrack {
+	height: 75%;
+	width: 25%;
+	min-width: 175px;
+	padding: 25px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	box-shadow: 5px 5px 10px 5px black,
+				inset 0px 0px 10px 1px white;
+	border: 3px solid white;
+	border-radius: 33%;
+	background-size: cover;
+	background-position: center;
+}
+
+#enemy-head,
+#player-head {
+	height: 100px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+#enemy-deck {
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	z-index: 2;
+	right: 25px;
+	top: 10px;
+	transform: rotate(180deg);
+	border-radius: 5px;
+	background-image: var(--card-back-a1);
+	background-size: cover;
+}
+
+#enemy-deck * {
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	margin-left: var(--deck-offset-x);
+	margin-top: var(--deck-offset-y);
+	border-radius: 5px;
+	background-image: inherit;
+	background-size: cover;
+}
+
+#player-deck {
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	z-index: 4;
+	left: 25px;
+	bottom: 10px;
+	border-radius: 5px;
+	background-image: var(--card-back-b2);
+	background-size: cover;
+}
+
+#player-deck * {
+	height: 200px;
+	width: 150px;
+	position: absolute;
+	margin-left: calc(var(--deck-offset-x) * 1);
+	margin-top: var(--deck-offset-y);
+	border-radius: 5px;
+	background-image: inherit;
+	background-size: cover;
+}
+
+#enemy-mana {
 	width: 80px;
+	height: 80px;
+	position: absolute;
+	left: 75px;
+	top: 25px;
+	background-image: url("https://media.discordapp.net/attachments/1012758410393034939/1063141015856361602/Dienasty_a_mana_crystal_icon_for_a_video_game_24bceff7-2b61-48a5-ba48-ff71ab41428d.png?width=584&height=584");
+	background-size: contain;
+	border-radius: 50%;
+	box-shadow: 0px 0px 5px 5px lightseagreen;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#player-mana {
+	width: 80px;
+	height: 80px;
+	position: absolute;
+	right: 75px;
+	bottom: 25px;
+	background-image: url("https://media.discordapp.net/attachments/1012758410393034939/1063141015856361602/Dienasty_a_mana_crystal_icon_for_a_video_game_24bceff7-2b61-48a5-ba48-ff71ab41428d.png?width=584&height=584");
+	background-size: contain;
+	border-radius: 50%;
+	box-shadow: 0px 0px 5px 5px lightseagreen;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#enemy-mana-count,
+#player-mana-count {
+	color: white;
+	font-size: 38px;
+}
+
+#player-hand {
+	height: 100px;
+	width: fit-content;
+	max-width: 85%;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	position: relative;
+	transition: all .5s linear;
+}
+
+#end-turn-button {
+	display: none;
+	width: 75px;
+	height: 75px;
+	position: absolute;
+	right: 75px;
+	bottom: 150px;
+	background-image: url('../images/icons/right-arrow-med.png');
+	background-size: cover;
+	background-repeat: no-repeat;
+	border-radius: 5px;
+	border: 1px solid black;
+	transition: transform .2s ease-out;
+}
+
+#end-turn-button:hover {
+	transform: perspective(200px) rotateY(25deg);
+}
+
+#end-turn-button:active {
+	transform: scale(.9);
+}
+
+#player-hand div {
+	margin-left: var(--player-hand-offset);
+}
+
+#enemy-hand {
+	height: 100px;
+	width: fit-content;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	transform: rotate(180deg);
+}
+
+#enemy-hand div {
+	height: 200px;
+	width: 150px;
+	border-radius: 5px;
+	background-image: var(--card-back-a1);
+	background-size: contain;
+	position: relative;
+	/* margin-left: var(--enemy-hand-offset); Causing weird shrinking issue with #enemy-hand*/
+}
+
+#enemy-hand div > * {
+	visibility: hidden;
+}
+
+.enemy-cards {
+	height: var(--bt-card-container-height);
+	width: var(--bt-card-container-width);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	background-color: transparent;
+	transform: rotate(180deg);
+}
+
+.location-text {
+	width: fit-content;
+	text-align: center;
+	border-radius: 25px;
+	background-color: #323232;
+	color: white;
+	padding: 10px;
+	font-size: 38px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px black;
+	font-family: 'Bangers', sans-serif;
+	letter-spacing: 1.4px;
+	white-space: nowrap;
+}
+
+.player-cards {
+	height: var(--bt-card-container-height);
+	width: var(--bt-card-container-width);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	background-color: rgba(255, 255, 255, .2);
+	border-radius: 10px;
+}
+
+.player-cards > div {
+	height: 100px;
+	width: 75px;
+	margin: 3px;
+	color: black;
+	z-index: 2;
+	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	transform: scale(1);
+}
+
+.player-cards p,
+.enemy-cards p {
+	font-size: 12px;
+	height: fit-content;
+	width: fit-content;
+}
+
+.player-card {
+	position: relative;
+	display: flex;
+	margin: 5px;
+	height: 200px;
+	width: 150px;
+	border-radius: 5px;
+	flex-direction: column;
+	transition: transform .5s cubic-bezier(.23, 1, .32, 1);
+	background-color: antiquewhite;
+	background: linear-gradient(rgb(16, 187, 255), black);
+	z-index: 3;
+}
+
+.card-table {
+	height: fit-content;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px;
+	padding: 1px 3px;
+	background-color: rgba(255, 255, 255, .6);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-end;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px black;
+}
+
+.card-table div {
+	display: flex;
+	flex-direction: row;
+}
+
+.card-table div p {
+	color: black;
+	letter-spacing: 1.2px;
+	font-family: 'Bangers', cursive;
+}
+
+.card-header {
+	height: 10%;
+	width: 100%;
+}
+
+.player-cards .card-table div p,
+.enemy-cards .card-table div p {
+	font-size: 12px;
+	letter-spacing: 1px;
+	height: 15px;
+}
+
+.player-cards .card-name,
+.enemy-cards .card-name {
+	font-size: 12px;
+}
+
+.player-cards .mana-initiative,
+.enemy-cards .mana-initiative {
+	height: 15px;
+	width: 15px;
+	left: 2px;
+	top: 2px;
+}
+
+.player-cards .card-health,
+.enemy-cards .card-health {
+	height: 15px;
+	width: 15px;
+	position: absolute;
+	right: 0px;
+	bottom: 20px;
+}
+
+.card-art {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+	position: absolute;
+	z-index: 0;
+	border-radius: inherit;
+}
+
+.mana-initiative{
+	height: 20px;
+	width: 20px;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	border: solid black 1px;
+	border-radius: 5px;
+	background-color: lightseagreen;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card-footer {
+	z-index: 1;
+	height: 20px;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.card-name {
+	height: fit-content;
+	width: 90%;
+	position: absolute;
+	border-radius: 5px;
+	background-color: rgba(255, 255, 255, .4);
+	left: calc(50% - 90%/2);/* 50%-half the width */
+	bottom: 7px;
+	font-size: 28px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: 'Bangers', cursive;
+	font-size: 20px;
+	text-shadow: 2px 2px 2px black;
+	letter-spacing: 1.2px;
+	white-space: nowrap;
+	color: rgb(239, 25, 25);
+}
+
+.card-health {
+	height: 20px;
+	width: 20px;
+	padding: 0 6px;
+	position: absolute;
+	border: solid black 1px;
+	border-radius: 5px;
+	background-color: green;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	right: 5px;
+	bottom: calc(100% + 20px);
+}
+
+.enemy-cards > div {
+	height: 100px;
+	width: 75px;
+	margin: 3px;
+	color: black;
+	z-index: 2;
+	transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	transform: scale(1);
+}
+
+.bt-hp-container {
+	width: 80px;
+	height: 80px;
+	margin: 0px;
+	border-radius: 50%;
+	transform: rotate(-90deg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 2px solid black;
+	background-image: url('../images/icons/crumbled-tower.png');
+	background-size: contain;
+	background-position: center;
+}
+
+.bt-enemy-hp {
+	position: absolute;
+	top: -20px;
+	left: -30px;
+}
+
+.bt-player-hp {
+	position: absolute;
+	bottom: -20px;
+	right: -30px;
+	background-color: red;
+}
+
+.bt-enemy-armor {
+	height: var(--armor-height);
+	width: var(--armor-width);
+	position: absolute;
+	left: var(--armor-offset-x);
+	top: var(--armor-offset-y);
+	background-image: var(--shield-icon);
+	background-size: cover;
+	z-index: 0;
+}
+
+.bt-player-armor {
+	height: var(--armor-height);
+	width: var(--armor-width);
+	position: absolute;
+	right: var(--armor-offset-x);
+	bottom: var(--armor-offset-y);
+	background-image: var(--shield-icon);
+	background-size: cover;
+	z-index: 0;
+}
+
+.bt-hp-progress {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bt-hp-count {
+	transform: rotate(90deg);
+	color: white;
+	font-weight: bold;
+	font-family: 'Luckiest Guy', cursive;
+	font-size: 38px;
+	letter-spacing: 3px;
+	position: relative;
+}
+
+.bt-armor-count {
+	height: var(--armor-height);
+	width: var(--armor-width);
+	font-size: 38px;
+	font-family: 'Rozha One', serif;
+	color: black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bt-armor-count::before {
+	height: calc(var(--armor-height) / 2);
+	width: calc(var(--armor-width) / 2);
+	content: '';
+	position: absolute;
+	inset: 25%;
+	border-radius: 50%;
+	background-color: white;
+	filter: blur(5px);
+	z-index: -1;
+}
+
+#bt1-enemy-hp,
+#bt2-enemy-hp,
+#bt3-enemy-hp {
+	background-color: red;
+}
+
+#bt1-player-hp,
+#bt2-player-hp,
+#bt3-player-hp {
+	background-color: rgb(147, 69, 255);
+}
+
+.custom-row-1,
+.custom-row-2 {
+	display: flex;
+	margin: 0;
 }
 
 @media screen and (max-width: 470px) {
