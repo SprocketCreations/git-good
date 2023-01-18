@@ -1507,11 +1507,7 @@ const playerTryAttack = (card, defender) => {
  * @returns {boolean} true if the game ended.
  */
 const cardAttackAction = (attacker, defender) => {
-	M.toast({
-		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? "battleline" : defender.getDisplayName()}`,
-		classes: 'rounded positionToast'
-	})
-	// console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
+		// console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
 	/** @type {number} The attack value of the attacking card. */
 	const attack = attacker.getAttack();
 
@@ -1524,6 +1520,11 @@ const cardAttackAction = (attacker, defender) => {
 
 	// Reduce the defender's health by the damage.
 	defender.damage(damage);
+
+	M.toast({
+		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? "battleline" : defender.getDisplayName()} (${damage} dmg)`,
+		classes: 'rounded positionToast'
+	})
 
 	// If defender is a card
 	if (defender instanceof Card) {
