@@ -198,7 +198,7 @@ const Stage = {
 
 //#region CLASS DEFINITIONS
 
-class Animation {
+class CustomAnimation {
 	/**
 	 * @param {string} name The name of this animation to be referenced.
 	 * @param {string} cssClass The CSS class that is this animation.
@@ -273,9 +273,11 @@ class Animator {
 		this.haltAnimation(node);
 
 		// Get the animation.
-		if (!(animation instanceof Animation)) {
+		if (!(animation instanceof CustomAnimation)) {
 			animation = this.Animations[animation];
 		}
+
+		console.log("Playing animation:", animation.name);
 
 		// Start playing the animation.
 		animation.playAnimation(node);
@@ -283,7 +285,11 @@ class Animator {
 		const handleIndex = (this.nextHandleId)++;
 		node.setAttribute("data-handle-index", handleIndex);
 		// The function to call when the animation completes.
-		const animationCallback = () => callback();
+		const animationCallback = () => {
+			node.removeAttribute("data-handle-index");
+			animation.removeAnimation(node);
+			callback();
+		};
 		// Make a handle to track the timeout and callback.
 		this.handles[handleIndex] = {
 			interval: setTimeout(animationCallback, animation.getDuration()),
@@ -503,9 +509,12 @@ class Card {
 			if (activeIndex !== -1) { activeCards.splice(activeIndex, 1); }
 			if (actIndex !== -1) { cardsToAct.splice(actIndex, 1); }
 		}
-		this.battleline.removeCard(this);
-		this.deleteNode();
-		this.owner.getDeck().addToGraveyard(this);
+		animator.playAnimation("cardDeath", this.getNode(), () => {
+			this.battleline.removeCard(this);
+			this.deleteNode();
+			this.owner.getDeck().addToGraveyard(this);
+			console.log("------------")
+		});
 	}
 	/**
 	 * @param {Battleline} battleline The battline this card is now a part of.
@@ -744,6 +753,12 @@ class Battleline {
 	getDefense() {
 		return this.cards.length;
 	}
+	/**
+	 * @returns {HTMLElement} the root element of this battleline's battletrack.
+	 */
+	getNode() {
+		return this.getBattletrack().getNode();
+	}
 }
 
 /**
@@ -772,7 +787,7 @@ class Battletrack {
 		addDroppableToBattleline(this, friendlyCardZoneNode);
 
 		/** @type {HTMLElement} A reference to the HTML on the DOM that is the root node for this battletrack. */
-		this.node = _allBattletracks[i];
+		this.node = _allBattletracks[index];
 		/** @type {Battleline} The battleline on the player's side. */
 		this.friendlyBattleline = new Battleline(this, friendlyHitpoints, friendlyHitpointsNode, friendlyDefenseNode, friendlyCardZoneNode);
 		/** @type {Battleline} The battleline on the enemy's side. */
@@ -871,6 +886,12 @@ class Battletrack {
 	 */
 	getLocation() {
 		return this.location;
+	}
+	/**
+	 * @returns {HTMLElement} the root node of the battletrack.
+	 */
+	getNode() {
+		return this.node;
 	}
 	/**
 	 * @returns {boolean} true if this battletrack has 0 hitpoints at one of its sides.
@@ -1284,16 +1305,23 @@ const playerTryPlayCard = (card, battletrack) => {
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
 
+		animator.playAnimation(animator.Animations.playCard, card.getNode(), () => {
+			// This code gets called when the player is done.
+			// If the AI can make a move
+			if (enemy.canPlayCard()) {
+				currentPlayer = enemy;
+				AI_playcard();
+			}
+			// else if the player cannot make a move
+			else if (!human.canPlayCard()) {
+				endPlayCardStage();
+			}
+		});
+
 		console.log("Human played ", card.getDisplayName());
 
-		// If the AI can make a move
 		if (enemy.canPlayCard()) {
 			currentPlayer = enemy;
-			AI_playcard();
-		}
-		// else if the player cannot make a move
-		else if (!human.canPlayCard()) {
-			endPlayCardStage();
 		}
 	}
 	else {
@@ -1353,6 +1381,10 @@ const AI_playcard = () => {
 	// Play the random card to the random battletrack.
 	battletrack.playEnemyCard(cardToPlay);
 
+	animator.playAnimation(animator.Animations.playCard, cardToPlay.getNode(), () => {
+		//this code it called when the animation is done.
+	});
+
 	// Reduce AI mana by card cost
 	enemy.setMana(mana - cardToPlay.getCost());
 
@@ -1366,7 +1398,9 @@ const AI_playcard = () => {
 	// Else if the AI can make a move.
 	else if (enemy.canPlayCard()) {
 		// Recursively call this funciton.
-		AI_playcard();
+		setTimeout(() => {
+			AI_playcard();
+		}, 1000);
 	}
 	// Else if no one can make a move.
 	else {
@@ -1499,11 +1533,22 @@ const AI_action = () => {
 
 	console.log("AI is ordering", activeCard.getDisplayName(), 'to attack', target instanceof Battleline ? "battleline" : target.getDisplayName());
 
-	// Order active card to attack
-	if (!cardAttackAction(activeCard, target)) {
-		letNextCardDoAction();
-	}
+	animateEnemyCardAttack(target, activeCard);
 };
+
+const animateEnemyCardAttack = (target, activeCard) => {
+	const animation = target instanceof Battleline ? "attackBattletrack" : "attackCard";
+	animator.playAnimation(animation, activeCard.getNode(), () => {
+		// Order active card to attack
+		if (!cardAttackAction(activeCard, target)) {
+			letNextCardDoAction();
+		}
+	});
+	setTimeout(() => {
+		const animation2 = target instanceof Battleline ? "battletrackDamaged" : "cardDamaged";
+		animator.playAnimation(animation2, target.getNode(), () => { });
+	}, target instanceof Battleline ? 1000 : 500);
+}
 
 /**
  * Called when the player orders a card to perform an attack.
@@ -1534,13 +1579,24 @@ const playerTryAttack = (card, defender) => {
 
 	// If all the above conditions are true.
 	if (isAction && isActive && (isInBattletrack || isInSameBattletrack)) {
+		animatePlayerCardAttack(isDefenderACard, cardIndex, card, defender);
+	}
+};
+
+const animatePlayerCardAttack = (isDefenderACard, cardIndex, card, defender) => {
+	const animation = isDefenderACard ? "attackCard" : "attackBattletrack";
+	animator.playAnimation(animation, card.getNode(), () => {
 		// Remove this card from the active cards array.
 		activeCards.splice(cardIndex, 1);
 		if (!cardAttackAction(card, defender)) {
 			letNextCardDoAction();
 		}
-	}
-};
+	});
+	setTimeout(() => {
+		const animation2 = isDefenderACard ? "cardDamaged" : "battletrackDamaged";
+		animator.playAnimation(animation2, defender.getNode(), () => { });
+	}, isDefenderACard ? 500 : 1000);
+}
 
 /**
  * Run whenever the player or ai decides to perform an attack action.
@@ -1939,6 +1995,16 @@ const cardsToAct = [];
 
 /** @type {Card[]} The current card waiting to perform its action. If there are multiple cards with the same speed, they will all be put into this array. */
 const activeCards = [];
+
+const animator = new Animator();
+animator.addAnimation(new CustomAnimation("drawCard", "animation-draw-card", 1000));
+animator.addAnimation(new CustomAnimation("playCard", "animation-play-card", 1000));
+animator.addAnimation(new CustomAnimation("attackCard", "animation-card-attack", 1000));
+animator.addAnimation(new CustomAnimation("cardDamaged", "animation-card-damaged", 1000));
+animator.addAnimation(new CustomAnimation("cardDeath", "animation-card-death", 1000));
+animator.addAnimation(new CustomAnimation("attackBattletrack", "animation-attack-battletrack", 1000));
+animator.addAnimation(new CustomAnimation("battletrackDamaged", "animation-battletrack-damaged", 1000));
+animator.addAnimation(new CustomAnimation("battletrackConquored", "animation-battletrack-conquered", 1000));
 
 //#endregion
 
