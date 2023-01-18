@@ -1954,6 +1954,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	tutorialModal = M.Modal.getInstance(element);
 	
+	// If storedCount is not equal to a falsy, show the tutorial to new user
+	let storedCount = localStorage.getItem("count")
+	if (!storedCount) {
+		tutorialModal.open()
+	}
+
 	// If user has seen the tutorial, save count to 1
 	let count = 0
 	let tutorialBtnEl = document.querySelector("#tutorial-btn")
