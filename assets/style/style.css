@@ -398,7 +398,7 @@ body {
 #game-state {
 	position: absolute;
 	display: none;
-	flex-direction: column;
+	flex-direction: row;
 	border: solid white 1px;
 	border-radius: 5px;
 	background: #323232;

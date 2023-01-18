@@ -1953,9 +1953,27 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	tutorialModal = M.Modal.getInstance(element);
-	tutorialModal.open()
-	let count = 1
-	// TODO save to localStorage and check that
+
+	// If storedCount is not equal to a falsy, show the tutorial to new user
+	let storedCount = localStorage.getItem("count")
+	if (!storedCount) {
+		tutorialModal.open()
+	}
+
+	// If user has seen the tutorial, save count to 1
+	let count = 0
+	let tutorialBtnEl = document.querySelector("#tutorial-btn")
+	tutorialBtnEl.addEventListener("click", function(){
+		count = 1
+		localStorage.setItem("count", count)
+	})
+
+	// Show tutorial on menu selection
+	let menuBtnEl = document.querySelector("#menu-tutorial")
+	menuBtnEl.addEventListener("click", function(){
+		tutorialModal.open()
+		console.log("you clicked me")
+	})
 });
 
 document.addEventListener('DOMContentLoaded', function () {
