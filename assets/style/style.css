@@ -90,7 +90,7 @@ card-slot: 2;
 }
 
 .grow:hover {
-	transform: scale(4);
+	transform: scale(3);
 	z-index: 10;
 }
 
@@ -199,6 +199,14 @@ body {
 	min-width: 1300px;
 	background-color: #323232;
 	color: white;
+}
+
+#tutorial p {
+	margin: 20px 0;
+}
+
+#tutorial-list {
+	margin-left: 20px;
 }
 
 #tutorial-footer {
@@ -396,8 +404,8 @@ body {
 	background: #323232;
 	color: white;
 	padding: 3px;
-	bottom: 5%;
-	left: 10%;
+	top: 0;
+	transform: translateY(-100%);
 }
 
 #battletracks{
@@ -597,8 +605,10 @@ body {
 .location-text {
 	width: fit-content;
 	text-align: center;
-	border-radius: 5px;
-	color: rgb(86, 213, 255);
+	border-radius: 25px;
+	background-color: #323232;
+	color: white;
+	padding: 10px;
 	font-size: 38px;
 	font-weight: bold;
 	text-shadow: 2px 2px 4px black;

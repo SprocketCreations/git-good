@@ -38,7 +38,7 @@ function getPokeStats() {
 			})
 	}
 }
-console.log(heroStats)
+
 // Fetch request for SUPERHERO API data & clean data to match normalize input format
 const heroUrl = "https://akabab.github.io/superhero-api/api/all.json"
 fetch(heroUrl)
@@ -165,12 +165,12 @@ function getCardStats(normalizedData) {
 			cardStats.push(obj);
 		}
 	}
-	console.log(cardStats)
 	return cardStats
 }
 
 let roundSpan = document.querySelector("#round")
 let phaseSpan = document.querySelector("#phase")
+const playerHeadHand = document.querySelector("#player-hand")
 console.log(roundSpan)
 console.log(phaseSpan)
 
@@ -281,6 +281,7 @@ class Player {
 	 */
 	canPlayCard() {
 		phaseSpan.textContent = "Play"
+		playerHeadHand.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
 		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
 			const cost = this.hand.cards[i].getCost();
@@ -910,6 +911,7 @@ class Hand {
 					$(event.target).css('transform', '');
 				}
 			});
+			card.node.classList.add("hover-grow")
 		}
 	}
 	/**
@@ -1180,6 +1182,9 @@ const playerTryPlayCard = (card, battletrack) => {
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
 
+		// remove hover-grow
+		card.node.classList.remove("hover-grow")
+
 		// Grow card on double click
 		card.node.addEventListener("dblclick", function() {
 			card.node.classList.add("grow")
@@ -1306,6 +1311,7 @@ const AI_playcard = () => {
 const endPlayCardStage = () => {
 	console.log("No more cards can be played. Beginning actions.");
 	phaseSpan.textContent = "Combat"
+	playerHeadHand.setAttribute("style",  "box-shadow: ''")
 
 	// Set stage to action
 	currentGameStage = Stage.Action;
@@ -1426,10 +1432,10 @@ const letNextCardDoAction = () => {
 
 		let targetableBattleTrack = activeCards[0].getBattleline().getBattletrack().targetableNode
 		let targetableCards = activeCards[0].getBattleline().getBattletrack().enemyBattleline.cards
-		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+		targetableBattleTrack.setAttribute("style",  "box-shadow: 3px -3px 5px red, 3px 3px 5px red, -3px -3px 5px red, -3px 3px 5px red;")
 	
 		for (i = 0; i < targetableCards.length; i++) {
-			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px orange, 3px 3px 5px orange, -3px -3px 5px orange, -3px 3px 5px orange;")
+			targetableCards[i].node.setAttribute("style",  "box-shadow: 3px -3px 5px red, 3px 3px 5px red, -3px -3px 5px red, -3px 3px 5px red;")
 		}
 	}
 
@@ -1657,8 +1663,6 @@ const addDraggableToNextPlayerCard = nextCard => {
 	const nextCardNode = nextCard.getNode();
 	/** @type {HTMLElement} The battletrack. */
 	const battletrack = nextCard.getBattleline().getBattletrack();
-	console.log("======")
-	console.log(battletrack.getTargetable())
 
 	let isDragging = false;
 	$(nextCardNode).draggable({
