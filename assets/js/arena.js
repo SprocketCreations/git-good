@@ -976,7 +976,7 @@ const gameStart = () => {
 
 	// When player rejects the hand, take away the option to reject the hand again, reject the first hand, start the game
 	_rejectHandButton.addEventListener("click", () => {
-		_rejectHandButton.style.display = "none";
+		// _rejectHandButton.style.display = "none";
 		rejectFirstHand();
 	})
 };
@@ -1155,7 +1155,9 @@ const startFirstRound = () => {
 		AI_playcard();
 	}
 	else {
-		endPlayCardStage();
+		setTimeout( () => {
+			endPlayCardStage();
+		}, "2000")
 	}
 };
 
@@ -1201,7 +1203,9 @@ const playerTryPlayCard = (card, battletrack) => {
 		}
 		// else if the player cannot make a move
 		else if (!human.canPlayCard()) {
-			endPlayCardStage();
+			setTimeout( () => {
+				endPlayCardStage();
+			}, "2000")
 		}
 	}
 	else {
@@ -1229,7 +1233,9 @@ const playerEndTurnEarly = () => {
 		currentPlayer = enemy;
 		AI_playcard();
 	} else {
-		endPlayCardStage();
+		setTimeout( () => {
+			endPlayCardStage();
+		}, "2000")
 	}
 };
 
@@ -1296,7 +1302,9 @@ const AI_playcard = () => {
 	}
 	// Else if no one can make a move.
 	else {
-		endPlayCardStage();
+		setTimeout( () => {
+			endPlayCardStage();
+		}, "2000")
 	}
 };
 
@@ -1304,7 +1312,13 @@ const AI_playcard = () => {
  * Called after the player and the ai cannot play any more cards.
  */
 const endPlayCardStage = () => {
-	console.log("No more cards can be played. Beginning actions.");
+	
+	M.toast({
+		html: `Ending PLAY step!`,
+		classes: 'rounded fifties-toast'
+	})
+	
+	// console.log("No more cards can be played. Beginning actions.");HEREHERE
 	phaseSpan.textContent = "Combat"
 
 	// Set stage to action
@@ -1393,7 +1407,9 @@ const letNextCardDoAction = () => {
 	if (activeCards.length === 0) {
 		// If there are no more cards to process, we are done.
 		if (cardsToAct.length === 0) {
-			endRound();
+			setTimeout( () => {
+				endRound();
+			}, "5000")
 			// Return to exit this function early.
 			return;
 		}
@@ -1566,10 +1582,18 @@ const cardAttackAction = (attacker, defender) => {
  * Initializes and resets the players
  */
 const endRound = () => {
-	++currentRound;
+	M.toast({
+		html: `Round ${currentRound} Over<br>Round ${++currentRound} Beginning`,
+		classes: 'rounded fiftiesToast'
+	})
+
 	roundSpan.textContent = currentRound
 
-	console.log("new round beginning:", currentRound);
+	// M.toast({
+	// 	html: `Round ${currentRound} Beginning`,
+	// 	classes: 'rounded fiftiesToast'
+	// })
+	// console.log("new round beginning:", currentRound);
 
 	// Set mana for both players to round number
 	// Refresh both players mana, awarding an extra 2 if they spent no mana last round.
@@ -1599,7 +1623,9 @@ const endRound = () => {
 		AI_playcard();
 	}
 	else {
-		endPlayCardStage();
+		setTimeout( () => {
+			endPlayCardStage();
+		}, "2000")
 	}
 };
 

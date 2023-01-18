@@ -57,17 +57,36 @@ card-slot: 2;
 }
 
 #toast-container div {
+	width: 200px;
 	counter-increment: toasts;
-	border: 2px solid red;
 	font-family: 'Bangers', cursive;
-	font-size: 24px;
+	font-size: 28px;
 	letter-spacing: 1.2px;
-	background-color: blanchedalmond;
+	background-color: transparent;
 	color: red;
 	font-weight: bold;
 	text-shadow: 2px 2px black;
-	white-space: nowrap;
 	position: relative;
+	padding: 10px;
+	border-radius: 50%;
+	text-align: center;
+	box-shadow: none;
+}
+
+#toast-container div::after {
+	content: '';
+	position: absolute;
+	inset: 50px;
+	border-radius: 25% 13%;
+	background-color: white;
+	z-index: -1;
+	filter: blur(3px);
+}
+
+.fifties-toast {
+	background-color: black !important;
+	color: #56d5ff !important;
+	text-shadow: none;
 }
 
 #toast-container div::before {
