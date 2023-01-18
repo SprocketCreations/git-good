@@ -56,9 +56,48 @@ card-slot: 2;
                         supported by Chrome, Edge, Opera and Firefox */
 }
 
+#toast-container {
+	top: 225px !important;
+	right: 25px !important;
+	counter-reset: toasts;
+}
+
+#toast-container div {
+	counter-increment: toasts;
+	border: 2px solid red;
+	font-family: 'Bangers', cursive;
+	font-size: 24px;
+	letter-spacing: 1.2px;
+	background-color: blanchedalmond;
+	color: red;
+	font-weight: bold;
+	text-shadow: 2px 2px black;
+	white-space: nowrap;
+	position: relative;
+}
+
+#toast-container div::before {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 12px;
+	text-shadow: 0px 0px 0px;
+	content: counter(toasts);
+	position: absolute;
+	left: 10px;
+	bottom: 2px;
+}
+
+#toast-container div:first-letter {
+	text-transform: uppercase;
+}
+
 .grab:hover {
 	cursor: -webkit-grab;
 	cursor: grab;
+}
+
+.grow:hover {
+	transform: scale(4);
+	z-index: 10;
 }
 
 .grabbing:active {
@@ -147,24 +186,59 @@ body {
 	left: 0px;
 	top: calc(50% - 25px);
 	padding-top: 5px;
-	font-size: 24px;
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.4px;
+	text-shadow: 2px 2px 4px black;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	background-color: transparent;
-	background-image: url('../images/textures/leather-menu-button.png');
-	background-size: contain;
+	background-image: url('../images/textures/steel-menu-button.png');
+	background-size: cover;
 	background-position: center;
 	border-radius: 0px 25px 25px 0px;
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
+	color: red;
 	transition: all .2s ease-out;
 }
 
-#modal {
+#tutorial {
 	width: 70%;
 	min-width: 1300px;
+	background-color: #323232;
+	color: white;
+}
+
+#tutorial-footer {
+	background-color: #323232;
+}
+
+#tutorial-btn {
+	background-color: rgb(191, 3, 3);
+	color: white;
+}
+
+#tutorial-btn:hover {
+	background-color: rgb(116, 1, 1);
+}
+
+#start-game-modal {
+	width: 70%;
+	min-width: 1300px;
+	background-image: url('../images/backgrounds/cracked-stone-med.png');
+	background-size: cover;
+	background-position: center;
+	color: white;
+	border-radius: 5px;
+	border: 2px solid white;
+}
+
+#endgame-modal {
+	width: 40%;
+	min-width: 500px;
 	background-image: url('../images/backgrounds/cracked-stone-med.png');
 	background-size: cover;
 	background-position: center;
@@ -193,22 +267,49 @@ body {
 	gap: 80px;
 }
 
+#modal-endgame-display {
+	height: 225px;
+	width: 100%;
+	padding: 25px;
+	background-color: gray;
+	box-shadow: inset 0px 0px 8px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 80px;
+}
+
+#modal-endgame-display {
+	height: 225px;
+	width: 100%;
+	padding: 25px;
+	background-color: gray;
+	box-shadow: inset 0px 0px 8px black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 80px;
+}
+
 #modal-player-hand>div {
 	box-shadow: 5px 5px 5px black;
 	scale: 1.5;
 }
 
-#modal-footer {
+#start-modal-footer,
+#endgame-modal-footer {
 	background-color: black;
 	color: white;
 }
 
-#start-button {
+#start-button,
+#play-again-button {
 	color: white;
 	transition: all .2s ease-out;
 }
 
-#start-button:hover {
+#start-button:hover,
+#play-again-button:hover {
 	background-color: green;
 }
 
@@ -218,9 +319,12 @@ body {
 	left: 0px;
 	bottom: calc(30% - 25px);
 	transition: transform .5s ease-out;
-	background-image: url("../images/textures/leather-menu-button.png");
-	background-size: contain;
-	font-size: 24px;
+	background-image: url("../images/textures/steel-menu-button.png");
+	background-size: cover;
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	text-shadow: 2px 2px 4px black;
+	letter-spacing: 1.4px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -229,20 +333,33 @@ body {
 	border-top: 2px solid white;
 	border-right: 2px solid white;
 	border-bottom: 2px solid white;
+	color: red;
 }
 
 #dropdown {
 	width: 225px !important;
-	background-image: url('../images/textures/tattered-menu-page-small.png');
+	background-image: url('../images/textures/vert-steel-menu-button.png');
 	background-size: cover;
 	border-radius: 0px 25px 25px 0;
 	overflow: hidden;
 	white-space: nowrap;
 	font-weight: bold;
-	border-top: 3px solid white;
+	/* border-top: 3px solid white;
 	border-right: 3px solid white;
-	border-bottom: 3px solid white;
+	border-bottom: 3px solid white; */
 	box-shadow: 5px 5px 10px black;
+}
+
+#dropdown a {
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.2px;
+}
+
+#dropdown a {
+	font-family: 'Bangers', cursive;
+	font-size: 28px;
+	letter-spacing: 1.2px;
 }
 
 .dropdown-content li>a {
@@ -267,10 +384,16 @@ body {
 
 #dropdown li:hover {
 	background-color: rgba(255, 255, 255, 0);
-	box-shadow: inset 2px 2px 4px blue,
-		inset -2px -2px 4px blue;
 	font-weight: bold;
 	z-index: 3;
+}
+
+#dropdown li:hover a {
+	color: white;
+}
+
+#dropdown li:nth-child(3):hover a{
+	color: red;
 }
 
 #dropdown li:nth-child(3):hover {
@@ -291,6 +414,32 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+#game-state {
+	position: absolute;
+	display: none;
+	flex-direction: column;
+	border: solid white 1px;
+	border-radius: 5px;
+	background: #323232;
+	color: white;
+	padding: 3px;
+	bottom: 5%;
+	left: 10%;
+}
+
+#game-state {
+	position: absolute;
+	display: none;
+	flex-direction: column;
+	border: solid white 1px;
+	border-radius: 5px;
+	background: #323232;
+	color: white;
+	padding: 3px;
+	bottom: 5%;
+	left: 10%;
 }
 
 #battletracks {
@@ -319,22 +468,6 @@ body {
 		inset 0px 0px 10px 1px white;
 	border: 3px solid white;
 	border-radius: 33%;
-}
-
-#battletrack-1 {
-	background-image: var(--location-asgard);
-	background-size: cover;
-	background-position: center;
-}
-
-#battletrack-2 {
-	background-image: var(--location-wakanda);
-	background-size: cover;
-	background-position: center;
-}
-
-#battletrack-3 {
-	background-image: var(--location-shield-20);
 	background-size: cover;
 	background-position: center;
 }
@@ -504,14 +637,15 @@ body {
 }
 
 .location-text {
-	width: calc(100% + 50px);
+	width: fit-content;
 	text-align: center;
-
+	border-radius: 5px;
 	color: rgb(86, 213, 255);
-	font-size: 32px;
+	font-size: 38px;
 	font-weight: bold;
-	text-shadow: 2px 2px black;
-	font-family: 'Josefin Sans', sans-serif;
+	text-shadow: 2px 2px 4px black;
+	font-family: 'Bangers', sans-serif;
+	letter-spacing: 1.4px;
 	white-space: nowrap;
 }
 
@@ -677,7 +811,7 @@ body {
 	position: absolute;
 	border: solid black 1px;
 	border-radius: 5px;
-	background-color: red;
+	background-color: green;
 	display: flex;
 	justify-content: center;
 	align-items: center;

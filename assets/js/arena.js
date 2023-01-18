@@ -1,16 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () {
-	var elem = document.querySelector('.modal');
-	M.Modal.init(elem, {
-		dismissible: false
-	});
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-	let elem = document.querySelector('#menu-button');
-	M.Dropdown.init(elem, {
-		hover: true
-	});
-});
+
+//#region API FETCHING AND NORMALIZATION
 
 // API FETCH & DECK DATA COLLECTION:
 // initializing an empty deck that can be added to on fetch completion.
@@ -119,6 +109,12 @@ function minMaxNormalization(data, balanceMultiplier) {
 		imgUrl: [],
 	}
 
+	for(let i = 0; i < data.name.length; i++){
+		console.log(data.name[i])
+		data.name[i] = data.name[i].charAt(0).toUpperCase() + data.name[i].slice(1, data.name[i].length);
+		console.log(data.name[i])
+	}
+
 	statsNormalized.name = data.name
 	statsNormalized.imgUrl = data.imgUrl
 	keysArr = ["health", "attack", "defense", "speed"]
@@ -153,7 +149,7 @@ function minMaxNormalization(data, balanceMultiplier) {
 
 // gets the normalized card stats for use in game
 function getCardStats(normalizedData) {
-	let cardNames = ["Bullseye", "Thor", "Spider-Man", "Green Goblin", "Black Widow", "Scarlet Witch", "Loki", "Groot", "Black Panther", "Venom", "Thanos", "Hulk", "Kingpin", "Magneto", "Luke Cage", "Amanda Waller", "Black Flash", "Flash", "Batman", "Superman", "Wonder Woman", "Lex Luthor", "Black Adam", "Darkseid", "Beast Boy", "Batgirl", "Aquaman", "Harley Quinn", "Joker", "Sinestro", "Martian Manhunter", "charizard", "pikachu", "gardevoir", "sylveon", "lucario", "gengar", "lugia", "greninja", "ditto", "garchomp", "snorlax", "heracross", "teddiursa", "porygon", "garbodor"]
+	let cardNames = ["Bullseye", "Thor", "Spider-Man", "Green Goblin", "Black Widow", "Scarlet Witch", "Loki", "Groot", "Black Panther", "Venom", "Thanos", "Hulk", "Kingpin", "Magneto", "Luke Cage", "Amanda Waller", "Black Flash", "Flash", "Batman", "Superman", "Wonder Woman", "Lex Luthor", "Black Adam", "Darkseid", "Beast Boy", "Batgirl", "Aquaman", "Harley Quinn", "Joker", "Sinestro", "Martian Manhunter", "Charizard", "Pikachu", "Gardevoir", "Sylveon", "Lucario", "Gengar", "Lugia", "Greninja", "Ditto", "Garchomp", "Snorlax", "Heracross", "Teddiursa", "Porygon", "Garbodor"]
 
 	let cardStats = []
 
@@ -172,6 +168,13 @@ function getCardStats(normalizedData) {
 	console.log(cardStats)
 	return cardStats
 }
+
+let roundSpan = document.querySelector("#round")
+let phaseSpan = document.querySelector("#phase")
+console.log(roundSpan)
+console.log(phaseSpan)
+
+//#endregion
 
 //#region ENUM DEFINITIONS
 /**
@@ -410,6 +413,7 @@ class Player {
 	 * one card in their hand that they can play.
 	 */
 	canPlayCard() {
+		phaseSpan.textContent = "Play"
 		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
 			const cost = this.hand.cards[i].getCost();
@@ -482,7 +486,7 @@ class Card {
 		/** @type {string} The URL to the artwork on this card. */
 		this.art = art;
 		/** @type {number} The mana cost of this card. */
-		this.cost = 1;
+		this.cost = cost;
 		/** @type {number} The attack power of this card. */
 		this.attack = attack;
 		/** @type {number} The defense of this card. */
@@ -722,6 +726,10 @@ class Battleline {
 		// Inform this card what battleline it's in.
 		card.setBattleline(null);
 
+		if (this.cards.length < maxCardsPerBattleline && this.getBattletrack().getFriendlyBattleline() === this) {
+			$(this.zoneNode).droppable("enable");
+		}
+
 		return removedCard;
 	}
 	/**
@@ -821,6 +829,10 @@ class Battletrack {
 	 */
 	playFriendlyCard(card) {
 		this.friendlyBattleline.playCard(card);
+
+		if (this.friendlyBattleline.cards.length >= maxCardsPerBattleline) {
+			$(this.friendlyBattleline.zoneNode).droppable("disable");
+		}
 	}
 	/**
 	 * @param {Card} card The card to play to the enemy side of the battletrack.
@@ -961,6 +973,7 @@ class Deck {
 	 * @param {Card} card card to insert into the deck.
 	 */
 	insertCardIntoDeck(card) {
+		card.deleteNode();
 		card.setOwner(this.owner);
 		this.cards.push(card);
 	}
@@ -1014,10 +1027,10 @@ class Hand {
 	add(card) {
 		this.cards.push(card);
 		const cardNode = card.getNode();
-
-		if (currentGameStage == Stage.Initializing) {
+		
+		if(currentGameStage === Stage.Initializing && card.owner === human){
 			const cardClone = cardNode.cloneNode(true);
-			document.querySelector("#modal-player-hand").appendChild(cardClone);
+			_modalPlayerHand.appendChild(cardClone);
 		}
 
 		this.node.appendChild(cardNode);
@@ -1026,7 +1039,6 @@ class Hand {
 		// makes player-hand divs (cards) draggable, revert
 		// to their initial space if not dropped in a droppable,
 		// and snap to their target droppable
-		// Makes both enemy and player cards draggable?
 		if (card.owner === human) {
 			$(cardNode).draggable({
 				revert: "invalid",
@@ -1140,6 +1152,9 @@ const initializeBattletracks = () => {
 		/** @type {Battletrack} the nth battletrack. */
 		const battletrack = new Battletrack(i, location);
 
+		console.log(battletrack.location.imageURL);
+		_allBattletracks[i].style.backgroundImage = `url(${location.imageURL})`;
+		_btNames[i].textContent = location.displayName;
 		battletracks.push(battletrack);
 	}
 };
@@ -1252,6 +1267,11 @@ const rejectFirstHand = () => {
 	//Reshuffle the deck
 	deck.shuffle();
 
+	// Delete all cards from the modal display
+	for(let i = 0; i < _modalPlayerHand.children.length;){
+		_modalPlayerHand.children[i].remove();
+	}
+
 	// Rebuild the player's hand.
 	refillHand(human);
 };
@@ -1263,6 +1283,9 @@ const rejectFirstHand = () => {
 const startFirstRound = () => {
 	// Update the game state to allow the players to play cards.
 	currentGameStage = Stage.Playing;
+	roundSpan.textContent = 1
+	let gameState = document.querySelector("#game-state")
+	gameState.setAttribute("style", "display: flex;")
 
 	// Set mana for both players to 1
 	human.setMana(1);
@@ -1305,6 +1328,18 @@ const playerTryPlayCard = (card, battletrack) => {
 		// and add it to the battletrack.
 		battletrack.playFriendlyCard(card);
 
+		// Grow card on double click
+		card.node.addEventListener("dblclick", function() {
+			card.node.classList.add("grow")
+			card.node.addEventListener("mouseleave", function(){
+				card.node.classList.remove("grow")
+			})
+		})
+
+		M.toast({
+			html: `You played ${card.getDisplayName()}!`,
+			classes: 'rounded positionToast'
+		})
 		animator.playAnimation(animator.Animations.playCard, card.getNode(), () => {
 			// This code gets called when the player is done.
 			// If the AI can make a move
@@ -1366,17 +1401,30 @@ const AI_playcard = () => {
 	// Pick a random card from hand that can be played
 	const cardToPlay = enemy.getHand().random(mana);
 
-	/** @type {Battletrack[]} A clone of the battletracks array. */
-	const battletracksCopy = [...battletracks];
+	// Grow card on double click...ADD ROTATE 180
+	cardToPlay.node.addEventListener("dblclick", function() {
+		cardToPlay.node.classList.add("grow")
+		cardToPlay.node.addEventListener("mouseleave", function(){
+			cardToPlay.node.classList.remove("grow")
+		})
+	})
 
-	for (let i = battletracksCopy.length - 1; i >= 0; --i) {
-		if (battletracksCopy[i].isConquered()) {
-			battletracksCopy.splice(i, 1);
+	/** @type {Battletrack[]} An array of all the battletracks that are no conquered and also have less than 4 cards in play. */
+	const validBattletracks = [];
+
+	battletracks.forEach(battletrack => {
+		if (!(battletrack.isConquered()) && battletrack.getEnemyCards().length < maxCardsPerBattleline) {
+			validBattletracks.push(battletrack);
 		}
-	}
-	// Pick a random battletrack that is not conquored.
-	/** @type {Battletrack} A random unconquered battletrack. */
-	const battletrack = battletracksCopy[Math.floor(Math.random() * battletracksCopy.length)];
+	});
+
+	const isABattletrackTargetable = validBattletracks.length !== 0;
+
+	//There are targetable battletracks.
+	if (isABattletrackTargetable) {
+		// Pick a random battletrack that is not conquored.
+		/** @type {Battletrack} A random unconquered battletrack. */
+		const battletrack = validBattletracks[Math.floor(Math.random() * validBattletracks.length)];
 
 	// Play the random card to the random battletrack.
 	battletrack.playEnemyCard(cardToPlay);
@@ -1385,10 +1433,15 @@ const AI_playcard = () => {
 		//this code it called when the animation is done.
 	});
 
-	// Reduce AI mana by card cost
-	enemy.setMana(mana - cardToPlay.getCost());
+		// Reduce AI mana by card cost
+		enemy.setMana(mana - cardToPlay.getCost());
 
-	console.log("Ai played ", cardToPlay.getDisplayName());
+		M.toast({
+			html: `AI played ${cardToPlay.getDisplayName()}!`,
+			classes: 'rounded positionToast'
+		})
+		// console.log("Ai played ", cardToPlay.getDisplayName());
+	}
 
 	// If the player can make a move.
 	if (human.canPlayCard()) {
@@ -1396,8 +1449,8 @@ const AI_playcard = () => {
 		currentPlayer = human;
 	}
 	// Else if the AI can make a move.
-	else if (enemy.canPlayCard()) {
-		// Recursively call this funciton.
+	else if (enemy.canPlayCard() && isABattletrackTargetable) {
+		// Recursively call this function.
 		setTimeout(() => {
 			AI_playcard();
 		}, 1000);
@@ -1413,6 +1466,7 @@ const AI_playcard = () => {
  */
 const endPlayCardStage = () => {
 	console.log("No more cards can be played. Beginning actions.");
+	phaseSpan.textContent = "Combat"
 
 	// Set stage to action
 	currentGameStage = Stage.Action;
@@ -1434,10 +1488,12 @@ const endPlayCardStage = () => {
 		const bSpeed = b.getSpeed();
 		// A is faster.
 		if (aSpeed > bSpeed) {
+			// A should be left of B
 			return +1;
 		}
 		// B is faster.
 		else if (bSpeed > aSpeed) {
+			// B should be left of A
 			return -1;
 		}
 		// They are the same speed.
@@ -1451,19 +1507,43 @@ const endPlayCardStage = () => {
 				return 0;
 			}
 
-			const isAFirst = (humanGoesFirst && aOwner === human) || (!humanGoesFirst && aOwner !== human);
+			const isAHuman = aOwner === human;
 
-			// A's owner has priority
-			if (isAFirst) {
-				return +1;
+			// If the round is odd and the human won the coin flip
+			// or
+			// if the round is even and the human did not win the coin flip
+			const doesHumanHavePriority = (currentRound % 2 !== 0 && humanGoesFirst) || (!humanGoesFirst && currentRound % 2 === 0);
+
+			// Human has priority
+			if(doesHumanHavePriority) {
+				if(isAHuman) {
+					// A should be left of B
+					return +1;
+				}
+				else /*A is enemy*/ {
+					// B should be left of A
+					return -1;
+				}
 			}
-			// B's owner has priority
+			// AI Has priority
 			else {
-				return -1;
+				if(isAHuman) {
+					// B should be left of A
+					return -1;
+				}
+				else /*A is enemy*/ {
+					// A should be left of B
+					return +1;
+				}
 			}
 		}
 	});
-	cardsToAct.forEach(card => console.log(card.getSpeed()));
+	// console.log("Current round:", currentRound);
+	// console.log(humanGoesFirst ? "Human won coin flip." : "Enemy won coin flip.");
+	// for(let i = cardsToAct.length - 1; i >= 0; --i) {
+	// 	const card = cardsToAct[i];
+	// 	console.log(`${i}:\nSpeed: ${card.getSpeed()}\nOwner: ${card.getOwner() === human ? "Human" : "Enemy"}`);
+	// }
 	letNextCardDoAction();
 };
 
@@ -1482,8 +1562,14 @@ const letNextCardDoAction = () => {
 		/** @returns {number} the speed of the next card on the cardsToAct stack. */
 		const nextSpeed = () => cardsToAct[cardsToAct.length - 1].getSpeed();
 
+		/** @returns {Player} the owner of the next card on the cardsToAct stack. */
+		const nextOwner = () => cardsToAct[cardsToAct.length - 1].getOwner();
+
 		/** @type {number} The speed of the first card popped from the stack. */
 		const speed = nextSpeed();
+
+		/** @type {Player} The owner of the first card popped from the stack. */
+		const owner = nextOwner();
 
 		// Pop cardsToAct and add it to the active card array
 		do {
@@ -1493,7 +1579,7 @@ const letNextCardDoAction = () => {
 			activeCards.push(nextCard);
 			// Give the player the power to drag the card.
 			if (nextCard.getOwner() === human) { addDraggableToNextPlayerCard(nextCard); }
-		} while (false);//(cardsToAct.length > 0 && nextSpeed() === speed);
+		} while (cardsToAct.length > 0 && nextSpeed() === speed && nextOwner() === owner);
 	}
 	if (activeCards[0].owner === human) {
 		// Set active human card glow
@@ -1508,7 +1594,6 @@ const letNextCardDoAction = () => {
 		}
 	}
 
-	console.log("Next active cards are", activeCards[0].getDisplayName());
 	// If the card is owned by the AI
 	if (activeCards[0].getOwner() === enemy) {
 		AI_action();
@@ -1605,7 +1690,7 @@ const animatePlayerCardAttack = (isDefenderACard, cardIndex, card, defender) => 
  * @returns {boolean} true if the game ended.
  */
 const cardAttackAction = (attacker, defender) => {
-	console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
+		// console.log(attacker.getDisplayName(), "is attacking", defender instanceof Battleline ? "battleline" : defender.getDisplayName());
 	/** @type {number} The attack value of the attacking card. */
 	const attack = attacker.getAttack();
 
@@ -1619,6 +1704,11 @@ const cardAttackAction = (attacker, defender) => {
 	// Reduce the defender's health by the damage.
 	defender.damage(damage);
 
+	M.toast({
+		html: `${attacker.getDisplayName()} attacked ${defender instanceof Battleline ? "battleline" : defender.getDisplayName()} (${damage} dmg)`,
+		classes: 'rounded positionToast'
+	})
+
 	// If defender is a card
 	if (defender instanceof Card) {
 		// If the defender dies
@@ -1626,6 +1716,10 @@ const cardAttackAction = (attacker, defender) => {
 			console.log("defender dies")
 			// Kill the card. This function takes care of all the disposal.
 			defender.die();
+		} else if (defender.currentHitpoints < defender.totalHitpoints && defender.currentHitpoints > 1) {
+			defender.node.children[2].children[1].setAttribute("style", "background-color: orange")
+		} else if (defender.currentHitpoints <= 1) {
+			defender.node.children[2].children[1].setAttribute("style", "background-color: red")
 		}
 	}
 	// Else if the defender is the battleline
@@ -1656,6 +1750,7 @@ const cardAttackAction = (attacker, defender) => {
  */
 const endRound = () => {
 	++currentRound;
+	roundSpan.textContent = currentRound
 
 	console.log("new round beginning:", currentRound);
 
@@ -1696,6 +1791,7 @@ const endRound = () => {
  */
 const endGame = () => {
 	console.log("game over");
+	endGameModal.open()
 	// Update the game state prevent the players from doing anything and reappear start button
 	currentGameStage = Stage.Over;
 	_modalButton.style.display = "block";
@@ -1705,16 +1801,17 @@ const endGame = () => {
 	if (human.isWinner()) {
 		// Advance player win counter
 		human.addWin();
+		_endgameModalDisplay.textContent = "You win! :)";
 	}
 	// If the enemy won.
 	else if (enemy.isWinner()) {
 		// Advance enemy win counter
 		enemy.addWin();
+		_endgameModalDisplay.textContent = "You lose! :(";
 	}
 	// If something forced the game to end early.
 	else {
-		// Idk if this will every be reached.
-		// The game can't tie.
+		_endgameModalDisplay.textContent = "You've conceded :(";
 	}
 	// Display victory or failure screen/animation
 	// TODO: add an endgame screen or page to show.
@@ -1743,7 +1840,10 @@ const addDraggableToNextPlayerCard = nextCard => {
 	const nextCardNode = nextCard.getNode();
 	/** @type {HTMLElement} The battletrack. */
 	const battletrack = nextCard.getBattleline().getBattletrack();
+	console.log("======")
+	console.log(battletrack.getTargetable())
 
+	let isDragging = false;
 	$(nextCardNode).draggable({
 		revert: true,
 		start: function (event) {
@@ -1756,14 +1856,18 @@ const addDraggableToNextPlayerCard = nextCard => {
 			});
 
 			addDroppableToBattletrack(battletrack, nextCard);
+			isDragging = true;
 		},
 		drag: function (event) {
 		},
 		stop: function (event) {
-			// Stop dragging this card.
-			lastMove.draggedCard = null;
-			//Reset the styling:
-			$(event.target).css('transform', '');
+			if(isDragging) {
+				lastMove.draggedCard = null;
+
+				//Reset the styling:
+				$(event.target).css('transform', '');
+				isDragging = false;
+			}
 		}
 	});
 	$(nextCardNode).draggable("enable");
@@ -1896,6 +2000,12 @@ const _rejectHandButton = document.querySelector("#reject-hand-button");
 /** @type {HTMLElement} The end turn hand button.  */
 const _endTurnButton = document.querySelector("#end-turn-button");
 
+/** @type {HTMLElement} The end game modal display.  */
+const _endgameModalDisplay = document.querySelector("#modal-endgame-display");
+
+/** @type {HTMLElement} The modal player hand.  */
+const _modalPlayerHand = document.querySelector("#modal-player-hand");
+
 // BATTLETRACK VARS
 /** @type {HTMLElement[]} Array of all battletracks  */
 const _allBattletracks = document.querySelectorAll(".battletrack");
@@ -1952,24 +2062,24 @@ const _playerTableCards = document.querySelectorAll(".player-cards");
 /** @type {Location[]} array of game locations */
 const curatedLocations = [
 	//Example:
-	new Location("Wakanda", "../images/backgrounds/location-wakanda.png"),
-	new Location("New York", "../images/backgrounds/location-new-york.png"),
-	new Location("Asgard", "../images/backgrounds/location-asgard.png"),
-	new Location("S.H.I.E.L.D. 2.0", "../images/backgrounds/location-shield-2_0.png"),
-	new Location("Dark Dimension", "../images/backgrounds/location-dark-dimension.png"),
-	new Location("Kingpin's Mansion", "../images/backgrounds/location-kingpins-mansion.png"),
-	new Location("Joker's Lair", "../images/backgrounds/location-jokers-lair.png"),
-	new Location("Arkham Asylum", "../images/backgrounds/location-arkham-asylum.png"),
-	new Location("Speed Force", "../images/backgrounds/location-speed-force.png"),
-	new Location("Krypton", "../images/backgrounds/location-krypton.png"),
-	new Location("Luthor Corp.", "../images/backgrounds/location-luthor-corp.png"),
-	new Location("Shooting Range", "../images/backgrounds/location-shooting-range.png"),
-	new Location("Poke-Arena!", "../images/backgrounds/location-poke-arena.png"),
-	new Location("Poke-Cave!", "../images/backgrounds/location-poke-cave.png"),
-	new Location("Ashe's Home", "../images/backgrounds/location-ashes-home.png"),
-	new Location("Infirmary", "../images/backgrounds/location-infirmary.png"),
-	new Location("Poke-Beach!", "../images/backgrounds/location-poke-beach.png"),
-	new Location("Poke-City!", "../images/backgrounds/location-poke-city.png")
+	new Location("Wakanda", "../assets/images/backgrounds/location-wakanda.png"),
+	new Location("New York", "../assets/images/backgrounds/location-new-york.png"),
+	new Location("Asgard", "../assets/images/backgrounds/location-asgard.png"),
+	new Location("S.H.I.E.L.D. 2.0", "../assets/images/backgrounds/location-shield-2_0.png"),
+	new Location("Dark Dimension", "../assets/images/backgrounds/location-dark-dimension.png"),
+	new Location("Kingpin's Mansion", "../assets/images/backgrounds/location-kingpins-mansion.png"),
+	new Location("Joker's Lair", "../assets/images/backgrounds/location-jokers-lair.png"),
+	new Location("Arkham Asylum", "../assets/images/backgrounds/location-arkham-asylum.png"),
+	new Location("Speed Force", "../assets/images/backgrounds/location-speed-force.png"),
+	new Location("Krypton", "../assets/images/backgrounds/location-krypton.png"),
+	new Location("Luthor Corp.", "../assets/images/backgrounds/location-luthor-corp.png"),
+	new Location("Shooting Range", "../assets/images/backgrounds/location-shooting-range.png"),
+	new Location("Poke-Arena!", "../assets/images/backgrounds/location-poke-arena.png"),
+	new Location("Poke-Cave!", "../assets/images/backgrounds/location-poke-cave.png"),
+	new Location("Ashe's Home", "../assets/images/backgrounds/location-ashes-home.png"),
+	new Location("Poke-Infirmary!", "../assets/images/backgrounds/location-infirmary.png"),
+	new Location("Poke-Beach!", "../assets/images/backgrounds/location-poke-beach.png"),
+	new Location("Poke-City!", "../assets/images/backgrounds/location-poke-city.png")
 ];
 
 /** @type {Stage} The current state of the game. */
@@ -1996,6 +2106,9 @@ const cardsToAct = [];
 /** @type {Card[]} The current card waiting to perform its action. If there are multiple cards with the same speed, they will all be put into this array. */
 const activeCards = [];
 
+/** @type {number} The maximum amount of cards that can be played to a battleline. */
+const maxCardsPerBattleline = 4;
+
 const animator = new Animator();
 animator.addAnimation(new CustomAnimation("drawCard", "animation-draw-card", 1000));
 animator.addAnimation(new CustomAnimation("playCard", "animation-play-card", 1000));
@@ -2008,6 +2121,39 @@ animator.addAnimation(new CustomAnimation("battletrackConquored", "animation-bat
 
 //#endregion
 
+//#region EVENT LISTENERS
+
+let endGameModal;
+let tutorialModal;
+
+document.addEventListener('DOMContentLoaded', function () {
+	let elements = document.querySelectorAll('.modal');
+	M.Modal.init(elements, {
+		dismissible: false
+	});
+
+	endGameModal = M.Modal.getInstance(elements[1]);
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	let element = document.querySelector('#tutorial');
+	M.Modal.init(element, {
+		dismissible: false,
+	});
+
+	tutorialModal = M.Modal.getInstance(element);
+	tutorialModal.open()
+	let count = 1
+	// TODO save to localStorage and check that
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+	let elem = document.querySelector('#menu-button');
+	M.Dropdown.init(elem, {
+		hover: true
+	});
+});
+
 _endTurnButton.addEventListener("click", (event) => {
 	event.preventDefault();
 	if (currentGameStage == Stage.Playing) {
@@ -2016,3 +2162,4 @@ _endTurnButton.addEventListener("click", (event) => {
 })
 
 _concedeButton.addEventListener("click", endGame);
+//#endregion

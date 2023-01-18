@@ -16,7 +16,7 @@
 <body>
 	<main id="battlefield" class="row">
 		  <!-- Dropdown Trigger -->
-		  <a id="modal-button" class="btn modal-trigger hover-glow" href="#modal">Start</a>
+		  <a id="modal-button" class="btn modal-trigger hover-glow" href="#start-game-modal">Start</a>
 		  <a class='dropdown-trigger btn' id="menu-button" href='#' data-target='dropdown'>Menu</a>
 		  <div id="end-turn-button" class="hover-glow pointer"></div>
 		  <!-- Dropdown Structure -->
@@ -25,8 +25,8 @@
 			<li><a href="#!">Restart Game</a></li>
 			<li><a id="concede-button" href="#!">Concede</a></li>
 			<li class="divider" tabindex="-1"></li>
-			<li><a href="#!"><i class="sub-text">Help</i>Tutorial</a></li>
-			<li><a href="#!"><i class="sub-text">Help</i>About git-good</a></li>
+			<li><a href="#!"><i class="sub-text"></i>Tutorial</a></li>
+			<li><a href="#!"><i class="sub-text"></i>About git-good</a></li>
 		  </ul>
 		<!-- Head with enemy data -->
 		<div id="enemy-head" class="col s12">
@@ -129,21 +129,62 @@
 			</div>
 		</div>
 
-		<div id="modal" class="modal">
+		<!-- MODALS -->
+		<div id="start-game-modal" class="modal">
 			<div class="modal-content">
 			  <h4>Planning</h4>
 			  <p>Keep your cards or decide to draw again!</p>
 			  <div id="modal-player-hand"></div>
 			</div>
-			<div id="modal-footer" class="modal-footer">
+			<div id="start-modal-footer" class="modal-footer">
 				<a id="start-button" class="modal-close waves-effect waves-green btn-flat">Begin</a>
 				<a id="reject-hand-button" class="waves-effect waves-white btn-flat red">Reject Hand</a>
 			</div>
 		</div>
 
+		<div id="endgame-modal" class="modal">
+		  <div class="modal-content">
+			<h4>Game Over!</h4>
+			<div id="modal-endgame-display"></div>
+		  </div>
+		  <div id="endgame-modal-footer"class="modal-footer">
+			<a id="play-again-button" class="modal-close waves-effect waves-green btn-flat" href="./index.html">Play Again!</a>
+		  </div>
+		</div>
+
+		<!-- Tutorial Modal -->
+		<div id="tutorial" class="modal">
+			<div class="modal-content">
+			  <h4>About</h4>
+			  <p>Git-Good is a lane based strategy card game where you battle against your oppenent in three <em>Battletracks</em>.<br>Conquer two <em>Battletracks</em> to achieve victory...good luck!<br><br></p>
+			  <h4>Tutorial</h4>
+			  <ol>
+				<li> <em>Interactable objects</em> will glow when moused over.</li>
+				<li><b>Double-click</b> on a card w/in a <em>Battletrack</em> to enlarge the card and view card details.</li>
+				<li>During the <em>play phase</em>, <b>click & drag</b> a card from your hand and onto the <em>Battletrack</em> you wish to play it in.</li>
+				<li>During the <em>combat phase</em>, your <em>active card</em> will glow green, and <em>enemy objects</em> will glow orange. <b>Click & drag</b> from your <em>active card</em> to the <em>enemy object</em> your wish to attack.</li>
+				<li>Navigate to the <em>menu</em> if you wish to concede the current game, or need to review the tutorial.</li>
+			  </ol>
+			  <p><br><br><br>Best of luck from the team at group 12:<br>
+				- Andy Gaudy <br>
+				- Kailen James <br>
+				- Lukas MacMillen <br>
+			</p>
+			</div>
+			<div id="tutorial-footer" class="modal-footer">
+				<a id="tutorial-btn" class="modal-close waves-effect waves-green btn-flat">Close</a>
+			</div>
+		</div>
+
+		<!-- Round/Phase Tracker -->
+		<section id="game-state">
+			<p>Phase: <span id="phase"></span></p>
+			<p>Round: <span id="round"></span></p>
+		</section>
+
 		<!-- Card Template -->
 		<template id="card-template">
-			<div class="player-card">
+			<div class="player-card hover-glow">
 				<img class="card-art" src="" alt="">
 				<div class="card-header">
 					<p class="mana-initiative"></p>
