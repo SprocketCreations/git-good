@@ -170,6 +170,7 @@ function getCardStats(normalizedData) {
 
 let roundSpan = document.querySelector("#round")
 let phaseSpan = document.querySelector("#phase")
+const playerHeadHand = document.querySelector("#player-hand")
 console.log(roundSpan)
 console.log(phaseSpan)
 
@@ -280,6 +281,7 @@ class Player {
 	 */
 	canPlayCard() {
 		phaseSpan.textContent = "Play"
+		playerHeadHand.setAttribute("style",  "box-shadow: 3px -3px 5px lightgreen, 3px 3px 5px lightgreen, -3px -3px 5px lightgreen, -3px 3px 5px lightgreen;")
 		const numberOfCards = this.hand.cards.length;
 		for (let i = 0; i < numberOfCards; ++i) {
 			const cost = this.hand.cards[i].getCost();
@@ -1309,6 +1311,7 @@ const AI_playcard = () => {
 const endPlayCardStage = () => {
 	console.log("No more cards can be played. Beginning actions.");
 	phaseSpan.textContent = "Combat"
+	playerHeadHand.setAttribute("style",  "box-shadow: ''")
 
 	// Set stage to action
 	currentGameStage = Stage.Action;
